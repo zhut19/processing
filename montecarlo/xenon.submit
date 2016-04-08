@@ -1,0 +1,16 @@
+executable     = run_sim.sh
+universe       = vanilla
+
+Error   = log/err.$(Cluster).$(Process)
+Output  = log/out.$(Cluster).$(Process)
+Log     = log/log.$(Cluster).$(Process)
+
+transfer_executable = True
+transfer_input_files=xenon1t.tar.gz, run_Cryostat_neutron.mac
+transfer_output_files=output
+when_to_transfer_output = ON_EXIT
+
++ProjectName="xenon1t"
+Requirements = (CVMFS_oasis_opensciencegrid_org_TIMESTAMP >= 1441100752) && (OpSysAndVer =?= "SL6")
+arguments = $(Cluster).$(Process)  run_Cryostat_neutron.mac
+queue 10

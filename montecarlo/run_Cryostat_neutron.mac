@@ -1,0 +1,57 @@
+################
+#VERBOSITY
+/control/verbose 0
+/run/verbose 0
+/event/verbose 0
+/tracking/verbose 0
+/xe/gun/verbose 0
+
+#################
+#SEED
+/run/random/setRandomSeed 0
+
+##################
+# isotropic emission
+/xe/gun/angtype iso
+
+# make sure the volume below is a bit larger than the object the source will be confined to
+/xe/gun/type   Volume
+/xe/gun/shape  Cylinder
+/xe/gun/center 0. 0. 0. cm
+/xe/gun/radius 100 cm
+/xe/gun/halfz  140 cm
+
+##################
+# Select the volume to confine the source. For cryostat studies choose:
+# InnerCryostat - for the inner vessel
+# OuterCryostat - for the outer vessel
+# HexapodPlatformPhysical  HexapodLegPhysical_1 HexapodLegPhysical_2 - for the Hexapod (platform and legs)
+
+/xe/gun/confine SS_OuterCryostat SS_InnerCryostat
+
+##################
+# particle type + energy spectrum
+/xe/gun/energytype Spectrum
+/xe/gun/energyspectrum ./spectra/neutron/flat.dat
+/xe/gun/particle neutron
+
+
+
+
+##################
+# MC acceleration techniques for gammas. AP playground: if false it is not used
+/run/forced/setVarianceReduction false
+
+#
+# Scintillation processes in the LXe
+#
+/Xe/detector/setLXeScintillation false
+
+# Tree Filling options
+/run/writeEmpty false
+
+
+###################
+# command to guarantee neutrons until their capture
+/physics_engine/neutron/energyLimit 1.e-10 eV
+/physics_engine/neutron/timeLimit 999999999 s
