@@ -22,7 +22,7 @@ Requirements = (CVMFS_oasis_opensciencegrid_org_TIMESTAMP >= 1449684749) && (OpS
                (GLIDEIN_ResourceName =!= "BNL-ATLAS") && (GLIDEIN_ResourceName =!= "AGLT2")
 
 transfer_executable = True
-transfer_output_files=results/
+transfer_output_files = results
 when_to_transfer_output = ON_EXIT
 '''
 
