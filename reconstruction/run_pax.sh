@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 
-# takes 3 arguments:
+# takes 4 arguments:
 # arg1 -- name of input files separated by commas
 # arg2 -- name of output files separated by commas
 # arg3 -- name of tarball with PAX software
+# arg4 -- configuration to use
 
 which gfal-copy > /dev/null 2>&1
 if [[ $? -eq 1 ]];
@@ -37,6 +38,8 @@ work_dir=`mktemp -d --tmpdir=${OSG_WN_TMP}`
 cd ${work_dir}
 IFS=',' read -r -a input_files <<< "$2"
 IFS=',' read -r -a output_files <<< "$3"
+IFS=',' read -r -a configs <<< "$4"
+
 mkdir ${start_dir}/results
 # loop and use gfal-copy before pax gets loaded to avoid
 # gfal using wrong python version/libraries
@@ -53,8 +56,19 @@ source activate pax
 for index in "${!input_files[@]}";
 do
     input_filename=`echo ${input_files[index]} | rev | cut -f 1 -d/ | rev`
-    paxer --input $input_filename --input_type xed --output ${output_files[index]} --output_type root --config XENON100 \
-          --config_path /cvmfs/oasis.opensciencegrid.org/osg/modules/anaconda/pax-4.6.1/envs/pax/pax/pax/config/XENON100.ini
+    if [[ ${config[index]} -eq "XENON1T" ]];
+    then
+        config_file=/cvmfs/oasis.opensciencegrid.org/osg/modules/anaconda/pax-$1/envs/pax/pax/pax/config/${config[index]}.ini
+    elif [[ ${config[index]} -eq "XENON1T_LED" ]];
+    then
+        config_file=/cvmfs/oasis.opensciencegrid.org/osg/modules/anaconda/pax-$1/envs/pax/pax/pax/config/${config[index]}.ini
+    elif [[ ${config[index]} -eq "XENON100" ]];
+    then
+        config_file=/cvmfs/oasis.opensciencegrid.org/osg/modules/anaconda/pax-$1/envs/pax/pax/pax/config/${config[index]}.ini
+    fi
+
+    paxer --input $input_filename --input_type xed --output ${output_files[index]} --output_type root --config $4 \
+          --config_path $config_file
 
 done
 cp *.root ${start_dir}/results
