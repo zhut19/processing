@@ -37,7 +37,7 @@ queue 1
 
 PAX_TARBALL_BASE_PATH = '/stash/project/@xenon1t/pax'
 
-DB_PARAM_FILE = '/stash/projects/@xenon1t/reconstruction/mongo_parameters'
+DB_PARAM_FILE = '/stash/project/@xenon1t/reconstruction/mongo_parameters'
 
 
 def get_mongo_params(db_info=DB_PARAM_FILE):
@@ -71,11 +71,11 @@ def get_led(datasets):
              [('ds1', True), ('ds2', 'False')]
     """
     hosts, user, password = get_mongo_params()
-    user = urllib.urlencode(user)
-    password = urllib.urlencode(password)
+    user = urllib.quote(user)
+    password = urllib.quote(password)
     mongo_uri = "mongodb://{0}:{1}@{2}".format(user,
                                                password,
-                                               ",".join(hosts))
+                                               hosts)
     client = pymongo.MongoClient(host=mongo_uri,
                                  replicaSet='run',
                                  read_preference=pymongo.ReadPreference.SECONDARY_PREFERRED)
@@ -192,7 +192,7 @@ def run_main():
     if args.config == 'xenon1t':
         configs = get_led(datasets)
     elif args.config == 'xenon100':
-        configs = ['xenon100' * len(datasets)]
+        configs = ['xenon100'] * len(datasets)
     assert(len(configs) == len(xed_files))
     for job in range(0, num_jobs):
         lower_index = job * args.batch_size
