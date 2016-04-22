@@ -176,6 +176,8 @@ def run_main():
                         help='number of files to process per job (default is 15)')
 
     args = parser.parse_args(sys.argv[1:])
+    if args.parameter_file != '' and os.path.isfile(args.parameter_file):
+        DB_PARAM_FILE = os.path.abspath(os.path.expanduser(args.parameter_file))
     xed_files, datasets = get_xed_files(args.run, args.data_set, args.info_directory)
     if not os.path.isfile('user_cert'):
         sys.stderr.write("No user proxy found, please generate one using \n" +
