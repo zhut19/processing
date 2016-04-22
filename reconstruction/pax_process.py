@@ -50,6 +50,8 @@ def get_mongo_params(db_info=DB_PARAM_FILE):
     parameters = {}
     with open(db_info) as param_file:
         for line in param_file:
+            if '=' not in line:
+                continue
             key, val = line.strip().split('=')
             parameters[key.strip()] = val.strip()
     if 'user' not in parameters or parameters['user'] == '':
