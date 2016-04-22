@@ -61,16 +61,17 @@ def get_mongo_params(db_info=DB_PARAM_FILE):
             parameters['password'])
 
 
-def get_led(datasets):
+def get_led(datasets, parameter_file):
     """
     Query the xenon1t mongodb and determine whether xenon1t LED configuration
     is needed for specified datasets
 
     :param datasets: a list with datasets given as strings (e.g. ['ds1', 'ds2']
+    :param parameter_file: file with mongodb parameters
     :return: a list with a tuple of run name, LED config for each run. e.g.
              [('ds1', True), ('ds2', 'False')]
     """
-    hosts, user, password = get_mongo_params()
+    hosts, user, password = get_mongo_params(parameter_file)
     user = urllib.quote(user)
     password = urllib.quote(password)
     mongo_uri = "mongodb://{0}:{1}@{2}".format(user,
@@ -177,7 +178,9 @@ def run_main():
 
     args = parser.parse_args(sys.argv[1:])
     if args.parameter_file != '' and os.path.isfile(args.parameter_file):
-        DB_PARAM_FILE = os.path.abspath(os.path.expanduser(args.parameter_file))
+        param_file = os.path.abspath(os.path.expanduser(args.parameter_file))
+    else:
+        param_file = DB_PARAM_FILE
     xed_files, datasets = get_xed_files(args.run, args.data_set, args.info_directory)
     if not os.path.isfile('user_cert'):
         sys.stderr.write("No user proxy found, please generate one using \n" +
@@ -192,7 +195,7 @@ def run_main():
     output = open("process_run.submit", 'w')
     output.write(submit_template_preamble)
     if args.config == 'xenon1t':
-        configs = get_led(datasets)
+        configs = get_led(datasets, param_file)
     elif args.config == 'xenon100':
         configs = ['xenon100'] * len(datasets)
     assert(len(configs) == len(xed_files))
