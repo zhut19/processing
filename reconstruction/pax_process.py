@@ -26,11 +26,12 @@ transfer_output_files = results
 when_to_transfer_output = ON_EXIT
 on_exit_hold = (ExitBySignal == True) || (ExitCode != 0)
 periodic_release =  (NumJobStarts < 5) && ((CurrentTime - EnteredCurrentStatus) > 600)
+
+transfer_input_files= user_cert
+
 '''
 
 submit_template_repeats = '''
-transfer_input_files= user_cert
-
 arguments = PAX_VERSION XED_INPUT OUTPUT_FILES CONFIGURATION
 queue 1
 '''
@@ -84,14 +85,16 @@ def get_led(datasets, parameter_file):
                                  read_preference=pymongo.ReadPreference.SECONDARY_PREFERRED)
     collection = client['run']['runs_new']
 
-    run_config = []
+    run_config = {}
     for dataset in datasets:
         cursor = collection.find_one(filter={"name": dataset},
                                      projection={"reader.self_trigger": True})
         if cursor["reader"]["self_trigger"]:
-            run_config.append((dataset, False))
+            # XENON1T config
+            run_config[dataset] = False
         else:
-            run_config.append((dataset, True))
+            # XENON1T_LED config
+            run_config[dataset] = True
     return run_config
 
 
@@ -133,7 +136,6 @@ def read_file(filename):
         return []
     with open(filename) as file_obj:
         xed_files = []
-        dataset = []
         csv_reader = csv.reader(file_obj)
         header = True
         for row in csv_reader:
@@ -141,9 +143,8 @@ def read_file(filename):
                 # Skip header row
                 header = False
                 continue
-            xed_files.append(row[2])
-            dataset.append(row[1])
-        return xed_files, dataset
+            xed_files.append((row[1], row[2]))
+        return xed_files
 
 
 def run_main():
@@ -183,7 +184,7 @@ def run_main():
         param_file = os.path.abspath(os.path.expanduser(args.parameter_file))
     else:
         param_file = DB_PARAM_FILE
-    xed_files, datasets = get_xed_files(args.run, args.data_set, args.info_directory)
+    xed_files = get_xed_files(args.run, args.data_set, args.info_directory)
     if not os.path.isfile('user_cert'):
         sys.stderr.write("No user proxy found, please generate one using \n" +
                          "voms-proxy-init  -voms xenon.biggrid.nl " +
@@ -198,9 +199,6 @@ def run_main():
     output.write(submit_template_preamble)
     if args.config == 'xenon1t':
         configs = get_led(datasets, param_file)
-    elif args.config == 'xenon100':
-        configs = ['xenon100'] * len(datasets)
-    assert(len(configs) == len(xed_files))
     for job in range(0, num_jobs):
         lower_index = job * args.batch_size
         upper_index = (job + 1) * args.batch_size
@@ -208,15 +206,30 @@ def run_main():
         output_files = []
         if upper_index >= len(xed_files):
             upper_index = len(xed_files)
+        file_config = []
         for index in range(lower_index, upper_index):
-            input_filename = os.path.split(xed_files[index])[1]
+            input_filename = os.path.split(xed_files[index][1])[1]
             output_files.append(input_filename.replace(".xed", ""))
-            input_file_paths.append(xed_files[index])
+            input_file_paths.append(xed_files[index][1])
+            if args.config == 'xenon100':
+                file_config.append('xenon100')
+            elif (args.config == 'xenon1t' and
+                  xed_files[index][0] in configs and
+                  configs(xed_files[index][0])):
+                    file_config.append('XENON1T_LED')
+            elif (args.config == 'xenon1t' and
+                  xed_files[index][0] in configs and
+                  not configs(xed_files[index][0])):
+                file_config.append('XENON1T')
+            else:
+                sys.stderr.write("Dataset {0} does not LED information\n".format(xed_files[index[0]]))
+                sys.exit(1)
         text_buffer = submit_template_repeats
         text_buffer = text_buffer.replace('PAX_VERSION', args.pax_version)
         text_buffer = text_buffer.replace('OUTPUT_FILES', ",".join(output_files))
         text_buffer = text_buffer.replace('XED_INPUT', ",".join(input_file_paths))
-        text_buffer = text_buffer.replace('CONFIGURATION', ",".join(configs[lower_index:upper_index]))
+        text_buffer = text_buffer.replace('CONFIGURATION', ",".join(file_config))
+
         output.write(text_buffer)
     if not os.path.exists('results'):
         os.mkdir('results')
