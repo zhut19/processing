@@ -197,6 +197,7 @@ def run_main():
     sys.stdout.write("Processing {0} files using {1} jobs\n".format(len(xed_files), num_jobs))
     output = open("process_run.submit", 'w')
     output.write(submit_template_preamble)
+    datasets = [x[0] for x in xed_files]
     if args.config == 'xenon1t':
         configs = get_led(datasets, param_file)
     for job in range(0, num_jobs):
@@ -215,11 +216,11 @@ def run_main():
                 file_config.append('xenon100')
             elif (args.config == 'xenon1t' and
                   xed_files[index][0] in configs and
-                  configs(xed_files[index][0])):
+                  configs[xed_files[index][0]]):
                     file_config.append('XENON1T_LED')
             elif (args.config == 'xenon1t' and
                   xed_files[index][0] in configs and
-                  not configs(xed_files[index][0])):
+                  not configs[xed_files[index][0]]):
                 file_config.append('XENON1T')
             else:
                 sys.stderr.write("Dataset {0} does not LED information\n".format(xed_files[index[0]]))
