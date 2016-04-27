@@ -46,7 +46,7 @@ mkdir ${start_dir}/results
 for index in "${!input_files[@]}";
 do
     input_filename=`echo ${input_files[index]} | rev | cut -f 1 -d/ | rev`
-    gfal-copy -n8 --cert ${start_dir}/user_cert ${input_files[index]} file://${work_dir}/$input_filename
+    gfal-copy -n2 --cert ${start_dir}/user_cert ${input_files[index]} file://${work_dir}/$input_filename
 done
 
 # load python modules for paxer
