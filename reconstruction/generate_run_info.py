@@ -19,19 +19,24 @@ def run_main():
                         action='store', default='',
                         help='path to directory with xed files to process')
     args = parser.parse_args(sys.argv[1:])
+
     if not os.path.isdir(args.run_directory):
         sys.stderr.write("{0} is not a directory, exiting\n".format(args.run_directory))
         return 1
     run_name = os.path.abspath(args.run_directory)
+
     if os.path.basename(run_name):
         run_name = os.path.basename(run_name)
     else:
         run_name = os.path.split(run_name)[0].split('/')[-1]
 
+    if not os.path.exists('info'):
+        os.mkdir('info')
+
     for directory in os.listdir(args.run_directory):
         if not os.path.isdir(os.path.join(args.run_directory, directory)):
             continue
-        csv_filename = "{0}_{1}_files.csv".format(run_name, directory)
+        csv_filename = "info/{0}_{1}_files.csv".format(run_name, directory)
         entries = glob.glob(os.path.join(args.run_directory, directory, '*.xed'))
         if len(entries) == 0:
             continue
