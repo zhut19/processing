@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
 # takes 4 arguments:
-# arg1 -- name of input files separated by commas
-# arg2 -- name of output files separated by commas
-# arg3 -- name of tarball with PAX software
-# arg4 -- configuration to use
+# arg1 -- pax version number (must be pre-installed on OASIS/OSG)
+# arg2 -- name of input files separated by commas
+# arg3 -- name of output files separated by commas
+# arg4 -- pax configuration to use (allowed values given by 'paxer --help', or pass a .ini for custom config file)
 
 which gfal-copy > /dev/null 2>&1
 if [[ $? -eq 1 ]];
@@ -46,29 +46,25 @@ mkdir ${start_dir}/results
 for index in "${!input_files[@]}";
 do
     input_filename=`echo ${input_files[index]} | rev | cut -f 1 -d/ | rev`
-    gfal-copy --cert ${start_dir}/user_cert ${input_files[index]} file://${work_dir}/$input_filename
+    gfal-copy -n8 --cert ${start_dir}/user_cert ${input_files[index]} file://${work_dir}/$input_filename
 done
 
 # load python modules for paxer
 module load pax/$1
-source activate pax
+source activate pax-$1
 
 for index in "${!input_files[@]}";
 do
     input_filename=`echo ${input_files[index]} | rev | cut -f 1 -d/ | rev`
-    if [[ ${config[index]} -eq "XENON1T" ]];
-    then
-        config_file=/cvmfs/oasis.opensciencegrid.org/osg/modules/anaconda/pax-$1/envs/pax/pax/pax/config/${config[index]}.ini
-    elif [[ ${config[index]} -eq "XENON1T_LED" ]];
-    then
-        config_file=/cvmfs/oasis.opensciencegrid.org/osg/modules/anaconda/pax-$1/envs/pax/pax/pax/config/${config[index]}.ini
-    elif [[ ${config[index]} -eq "XENON100" ]];
-    then
-        config_file=/cvmfs/oasis.opensciencegrid.org/osg/modules/anaconda/pax-$1/envs/pax/pax/pax/config/${config[index]}.ini
+
+    if [[ ${configs[index]} == *".ini"* ]]; then
+        pax_config="--config_path ${start_dir}/${configs[index]}"
+    else
+        pax_config="--config ${configs[index]}"
     fi
 
-    paxer --input $input_filename --input_type xed --output ${output_files[index]} --output_type root --config $4 \
-          --config_path $config_file
+    echo paxer --input $input_filename --output ${output_files[index]} --output_type root ${pax_config}
+    paxer --input $input_filename --output ${output_files[index]} --output_type root ${pax_config} --stop_after 2
 
 done
 cp *.root ${start_dir}/results
