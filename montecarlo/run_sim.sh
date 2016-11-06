@@ -9,7 +9,7 @@ MCVERSION=7801c96
 
 # Select MC code flavor
 # (G4, NEST, G4p10)
-MCFLAVOR=G4
+MCFLAVOR=NEST
 
 # Select fax+pax version
 PAXVERSION=head
