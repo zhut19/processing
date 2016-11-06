@@ -5,14 +5,14 @@ echo "Job running as user: " `/usr/bin/id`
 echo "Job is running in directory: $PWD"
 
 # Select MC version
-MCVERSION=v0.0.5
+MCVERSION=7801c96
 
 # Select MC code flavor
 # (G4, NEST, G4p10)
 MCFLAVOR=G4
 
 # Select fax+pax version
-PAXVERSION=v6.0.2
+PAXVERSION=head
 
 # Specify number of events
 NEVENTS=10
@@ -62,10 +62,8 @@ SUBRUN=`printf "%06d\n" $1`
 FILENUM=${FILEROOT}_${SUBRUN}
 FILENAME=${OUTDIR}/${FILENUM}
 G4_FILENAME=${FILENAME}_g4mc_${MCFLAVOR}
-G4PATCH_FILENAME=${FILENAME}_g4mcpatch
-G4NSORT_FILENAME=${FILENAME}_Sort
-PAX_FILENAME=${FILENAME}_pax
-HAX_FILENAME=${FILENAME}_hax
+G4PATCH_FILENAME=${G4_FILENAME}_Patch
+G4NSORT_FILENAME=${G4_FILENAME}_Sort
 
 # Start of simulations #
 
@@ -73,6 +71,8 @@ HAX_FILENAME=${FILENAME}_hax
 G4EXEC=${RELEASEDIR}/xenon1t_${MCFLAVOR}
 MACROSDIR=${RELEASEDIR}/macros
 (time ${G4EXEC} -p ${MACROSDIR}/preinit.mac -f ${MACROSDIR}/run_${CONFIG}.mac -n ${NEVENTS} -o ${G4_FILENAME}.root;) &> ${G4_FILENAME}.log
+
+source ${CVMFSDIR}/software/mc_old_setup.sh
 
 if [[ ${MCFLAVOR} == NEST ]]; then
     # Patch stage
@@ -87,6 +87,9 @@ else
     PAX_INPUT_FILENAME=${G4NSORT_FILENAME}
 fi
 
+PAX_FILENAME=${PAX_INPUT_FILENAME}_pax
+HAX_FILENAME=${PAX_INPUT_FILENAME}_hax
+
 # fax+pax stage
 source deactivate &> /dev/null
 source activate pax_${PAXVERSION} &> /dev/null
@@ -95,12 +98,10 @@ source activate pax_${PAXVERSION} &> /dev/null
 # hax stage
 HAXPYTHON="import hax; "
 HAXPYTHON+="hax.init(main_data_paths=['${OUTDIR}'], minitree_paths=['${OUTDIR}'], pax_version_policy = 'loose'); "
-HAXPYTHON+="hax.minitrees.load('${FILENUM}_pax', ['Basics', 'Fundamentals']);"
+HAXPYTHON+="hax.minitrees.load('${PAX_FILENAME##*/}', ['Basics', 'Fundamentals']);"
 
-python -c "${HAXPYTHON}"
-
-hadd ${HAX_FILENAME}.root ${PAX_FILENAME}_*
-
+(time python -c "${HAXPYTHON}";)  &> ${HAX_FILENAME}.log
+#hadd ${HAX_FILENAME}.root ${PAX_FILENAME}_*
 
 # Cleanup
 rm -f pax*
