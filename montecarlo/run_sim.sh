@@ -5,14 +5,14 @@ echo "Job running as user: " `/usr/bin/id`
 echo "Job is running in directory: $PWD"
 
 # Select MC version
-MCVERSION=7801c96
+MCVERSION=v0.0.6
 
 # Select MC code flavor
 # (G4, NEST, G4p10)
 MCFLAVOR=NEST
 
 # Select fax+pax version
-PAXVERSION=head
+PAXVERSION=v6.0.2
 
 # Specify number of events
 NEVENTS=10
