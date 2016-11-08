@@ -5,7 +5,7 @@ echo "Job running as user: " `/usr/bin/id`
 echo "Job is running in directory: $PWD"
 
 # Select MC version
-MCVERSION=v0.0.6
+MCVERSION=14f11a1
 
 # Select MC code flavor
 # (G4, NEST, G4p10)
@@ -83,7 +83,7 @@ else
     # nSort Stage
     NSORTEXEC=${RELEASEDIR}/nSort
     ln -sf ${RELEASEDIR}/data
-    (time ${NSORTEXEC} ${G4_FILENAME} 1 1 0 0 0;) &> ${G4NSORT_FILENAME}.log
+    (time ${NSORTEXEC} -i ${G4_FILENAME};) &> ${G4NSORT_FILENAME}.log
     PAX_INPUT_FILENAME=${G4NSORT_FILENAME}
 fi
 
