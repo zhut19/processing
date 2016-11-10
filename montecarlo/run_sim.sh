@@ -57,8 +57,8 @@ work_dir=`mktemp -d --tmpdir=$OSG_WN_TMP`
 cd $work_dir
 
 # Filenaming
-FILEROOT=Xenon1T_${CONFIG}
 SUBRUN=`printf "%06f\n" $1`
+FILEROOT=Xenon1T_${CONFIG}
 FILENUM=${FILEROOT}_${SUBRUN}
 FILENAME=${OUTDIR}/${FILENUM}
 G4_FILENAME=${FILENAME}_g4mc_${MCFLAVOR}
