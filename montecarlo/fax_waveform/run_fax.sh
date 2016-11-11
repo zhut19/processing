@@ -21,6 +21,8 @@ PhotonNumUpper=200
 ElectronNumLower=1
 ElectronNumUpper=400
 
+RecoilType=ER
+
 # Select fax+pax version
 PAXVERSION=v6.0.2
 
@@ -37,10 +39,13 @@ CVMFSDIR=/cvmfs/xenon.opensciencegrid.org
 export PATH="${CVMFSDIR}/releases/anaconda/2.4/bin:$PATH"
 source activate pax_${PAXVERSION} &> /dev/null
 
-RELEASEDIR=/project/lgrandi/processing/montecarlo/fax_waveform
+# Use path of this script for Python scripts below
+# (In case user modified them)
+MY_PATH=`dirname \"$0\"`
+RELEASEDIR=`( cd "$MY_PATH" && pwd )`
 
 # Setting up directories
-start_dir=$PWD
+#start_dir=$PWD
 
 
 OUTDIR=$1/${SUBRUN}
@@ -67,7 +72,7 @@ PAX_FILENAME=${FILENAME}_pax       # pax processed data
 HAX_FILENAME=${FILENAME}_hax       # hax reduced data
 
 # Create the fake input data
-python ${RELEASEDIR}/CreateFakeCSV.py ${NumEvents} ${PhotonNumLower} ${PhotonNumUpper} ${ElectronNumLower} ${ElectronNumUpper} ${CSV_FILENAME}
+python ${RELEASEDIR}/CreateFakeCSV.py ${Detector} ${NumEvents} ${PhotonNumLower} ${PhotonNumUpper} ${ElectronNumLower} ${ElectronNumUpper} ${RecoilType} ${CSV_FILENAME}
 
 # Start of simulations #
 
@@ -91,5 +96,5 @@ HAXPYTHON+="hax.minitrees.load('${PAX_FILENAME##*/}', ['Basics', 'Fundamentals']
 rm -f pax*
 
 
-cd $start_dir
+#cd $start_dir
 #rm -fr $work_dir

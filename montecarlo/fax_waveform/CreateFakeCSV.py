@@ -18,36 +18,54 @@ import scipy as sp
 if len(sys.argv)<2:
     print("========= Syntax ==========")
     print("python CreateFakeCSV.py ..... ")
+    print("<detector: XENON100, XENON1T>")
     print("<number of events>")
     print("<photon number lower>")
     print("<photon number upper>")
     print("<electron number lower>")
     print("<electron number upper>")
+    print("<recoil type: ER, NR>")
     print("<output file (abs. path)>")
     exit()
 
-NumEvents = int(sys.argv[1])
-PhotonNumLower = float(sys.argv[2])
-PhotonNumUpper = float(sys.argv[3])
-ElectronNumLower = float(sys.argv[4])
-ElectronNumUpper = float(sys.argv[5])
-OutputFilename = sys.argv[6]
+Detector = sys.argv[1]
+NumEvents = int(sys.argv[2])
+PhotonNumLower = float(sys.argv[3])
+PhotonNumUpper = float(sys.argv[4])
+ElectronNumLower = float(sys.argv[5])
+ElectronNumUpper = float(sys.argv[6])
+DefaultType = sys.argv[7]
+OutputFilename = sys.argv[8]
 
 ####################################
 ## Some functions (HARDCODE WARNING):
 ####################################
 def IfPass48kg(x,y,z):
-    # check if the x,y,z passing X48kg0
-    I = np.power( (z+15.)/14.6, 4.)
-    I += np.power( (x**2+y**2)/20000., 4.)
+
+    if Detector == "XENON100":
+        # check if the x,y,z passing X48kg0
+        I = np.power( (z+15.)/14.6, 4.)
+        I += np.power( (x**2+y**2)/20000., 4.)
+
+    elif Detector == "XENON1T": # NEED TO UPDATE THIS
+        I = np.power( (z+15.)/14.6, 4.)
+        I += np.power( (x**2+y**2)/20000., 4.)
+
     if I<1:
         return True
     return False
 
 def RandomizeFV():
+
     # randomize the X, Y, Z according to X48kg FV
-    Zlower, Zupper = -14.6-15.0, -14.6+15.0
-    Rlower, Rupper = -np.sqrt(200.), np.sqrt(200.)
+    if Detector == "XENON100":
+        Zlower, Zupper = -14.6-15.0, -14.6+15.0
+        Rlower, Rupper = -np.sqrt(200.), np.sqrt(200.)
+
+    elif Detector == "XENON1T": # NEED TO UPDATE THIS
+        Zlower, Zupper = -14.6-15.0, -14.6+15.0
+        Rlower, Rupper = -np.sqrt(200.), np.sqrt(200.)
+
     for i in range(100000):
         x = np.random.uniform(Rlower,Rupper)
         y = np.random.uniform(Rlower,Rupper)
@@ -61,7 +79,6 @@ def RandomizeFV():
 ## Starts to create
 ####################################
 # Some default
-DefaultType = "ER"
 DefaultEventTime = 10000
 ##########
 fout = open(OutputFilename, 'w')
