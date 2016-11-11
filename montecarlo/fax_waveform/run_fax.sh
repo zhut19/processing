@@ -43,7 +43,7 @@ RELEASEDIR=/project/lgrandi/processing/montecarlo/fax_waveform
 start_dir=$PWD
 
 
-OUTDIR=$2/${SUBRUN}
+OUTDIR=$1/${SUBRUN}
 mkdir -p ${OUTDIR}
 cd ${OUTDIR}
 

@@ -1,7 +1,7 @@
 ####################################
 ## batch code for WF simulation
 ####################################
-import sys, array, os
+import sys, array, os, getpass
 from subprocess import call
 import subprocess as subp
 import time
@@ -20,9 +20,11 @@ OutputGeneralPath = sys.argv[1]
 NumJobs = int(sys.argv[2])
 IfUsePublicNodes = int(sys.argv[3])
 
+MaxNumJob = 30
 
 ##### Start batching #########
 CurrentPath = os.getcwd()
+CurrentUser = getpass.getuser()
 for i in range(NumJobs):
 
     RunString = "%06d" % i
@@ -51,7 +53,7 @@ for i in range(NumJobs):
         subp.call("echo '#SBATCH --qos=xenon1t-kicp' >> "+SubmitFile, shell=True)
         subp.call("echo '#SBATCH --partition=kicp\n' >> "+SubmitFile, shell=True)
 
-    Command = CurrentPath+"/run_fax.sh "+OutputGeneralPath+" "+RunString
+    Command = CurrentPath+"/./run_fax.sh "+OutputGeneralPath+" "+RunString
     subp.call("echo '"+Command+"\n' >> "+SubmitFile, shell=True)
 
     SubmitPath = OutputPath
@@ -59,11 +61,11 @@ for i in range(NumJobs):
     #submit
     IfSubmitted=0
     while IfSubmitted==0:
-        p1 = Popen(["squeue","--user=$USER"], stdout=PIPE)
+        p1 = Popen(["squeue","--user="+CurrentUser], stdout=PIPE)
         p2 = Popen(["wc", "-l"], stdin=p1.stdout, stdout=PIPE)
         p1.stdout.close()  # Allow p1 to receive a SIGPIPE if p2 exits.
         output = p2.communicate()[0]
-        Status=subp.call("squeue --user=$USER | wc -l", shell=True)
+        Status=subp.call("squeue --user="+CurrentUser+" | wc -l", shell=True)
         Output=int(output)
         #print(Status)
         
@@ -73,6 +75,6 @@ for i in range(NumJobs):
             #sbatch it 
             subp.call("cd "+SubmitPath+";sbatch "+SubmitFile+";cd -", shell=True)
             IfSubmitted=1
-            time.sleep(1)
+            time.sleep(0.5)
         else:
             time.sleep(30) 
