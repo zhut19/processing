@@ -13,7 +13,6 @@ echo "Job is running in directory: $PWD"
 
 ###### General parameters #####
 Detector=XENON1T
-PaxVersion=v6.0.2
 
 ###### Simulation parameters #####
 PhotonNumLower=1
