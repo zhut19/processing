@@ -60,7 +60,7 @@ def get_pax_versions():
         if not os.path.isdir(PAX_PATH):
             return ()
         for entry in os.listdir(PAX_PATH):
-            if entry.startswith('pax_')
+            if entry.startswith('pax_'):
                 versions.append(entry.replace('pax_', ''))
             return tuple(versions)
     except OSError:
