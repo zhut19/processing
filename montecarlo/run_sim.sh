@@ -93,7 +93,7 @@ HAX_FILENAME=${PAX_INPUT_FILENAME}_hax
 # fax+pax stage
 source deactivate &> /dev/null
 source activate pax_${PAXVERSION} &> /dev/null
-(time paxer --input ${PAX_INPUT_FILENAME}.root --config_string "[WaveformSimulator]truth_file_name=\"${FILENAME}_faxtruth.csv\"" --config XENON1T SimulationMCInput --output ${PAX_FILENAME};) &> ${PAX_FILENAME}.log
+(time paxer --input ${PAX_INPUT_FILENAME}.root --config_string "[WaveformSimulator]truth_file_name=\"${FILENAME}_faxtruth\"" --config XENON1T SimulationMCInput --output ${PAX_FILENAME};) &> ${PAX_FILENAME}.log
 
 # hax stage
 HAXPYTHON="import hax; "
