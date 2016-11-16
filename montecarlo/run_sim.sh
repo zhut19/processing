@@ -4,22 +4,25 @@ echo "Job is running on node: " `/bin/hostname`
 echo "Job running as user: " `/usr/bin/id`
 echo "Job is running in directory: $PWD"
 
-# Select MC version
-MCVERSION=820f125
 
 # Select MC code flavor
 # (G4, NEST, G4p10)
-MCFLAVOR=NEST
-
-# Select fax+pax version
-PAXVERSION=v6.1.0
-
-# Specify number of events
-NEVENTS=10
+MCFLAVOR=$1
 
 # Specify simulation configuration
 # (TPC_Kr83m TPC_Kr85 WholeLXe_Rn220 WholeLXe_Rn222)
-CONFIG=TPC_Kr83m
+CONFIG=$2
+
+# Select MC version
+MCVERSION=$3
+
+# Specify number of events
+NEVENTS=$4
+
+# Select fax+pax version
+PAXVERSION=$5
+
+
 
 # runPatch argument corresponding to CONFIG variable above
 if [[ ${CONFIG} == *"Kr83m"* ]]; then
