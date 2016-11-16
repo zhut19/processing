@@ -142,7 +142,7 @@ def run_main():
             dag_file.write('mc_version="{0}" '.format(args.mc_version))
             dag_file.write('events="{0}" '.format(args.num_events))
             dag_file.write("\n")
-            dag_file.write("Retry XENON.{0} 3\n".format(job))
+            dag_file.write("Retry MC.{0} 3\n".format(job))
     with open(args.submit_file, 'wt') as submit_file:
         submit_file.write(SUBMIT_FILE)
 
