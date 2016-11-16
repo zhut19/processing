@@ -5,7 +5,7 @@ echo "Job running as user: " `/usr/bin/id`
 echo "Job is running in directory: $PWD"
 
 # Select MC version
-MCVERSION=14f11a1
+MCVERSION=820f125
 
 # Select MC code flavor
 # (G4, NEST, G4p10)
@@ -22,9 +22,19 @@ NEVENTS=10
 CONFIG=TPC_Kr83m
 
 # runPatch argument corresponding to CONFIG variable above
-# (83 85 21 31)
-PATCHTYPE=83
-
+if [[ ${CONFIG} == *"Kr83m"* ]]; then
+    PATCHTYPE=83
+elif [[ ${CONFIG} == *"Kr85"* ]]; then
+    PATCHTYPE=85
+elif [[ ${CONFIG} == *"Rn220"* ]]; then
+    PATCHTYPE=21
+elif [[ ${CONFIG} == *"Rn222"* ]]; then
+    PATCHTYPE=31
+else
+    echo "Error: No PATCHTYPE for CONFIG = ${CONFIG}"
+    exit
+fi
+    
 ########################################
 
 # Setup the software
