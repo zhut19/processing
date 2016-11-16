@@ -21,7 +21,7 @@ Requirements = (HAS_CVMFS_xenon_opensciencegrid_org ) && \\
 +WANT_RCC_ciconnect = True
 
 transfer_executable = True
-transfer_output_files = results
+transfer_output_files = output
 when_to_transfer_output = ON_EXIT
 arguments = $(flavor) $(config) $(mc_version) $(events) $(pax_version)
 queue 1
