@@ -88,7 +88,7 @@ def run_main():
                         action='store', required=True,
                         choices=MC_FLAVORS,
                         help='MC flavor to use')
-    parser.add_argument('--config', dest='config',
+    parser.add_argument('--config', dest='mc_config',
                         action='store', required=True,
                         choices=CONFIGS,
                         help='configuration to use')
@@ -100,7 +100,7 @@ def run_main():
                         action='store', default=2000, type=int,
                         help='max number of events to generate per job '
                              '(default is 2000)')
-    parser.add_argument('--version', dest='mc_version',
+    parser.add_argument('--mc-version', dest='mc_version',
                         choices=MC_VERSIONS,
                         action='store', required=True,
                         help='version of MC code to use')
