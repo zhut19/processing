@@ -139,8 +139,8 @@ def run_main():
             dag_file.write('VARS MC.{0} flavor="{1}" '.format(job, args.mc_flavor))
             dag_file.write('config="{0}" '.format(args.mc_config))
             dag_file.write('pax_version="{0}" '.format(args.pax_version))
-            dag_file.write('mc_version="{0}"'.format(job, args.mc_version))
-            dag_file.write('events="{0}" '.format(job, args.num_events))
+            dag_file.write('mc_version="{0}" '.format(args.mc_version))
+            dag_file.write('events="{0}" '.format(args.num_events))
             dag_file.write("\n")
     with open(args.submit_file, 'wt') as submit_file:
         submit_file.write(SUBMIT_FILE)
