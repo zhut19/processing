@@ -30,6 +30,8 @@ queue 1
 
 MC_FLAVORS = ('G4', 'NEST', 'G4p10')
 CONFIGS = ('TPC_Kr83m', 'TPC_Kr85', 'WholeLXe_Rn220', 'WholeLXe_Rn222')
+MC_PATH = '/cvmfs/xenon.opensciencegrid.org/releases/mc/'
+PAX_PATH = "/cvmfs/xenon.opensciencegrid.org/releases/anaconda/2.4/envs/"
 
 
 def get_mc_versions():
@@ -38,10 +40,11 @@ def get_mc_versions():
 
     :return: tuple with string of mc versions available
     """
-    MC_PATH = '/cvmfs/xenon.opensciencegrid.org/releases/mc/'
     try:
         if os.path.isdir(MC_PATH):
-            return tuple(os.listdir)
+            versions = os.listdir(MC_PATH)
+            versions.sort()
+            return tuple(versions)
         return ()
     except OSError:
         sys.stderr.write("Can't get mc versions from {0}\n".format(MC_PATH))
@@ -54,7 +57,6 @@ def get_pax_versions():
 
     :return: tuple with string of mc versions available
     """
-    PAX_PATH = "/cvmfs/xenon.opensciencegrid.org/releases/anaconda/2.4/envs/"
     try:
         versions = []
         if not os.path.isdir(PAX_PATH):
@@ -62,11 +64,15 @@ def get_pax_versions():
         for entry in os.listdir(PAX_PATH):
             if entry.startswith('pax_'):
                 versions.append(entry.replace('pax_', ''))
-            return tuple(versions)
+        versions.sort()
+        return tuple(versions)
     except OSError:
         sys.stderr.write("Can't get pax versions from {0}\n".format(PAX_PATH))
         return ()
 
+
+MC_VERSIONS = get_mc_versions()
+PAX_VERSIONS = get_pax_versions()
 
 def run_main():
     """
@@ -94,13 +100,13 @@ def run_main():
                         help='max number of events to generate per job '
                              '(default is 2000)')
     parser.add_argument('--version', dest='mc_version',
-                        choices=get_mc_versions(),
+                        choices=MC_VERSIONS,
                         action='store', required=True,
-                        help='number of files to process per job (default is 15)')
+                        help='version of MC code to use')
     parser.add_argument('--pax-version', dest='pax_version',
-                        choices=get_pax_versions(),
+                        choices=PAX_VERSIONS,
                         action='store', required=True,
-                        help='number of files to process per job (default is 15)')
+                        help='version of pax to use')
     parser.add_argument('--dagfile-file', dest='dag_file',
                         action='store', default='mc.dag',
                         help='file to write dag to')
