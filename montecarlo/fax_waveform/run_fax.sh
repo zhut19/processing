@@ -23,7 +23,7 @@ ElectronNumUpper=400
 RecoilType=ER
 
 # Select fax+pax version
-PAXVERSION=v6.0.2
+PAXVERSION=v6.1.0
 
 # Specify number of events
 NumEvents=10
