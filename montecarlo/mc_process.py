@@ -13,9 +13,9 @@ Error   = log/err.$(Cluster).$(Process)
 Output  = log/out.$(Cluster).$(Process)
 Log     = log/log.$(Cluster).$(Process)
 
-Requirements = ( HAS_CVMFS_xenon_opensciencegrid_org ) && \\
-               (OpSysAndVer == "CentOS6" || OpSysAndVer == "RedHat6" || OpSysAndVer == "SL6") && \\
-               (GLIDEIN_ResourceName =!= "BNL-ATLAS") &&
+Requirements = (HAS_CVMFS_xenon_opensciencegrid_org ) && \\
+               (OpSysAndVer =?= "CentOS6" || OpSysAndVer =?= "RedHat6" || OpSysAndVer =?= "SL6") && \\
+               (GLIDEIN_ResourceName =!= "BNL-ATLAS") && \\
                (GLIDEIN_ResourceName =!= "AGLT2")
 +WantExperimental = True
 +WANT_RCC_ciconnect = True
@@ -142,6 +142,7 @@ def run_main():
             dag_file.write('mc_version="{0}" '.format(args.mc_version))
             dag_file.write('events="{0}" '.format(args.num_events))
             dag_file.write("\n")
+            dag_file.write("Retry XENON.{0} 3\n".format(job))
     with open(args.submit_file, 'wt') as submit_file:
         submit_file.write(SUBMIT_FILE)
 
