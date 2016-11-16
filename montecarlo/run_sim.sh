@@ -12,7 +12,7 @@ MCVERSION=14f11a1
 MCFLAVOR=NEST
 
 # Select fax+pax version
-PAXVERSION=v6.0.2
+PAXVERSION=v6.1.0
 
 # Specify number of events
 NEVENTS=10
