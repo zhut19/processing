@@ -74,6 +74,7 @@ def get_pax_versions():
 MC_VERSIONS = get_mc_versions()
 PAX_VERSIONS = get_pax_versions()
 
+
 def run_main():
     """
     Main function to process user input and then generate the appropriate submit files
@@ -118,7 +119,7 @@ def run_main():
     if args.num_events == 0:
         sys.stdout.write("No events to generate, exiting")
         return 0
-    num_jobs = int(math.ceil(len(args.num_events) / float(args.batch_size)))
+    num_jobs = int(math.ceil(args.num_events / float(args.batch_size)))
     sys.stdout.write("Generating {0} events ".format(args.num_events) +
                      "using {0} jobs\n".format(num_jobs))
 
