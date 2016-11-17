@@ -15,11 +15,11 @@ MCFLAVOR=$2
 # (TPC_Kr83m TPC_Kr85 WholeLXe_Rn220 WholeLXe_Rn222)
 CONFIG=$3
 
-# Select MC version
-MCVERSION=$4
-
 # Specify number of events
-NEVENTS=$5
+NEVENTS=$4
+
+# Select MC version
+MCVERSION=$5
 
 # Select fax+pax version
 PAXVERSION=$6
