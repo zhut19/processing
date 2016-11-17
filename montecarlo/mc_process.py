@@ -23,7 +23,7 @@ Requirements = (HAS_CVMFS_xenon_opensciencegrid_org ) && \\
 transfer_executable = True
 transfer_output_files = output
 when_to_transfer_output = ON_EXIT
-arguments = $(flavor) $(config) $(mc_version) $(events) $(pax_version)
+arguments = $(id) $(flavor) $(config) $(events) $(mc_version) $(pax_version)
 queue 1
 
 '''
@@ -140,7 +140,9 @@ def run_main():
             dag_file.write('config="{0}" '.format(args.mc_config))
             dag_file.write('pax_version="{0}" '.format(args.pax_version))
             dag_file.write('mc_version="{0}" '.format(args.mc_version))
-            dag_file.write('events="{0}" '.format(args.num_events))
+            dag_file.write('events="{0}" '.format(args.batch_size))
+            dag_file.write('id="{0}" '.format(job))
+
             dag_file.write("\n")
             dag_file.write("Retry MC.{0} 3\n".format(job))
     with open(args.submit_file, 'wt') as submit_file:
