@@ -111,7 +111,7 @@ source activate pax_${PAXVERSION} &> /dev/null
 # hax stage
 HAXPYTHON="import hax; "
 HAXPYTHON+="hax.init(main_data_paths=['${OUTDIR}'], minitree_paths=['${OUTDIR}'], pax_version_policy = 'loose'); "
-HAXPYTHON+="hax.minitrees.load('${PAX_FILENAME##*/}', ['Basics', 'Fundamentals']);"
+HAXPYTHON+="hax.minitrees.load('${PAX_FILENAME##*/}', ['Basics', 'Fundamentals', 'DoubleScatter', 'LargestPeakProperties', 'TotalProperties']);"
 
 (time python -c "${HAXPYTHON}";)  &> ${HAX_FILENAME}.log
 #hadd ${HAX_FILENAME}.root ${PAX_FILENAME}_*
