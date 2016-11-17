@@ -4,23 +4,25 @@ echo "Job is running on node: " `/bin/hostname`
 echo "Job running as user: " `/usr/bin/id`
 echo "Job is running in directory: $PWD"
 
+# used to label output
+JOBID=$1
 
 # Select MC code flavor
 # (G4, NEST, G4p10)
-MCFLAVOR=$1
+MCFLAVOR=$2
 
 # Specify simulation configuration
 # (TPC_Kr83m TPC_Kr85 WholeLXe_Rn220 WholeLXe_Rn222)
-CONFIG=$2
+CONFIG=$3
 
 # Select MC version
-MCVERSION=$3
+MCVERSION=$4
 
 # Specify number of events
-NEVENTS=$4
+NEVENTS=$5
 
 # Select fax+pax version
-PAXVERSION=$5
+PAXVERSION=$6
 
 
 
@@ -70,7 +72,7 @@ work_dir=`mktemp -d --tmpdir=$OSG_WN_TMP`
 cd $work_dir
 
 # Filenaming
-SUBRUN=`printf "%06f\n" $1`
+SUBRUN=`printf "%06f\n" $JOBID`
 FILEROOT=Xenon1T_${CONFIG}
 FILENUM=${FILEROOT}_${SUBRUN}
 FILENAME=${OUTDIR}/${FILENUM}
