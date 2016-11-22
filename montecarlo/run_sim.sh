@@ -72,7 +72,7 @@ work_dir=`mktemp -d --tmpdir=$OSG_WN_TMP`
 cd $work_dir
 
 # Filenaming
-SUBRUN=`printf "%06f\n" $JOBID`
+SUBRUN=`printf "%05d\n" $JOBID`
 FILEROOT=Xenon1T_${CONFIG}
 FILENUM=${FILEROOT}_${SUBRUN}
 FILENAME=${OUTDIR}/${FILENUM}
