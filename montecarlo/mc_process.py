@@ -16,6 +16,7 @@ Log     = log/log.$(Cluster).$(Process)
 Requirements = (HAS_CVMFS_xenon_opensciencegrid_org ) && \\
                (OpSysAndVer =?= "CentOS6" || OpSysAndVer =?= "RedHat6" || OpSysAndVer =?= "SL6") && \\
                (GLIDEIN_ResourceName =!= "BNL-ATLAS") && \\
+               (GLIDEIN_ResourceName =!= "BU_ATLAS_Tier2") && \\
                (GLIDEIN_ResourceName =!= "AGLT2")
 +WantExperimental = True
 +WANT_RCC_ciconnect = True
