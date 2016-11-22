@@ -16,9 +16,9 @@ Detector=XENON1T
 
 ###### Simulation parameters #####
 PhotonNumLower=1
-PhotonNumUpper=200
+PhotonNumUpper=2000
 ElectronNumLower=1
-ElectronNumUpper=400
+ElectronNumUpper=500
 
 RecoilType=ER
 
@@ -26,7 +26,7 @@ RecoilType=ER
 PAXVERSION=v6.1.0
 
 # Specify number of events
-NumEvents=10
+NumEvents=1000
 
 # This run number (from command line argument)
 SUBRUN=$2
