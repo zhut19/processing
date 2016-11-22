@@ -86,6 +86,10 @@ G4NSORT_FILENAME=${G4_FILENAME}_Sort
 G4EXEC=${RELEASEDIR}/xenon1t_${MCFLAVOR}
 MACROSDIR=${RELEASEDIR}/macros
 (time ${G4EXEC} -p ${MACROSDIR}/preinit.mac -f ${MACROSDIR}/run_${CONFIG}.mac -n ${NEVENTS} -o ${G4_FILENAME}.root;) &> ${G4_FILENAME}.log
+if [ $? -ne 0 ];
+then
+  exit 1
+fi
 
 source ${CVMFSDIR}/software/mc_old_setup.sh
 
@@ -93,12 +97,20 @@ if [[ ${MCFLAVOR} == NEST ]]; then
     # Patch stage
     PATCHEXEC=${RELEASEDIR}/runPatch
     (time ${PATCHEXEC} -i ${G4_FILENAME}.root -o ${G4PATCH_FILENAME}.root -t ${PATCHTYPE};) &> ${G4PATCH_FILENAME}.log
+    if [ $? -ne 0 ];
+    then
+      exit 1
+    fi
     PAX_INPUT_FILENAME=${G4PATCH_FILENAME}
 else
     # nSort Stage
     NSORTEXEC=${RELEASEDIR}/nSort
     ln -sf ${RELEASEDIR}/data
     (time ${NSORTEXEC} -i ${G4_FILENAME};) &> ${G4NSORT_FILENAME}.log
+    if [ $? -ne 0 ];
+    then
+      exit 1
+    fi
     PAX_INPUT_FILENAME=${G4NSORT_FILENAME}
 fi
 
@@ -109,6 +121,10 @@ HAX_FILENAME=${PAX_INPUT_FILENAME}_hax
 source deactivate &> /dev/null
 source activate pax_${PAXVERSION} &> /dev/null
 (time paxer --input ${PAX_INPUT_FILENAME}.root --config_string "[WaveformSimulator]truth_file_name=\"${FILENAME}_faxtruth\"" --config XENON1T SimulationMCInput --output ${PAX_FILENAME};) &> ${PAX_FILENAME}.log
+if [ $? -ne 0 ];
+then
+  exit 1
+fi
 
 # hax stage
 HAXPYTHON="import hax; "
@@ -116,6 +132,10 @@ HAXPYTHON+="hax.init(main_data_paths=['${OUTDIR}'], minitree_paths=['${OUTDIR}']
 HAXPYTHON+="hax.minitrees.load('${PAX_FILENAME##*/}', ['Basics', 'Fundamentals', 'DoubleScatter', 'LargestPeakProperties', 'TotalProperties']);"
 
 (time python -c "${HAXPYTHON}";)  &> ${HAX_FILENAME}.log
+if [ $? -ne 0 ];
+then
+  exit 1
+fi
 #hadd ${HAX_FILENAME}.root ${PAX_FILENAME}_*
 
 # Cleanup
