@@ -42,7 +42,7 @@ OutputFilename = sys.argv[8]
 ####################################
 
 # Current FV cut for Xe1T
-scalecmtomm=10
+scalecmtomm=1
 def radius2_cut(zpos):
     return 1400*scalecmtomm**2+(zpos+100*scalecmtomm)*(2250-1900)*scalecmtomm/100
 
@@ -74,7 +74,7 @@ def RandomizeFV():
 
     elif Detector == "XENON1T": # NEED TO UPDATE THIS
         Zlower, Zupper = -90*scalecmtomm, -15*scalecmtomm
-        Rlower, Rupper = -475, 475
+        Rlower, Rupper = -46*scalecmtomm, 46*scalecmtomm
 
     for i in range(100000):
         x = np.random.uniform(Rlower,Rupper)

@@ -26,7 +26,7 @@ RecoilType=ER
 PAXVERSION=v6.1.0
 
 # Specify number of events
-NumEvents=1000
+NumEvents=200
 
 # This run number (from command line argument)
 SUBRUN=$2
@@ -40,7 +40,9 @@ source activate pax_${PAXVERSION} &> /dev/null
 
 # Use path of this script for Python scripts below
 # (In case user modified them)
-MY_PATH=`dirname \"$0\"`
+#MY_PATH=`dirname \"$0\"`
+MY_PATH=$(cd `dirname $0`; pwd)
+echo $MY_PATH
 RELEASEDIR=`( cd "$MY_PATH" && pwd )`
 
 # Setting up directories
@@ -64,7 +66,7 @@ cd ${OUTDIR}
 FILEROOT=FakeWaveform_${Detector}_${SUBRUN}
 FILENAME=${OUTDIR}/${FILEROOT}
 CSV_FILENAME=${FILENAME}.csv       # Fake input data
-FAX_FILENAME=${FILENAME}_truth.csv # fax truth info
+FAX_FILENAME=${FILENAME}_truth # fax truth info
 PKL_FILENAME=${FILENAME}_truth.pkl # converted fax truth info
 RAW_FILENAME=${FILENAME}_raw       # fax simulated raw data
 PAX_FILENAME=${FILENAME}_pax       # pax processed data
