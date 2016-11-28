@@ -145,7 +145,13 @@ def run_main():
             dag_file.write('config="{0}" '.format(args.mc_config))
             dag_file.write('pax_version="{0}" '.format(args.pax_version))
             dag_file.write('mc_version="{0}" '.format(args.mc_version))
-            dag_file.write('events="{0}" '.format(args.batch_size))
+            if job == (num_jobs - 1):
+                left_events = args.num_events % args.batch_size
+                if left_events == 0:
+                    left_events = args.batch_size
+                dag_file.write('events="{0}" '.format(left_events))
+            else:
+                dag_file.write('events="{0}" '.format(args.batch_size))
             dag_file.write('id="{0}" '.format(job))
 
             dag_file.write("\n")
