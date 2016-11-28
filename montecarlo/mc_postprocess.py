@@ -166,40 +166,47 @@ def run_main():
         sys.stderr.write("An error probably occurred while processing.\n")
         return 1
 
+    total_events = 0
     for output in (geant_root_files, sort_root_files):
         for root_file in output:
             g4_file = ROOT.TFile.Open(root_file)
             g4_file.cd('entries')
             root_events = g4_file.Get('events')
             ttree = root_events.Get('events')
-            if abs(events - ttree.GetEntries()) > (EVENT_THRESHOLD * float(events)):
-                sys.stderr.write("{0} differs from requested ".format(root_file) +
-                                 "events by more than {0}: ".format(EVENT_THRESHOLD) +
-                                 "got {0} events, expected {1}\n".format(ttree.GetEntries(),
-                                                                         events))
+            total_events += ttree.GetEntries()
 
+    if abs(events - total_events) > (EVENT_THRESHOLD * float(events)):
+        sys.stderr.write("{0} differs from requested ".format(root_file) +
+                         "events by more than {0}: ".format(EVENT_THRESHOLD) +
+                         "got {0} events, expected {1}\n".format(total_events,
+                                                                 events))
+
+    total_events = 0
     for root_file in pax_root_files:
         pax_file = ROOT.TFile.Open(root_file)
         ttree = pax_file.Get('tree')
-        if abs(events - ttree.GetEntries()) > (EVENT_THRESHOLD * float(events)):
-            sys.stderr.write("{0} differs from requested ".format(root_file) +
-                             "events by more than {0}: ".format(EVENT_THRESHOLD) +
-                             "got {0} events, expected {1}\n".format(ttree.GetEntries(),
-                                                                     events))
+        total_events += ttree.GetEntries()
+    if abs(events - total_events) > (EVENT_THRESHOLD * float(events)):
+        sys.stderr.write("{0} differs from requested ".format(root_file) +
+                         "events by more than {0}: ".format(EVENT_THRESHOLD) +
+                         "got {0} events, expected {1}\n".format(total_events,
+                                                                 events))
     hax_outputs = {'Basics': basics_root_files,
                    'Fundamentals': fundamentals_root_files,
                    'DoubleScatter': double_root_files,
                    'LargestPeakProperties': peak_root_files,
                    'TotalProperties': total_root_files}
     for output_type in hax_outputs:
+        total_events = 0
         for root_file in hax_outputs[output_type]:
             output_file = ROOT.TFile.Open(root_file)
             ttree = output_file.Get(output_type)
-            if abs(events - ttree.GetEntries()) > (EVENT_THRESHOLD * float(events)):
-                sys.stderr.write("{0} differs from requested ".format(root_file) +
-                                 "events by more than {0}: ".format(EVENT_THRESHOLD) +
-                                 "got {0} events, expected {1}\n".format(ttree.GetEntries(),
-                                                                         events))
+            total_events += ttree.GetEntries()
+        if abs(events - total_events) > (EVENT_THRESHOLD * float(events)):
+            sys.stderr.write("{0} differs from requested ".format(root_file) +
+                             "events by more than {0}: ".format(EVENT_THRESHOLD) +
+                             "got {0} events, expected {1}\n".format(total_events,
+                                                                     events))
     merge_files(geant_root_files)
     merge_files(sort_root_files)
     merge_files(pax_root_files)
