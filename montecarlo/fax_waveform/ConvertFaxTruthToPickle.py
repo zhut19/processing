@@ -20,7 +20,7 @@ if len(sys.argv)<2:
 InputFile = sys.argv[1]
 OutputFile = sys.argv[2]
 
-fin = open(InputFile)
+fin = open(InputFile+'.csv')
 lines = fin.readlines()
 fin.close()
 
