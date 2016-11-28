@@ -166,8 +166,8 @@ def run_main():
         sys.stderr.write("An error probably occurred while processing.\n")
         return 1
 
-    total_events = 0
     for output in (geant_root_files, sort_root_files):
+        total_events = 0
         for root_file in output:
             g4_file = ROOT.TFile.Open(root_file)
             g4_file.cd('entries')
@@ -175,11 +175,17 @@ def run_main():
             ttree = root_events.Get('events')
             total_events += ttree.GetEntries()
 
-    if abs(events - total_events) > (EVENT_THRESHOLD * float(events)):
-        sys.stderr.write("Geant events differs from requested " +
-                         "events by more than {0}: ".format(EVENT_THRESHOLD) +
-                         "got {0} events, expected {1}\n".format(total_events,
-                                                                 events))
+        if abs(events - total_events) > (EVENT_THRESHOLD * float(events)):
+            if output == geant_root_files:
+                a = "Geant"
+            elif flavor == 'NEST':
+                a = "Patch"
+            else:
+                a = "Sort"
+            sys.stderr.write("{0} events differs from requested ".format(a) +
+                             "events by more than {0}: ".format(EVENT_THRESHOLD) +
+                             "got {0} events, expected {1}\n".format(total_events,
+                                                                     events))
 
     total_events = 0
     for root_file in pax_root_files:
@@ -187,7 +193,7 @@ def run_main():
         ttree = pax_file.Get('tree')
         total_events += ttree.GetEntries()
     if abs(events - total_events) > (EVENT_THRESHOLD * float(events)):
-        sys.stderr.write("Sort/Patch events differs from requested " +
+        sys.stderr.write("PAX events differs from requested " +
                          "events by more than {0}: ".format(EVENT_THRESHOLD) +
                          "got {0} events, expected {1}\n".format(total_events,
                                                                  events))
