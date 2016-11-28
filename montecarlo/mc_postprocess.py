@@ -170,8 +170,8 @@ def run_main():
         for root_file in output:
             g4_file = ROOT.TFile.Open(root_file)
             g4_file.cd('entries')
-            events = g4_file.Get('events')
-            ttree = events.Get('events')
+            root_events = g4_file.Get('events')
+            ttree = root_events.Get('events')
             if abs(events - ttree.GetEntries()) > (EVENT_THRESHOLD * float(events)):
                 sys.stderr.write("{0} differs from requested ".format(root_file) +
                                  "events by more than {0}: ".format(EVENT_THRESHOLD) +
