@@ -115,6 +115,10 @@ def run_main():
     parser.add_argument('--submit-file', dest='submit_file',
                         action='store', default='mc.submit',
                         help='name of submit to write out')
+    parser.add_argument('--retries', dest='retries',
+                        action='store', default=10, type=int,
+                        help='max number of times to retry a job '
+                             '(default is 10)')
 
     args = parser.parse_args(sys.argv[1:])
     if args.num_events == 0:
@@ -145,7 +149,7 @@ def run_main():
             dag_file.write('id="{0}" '.format(job))
 
             dag_file.write("\n")
-            dag_file.write("Retry MC.{0} 3\n".format(job))
+            dag_file.write("Retry MC.{0} {1}\n".format(job, args.retries))
     with open(args.submit_file, 'wt') as submit_file:
         submit_file.write(SUBMIT_FILE)
 
