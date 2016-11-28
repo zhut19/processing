@@ -176,7 +176,7 @@ def run_main():
             total_events += ttree.GetEntries()
 
     if abs(events - total_events) > (EVENT_THRESHOLD * float(events)):
-        sys.stderr.write("{0} differs from requested ".format(root_file) +
+        sys.stderr.write("Geant events differs from requested " +
                          "events by more than {0}: ".format(EVENT_THRESHOLD) +
                          "got {0} events, expected {1}\n".format(total_events,
                                                                  events))
@@ -187,7 +187,7 @@ def run_main():
         ttree = pax_file.Get('tree')
         total_events += ttree.GetEntries()
     if abs(events - total_events) > (EVENT_THRESHOLD * float(events)):
-        sys.stderr.write("{0} differs from requested ".format(root_file) +
+        sys.stderr.write("Sort/Patch events differs from requested " +
                          "events by more than {0}: ".format(EVENT_THRESHOLD) +
                          "got {0} events, expected {1}\n".format(total_events,
                                                                  events))
@@ -203,7 +203,7 @@ def run_main():
             ttree = output_file.Get(output_type)
             total_events += ttree.GetEntries()
         if abs(events - total_events) > (EVENT_THRESHOLD * float(events)):
-            sys.stderr.write("{0} differs from requested ".format(root_file) +
+            sys.stderr.write("{0} differs from requested ".format(output_type) +
                              "events by more than {0}: ".format(EVENT_THRESHOLD) +
                              "got {0} events, expected {1}\n".format(total_events,
                                                                      events))
