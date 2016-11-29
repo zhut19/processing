@@ -169,18 +169,11 @@ def run_main():
     for output in (geant_root_files, sort_root_files):
         total_events = 0
         for root_file in output:
-            if output == geant_root_files and flavor == 'NEST':
-                g4_file = ROOT.TFile.Open(root_file)
-                g4_file.cd('events')
-                root_events = g4_file.Get('events')
-                ttree = root_events.Get('events')
-                total_events += ttree.GetEntries()
-            else:
-                g4_file = ROOT.TFile.Open(root_file)
-                g4_file.cd('entries')
-                root_events = g4_file.Get('events')
-                ttree = root_events.Get('events')
-                total_events += ttree.GetEntries()
+            g4_file = ROOT.TFile.Open(root_file)
+            g4_file.cd('events')
+            root_events = g4_file.Get('events')
+            ttree = root_events.Get('events')
+            total_events += ttree.GetEntries()
 
         if abs(events - total_events) > (EVENT_THRESHOLD * float(events)):
             if output == geant_root_files:
