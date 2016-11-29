@@ -38,11 +38,12 @@ def get_dag_information(dag_filename):
     return jobs, events, flavor
 
 
-def merge_files(file_list):
+def merge_files(file_list, result_dir):
     """
 
     :param file_list: list with root files to merge
-    :return: True if successful, False otherwise
+    :param result_dir: path to directory to place results in
+    :return: True on success, False otherwise
     """
     sample_file = file_list[0]
     fields = sample_file.split('_')
@@ -54,6 +55,23 @@ def merge_files(file_list):
         subprocess.check_call(command_line)
     except subprocess.CalledProcessError:
         sys.stderr.write("Can't combine files into {0}\n".format(file_list))
+        return False
+    if not os.path.isdir(result_dir):
+        sys.stderr.write("{0} not present\n".format(result_dir))
+        return False
+    if not os.path.isfile(output_file):
+        sys.stderr.write("{0} not present, couldn't ".format(output_file) +
+                         "merge files\n")
+        return False
+    try:
+        os.rename(output_file, os.path.join(result_dir, output_file))
+    except IOError as e:
+        sys.stderr.write("Got exception while moving results: {0}\n".format(e))
+        return False
+    except OSError as e:
+        sys.stderr.write("Got exception while moving results: {0}\n".format(e))
+        return False
+    return True
 
 
 def run_main():
@@ -212,15 +230,35 @@ def run_main():
             sys.stderr.write("{0} differs from requested ".format(output_type) +
                              "events by more than {0}: ".format(EVENT_THRESHOLD) +
                              "got {0} events, expected {1}\n".format(total_events,
+
                                                                      events))
-    merge_files(geant_root_files)
-    merge_files(sort_root_files)
-    merge_files(pax_root_files)
-    merge_files(basics_root_files)
-    merge_files(fundamentals_root_files)
-    merge_files(double_root_files)
-    merge_files(peak_root_files)
-    merge_files(total_root_files)
+    result_dir = cur_dir, 'merged_results'
+    os.mkdir(result_dir)
+
+    if not merge_files(geant_root_files, result_dir):
+        sys.stderr.write("Can't merge Geant files, exiting\n")
+        return 1
+    if not merge_files(sort_root_files, result_dir):
+        sys.stderr.write("Can't merge sort/patch files, exiting\n")
+        return 1
+    if not merge_files(pax_root_files, result_dir):
+        sys.stderr.write("Can't merge [pax files, exiting\n")
+        return 1
+    if not merge_files(basics_root_files, result_dir):
+        sys.stderr.write("Can't merge basics files, exiting\n")
+        return 1
+    if not merge_files(fundamentals_root_files, result_dir):
+        sys.stderr.write("Can't merge fundamentals files, exiting\n")
+        return 1
+    if not merge_files(double_root_files, result_dir):
+        sys.stderr.write("Can't merge double scatter files, exiting\n")
+        return 1
+    if not merge_files(peak_root_files, result_dir):
+        sys.stderr.write("Can't merge peak files, exiting\n")
+        return 1
+    if not merge_files(total_root_files, result_dir):
+        sys.stderr.write("Can't merge total properties files, exiting\n")
+        return 1
 
     os.chdir(cur_dir)
 if __name__ == '__main__':
