@@ -232,7 +232,7 @@ def run_main():
                              "got {0} events, expected {1}\n".format(total_events,
 
                                                                      events))
-    result_dir = cur_dir, 'merged_results'
+    result_dir = os.path.join(cur_dir, 'merged_results')
     os.mkdir(result_dir)
 
     if not merge_files(geant_root_files, result_dir):
