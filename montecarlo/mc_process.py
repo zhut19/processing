@@ -3,9 +3,10 @@
 import argparse
 import math
 import os
+import subprocess
 import sys
 
-SUBMIT_FILE = '''
+HTCONDOR_SUBMIT_FILE = '''
 executable     = run_sim.sh
 universe       = vanilla
 
@@ -33,6 +34,11 @@ MC_FLAVORS = ('G4', 'NEST', 'G4p10')
 CONFIGS = ('TPC_Kr83m', 'TPC_Kr85', 'WholeLXe_Rn220', 'WholeLXe_Rn222')
 MC_PATH = '/cvmfs/xenon.opensciencegrid.org/releases/mc/'
 PAX_PATH = "/cvmfs/xenon.opensciencegrid.org/releases/anaconda/2.4/envs/"
+
+# condor / osg specific constants
+HTCONDOR_SUBMIT_FILE = 'mc.submit'
+DAG_FILE = 'mc.dag'
+DAG_RETRIES = 10
 
 
 def get_mc_versions():
@@ -71,8 +77,21 @@ def get_pax_versions():
         sys.stderr.write("Can't get pax versions from {0}\n".format(PAX_PATH))
         return ()
 
+# needs to be set after functions defined
 MC_VERSIONS = get_mc_versions()
 PAX_VERSIONS = get_pax_versions()
+
+
+def get_num_jobs(total_events, batch_size):
+    """
+    Get the number of jobs to use for MC simulation
+
+    :param total_events: total number of events to generate
+    :param batch_size:  number of events to generate per job
+    :return: number of jobs to use
+    """
+    num_jobs = int(math.ceil(total_events / float(batch_size)))
+    return num_jobs
 
 
 def osg_submit(mc_config, mc_flavor, mc_version, pax_version, num_events, batch_size):
@@ -87,46 +106,54 @@ def osg_submit(mc_config, mc_flavor, mc_version, pax_version, num_events, batch_
     :param batch_size: number of events to generate per job
     :return: True on success, False otherwise
     """
-    if os.path.exists(args.submit_file):
-        sys.stderr.write("Submit file at {0} ".format(args.submit_file) +
+
+    if os.path.exists(HTCONDOR_SUBMIT_FILE):
+        sys.stderr.write("Submit file at {0} ".format(HTCONDOR_SUBMIT_FILE) +
                          "already exists, exiting!\n")
         return 1
 
-    if os.path.exists(args.dag_file):
-        sys.stderr.write("DAG file at {0} ".format(args.dag_file) +
+    if os.path.exists(DAG_FILE):
+        sys.stderr.write("DAG file at {0} ".format(DAG_FILE) +
                          "already exists, exiting!\n")
         return 1
 
-    with open(args.dag_file, 'wt') as dag_file:
+    num_jobs = get_num_jobs(num_events, batch_size)
+    sys.stdout.write("Generating {0} events ".format(num_events) +
+                     "using {0} jobs\n".format(num_jobs))
+
+    with open(DAG_FILE, 'wt') as dag_file:
         for job in range(0, num_jobs):
-            dag_file.write("JOB MC.{0} {1}\n".format(job, args.submit_file))
-            dag_file.write('VARS MC.{0} flavor="{1}" '.format(job, args.mc_flavor))
-            dag_file.write('config="{0}" '.format(args.mc_config))
-            dag_file.write('pax_version="{0}" '.format(args.pax_version))
-            dag_file.write('mc_version="{0}" '.format(args.mc_version))
+            dag_file.write("JOB MC.{0} {1}\n".format(job, HTCONDOR_SUBMIT_FILE))
+            dag_file.write('VARS MC.{0} flavor="{1}" '.format(job, mc_flavor))
+            dag_file.write('config="{0}" '.format(mc_config))
+            dag_file.write('pax_version="{0}" '.format(pax_version))
+            dag_file.write('mc_version="{0}" '.format(mc_version))
             if job == (num_jobs - 1):
-                left_events = args.num_events % args.batch_size
+                left_events = num_events % batch_size
                 if left_events == 0:
-                    left_events = args.batch_size
+                    left_events = batch_size
                 dag_file.write('events="{0}" '.format(left_events))
             else:
-                dag_file.write('events="{0}" '.format(args.batch_size))
+                dag_file.write('events="{0}" '.format(batch_size))
             dag_file.write('id="{0}" '.format(job))
 
             dag_file.write("\n")
-            dag_file.write("Retry MC.{0} {1}\n".format(job, args.retries))
+            dag_file.write("Retry MC.{0} {1}\n".format(job, DAG_RETRIES))
             dag_file.write("POST")
-    with open(args.submit_file, 'wt') as submit_file:
-        submit_file.write(SUBMIT_FILE)
+    with open(HTCONDOR_SUBMIT_FILE, 'wt') as submit_file:
+        submit_file.write(HTCONDOR_SUBMIT_FILE)
 
     if not os.path.exists('output'):
         os.mkdir('output')
     if not os.path.exists('log'):
         os.mkdir('log')
-    sys.stdout.write("Generated DAG file at {0} ".format(args.dag_file) +
-                     "and submit file at {0}, run\n".format(args.submit_file) +
-                     "\t\t\tcondor_submit_dag {0}\n".format(args.dag_file) +
-                     "to submit.\n")
+    try:
+        subprocess.check_call(['condor_submit_dag', 'mc.dag'])
+        sys.stdout.write("Submitted jobs to OSG\n")
+        return True
+    except subprocess.CalledProcessError as e:
+        sys.stderr.write("Exception while submitting dag: {0}\n".format(e))
+        return False
 
 
 def egi_submit(mc_config, mc_flavor, mc_version, pax_version, num_events, batch_size):
@@ -141,7 +168,7 @@ def egi_submit(mc_config, mc_flavor, mc_version, pax_version, num_events, batch_
     :param batch_size: number of events to generate per job
     :return: True on success, False otherwise
     """
-    pass
+    return False
 
 
 def run_main():
@@ -186,9 +213,6 @@ def run_main():
     if args.num_events == 0:
         sys.stdout.write("No events to generate, exiting")
         return 0
-    num_jobs = int(math.ceil(args.num_events / float(args.batch_size)))
-    sys.stdout.write("Generating {0} events ".format(args.num_events) +
-                     "using {0} jobs\n".format(num_jobs))
 
     if args.grid_type == 'osg':
         if osg_submit(args.mc_config,
