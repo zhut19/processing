@@ -71,9 +71,77 @@ def get_pax_versions():
         sys.stderr.write("Can't get pax versions from {0}\n".format(PAX_PATH))
         return ()
 
-
 MC_VERSIONS = get_mc_versions()
 PAX_VERSIONS = get_pax_versions()
+
+
+def osg_submit(mc_config, mc_flavor, mc_version, pax_version, num_events, batch_size):
+    """
+    Generate and submit jobs to OSG
+
+    :param mc_config: MC config to use
+    :param mc_flavor: MC flavor to use
+    :param mc_version: version of MC code to use
+    :param pax_version: version of PAX code to use
+    :param num_events: total number of events to generate
+    :param batch_size: number of events to generate per job
+    :return: True on success, False otherwise
+    """
+    if os.path.exists(args.submit_file):
+        sys.stderr.write("Submit file at {0} ".format(args.submit_file) +
+                         "already exists, exiting!\n")
+        return 1
+
+    if os.path.exists(args.dag_file):
+        sys.stderr.write("DAG file at {0} ".format(args.dag_file) +
+                         "already exists, exiting!\n")
+        return 1
+
+    with open(args.dag_file, 'wt') as dag_file:
+        for job in range(0, num_jobs):
+            dag_file.write("JOB MC.{0} {1}\n".format(job, args.submit_file))
+            dag_file.write('VARS MC.{0} flavor="{1}" '.format(job, args.mc_flavor))
+            dag_file.write('config="{0}" '.format(args.mc_config))
+            dag_file.write('pax_version="{0}" '.format(args.pax_version))
+            dag_file.write('mc_version="{0}" '.format(args.mc_version))
+            if job == (num_jobs - 1):
+                left_events = args.num_events % args.batch_size
+                if left_events == 0:
+                    left_events = args.batch_size
+                dag_file.write('events="{0}" '.format(left_events))
+            else:
+                dag_file.write('events="{0}" '.format(args.batch_size))
+            dag_file.write('id="{0}" '.format(job))
+
+            dag_file.write("\n")
+            dag_file.write("Retry MC.{0} {1}\n".format(job, args.retries))
+            dag_file.write("POST")
+    with open(args.submit_file, 'wt') as submit_file:
+        submit_file.write(SUBMIT_FILE)
+
+    if not os.path.exists('output'):
+        os.mkdir('output')
+    if not os.path.exists('log'):
+        os.mkdir('log')
+    sys.stdout.write("Generated DAG file at {0} ".format(args.dag_file) +
+                     "and submit file at {0}, run\n".format(args.submit_file) +
+                     "\t\t\tcondor_submit_dag {0}\n".format(args.dag_file) +
+                     "to submit.\n")
+
+
+def egi_submit(mc_config, mc_flavor, mc_version, pax_version, num_events, batch_size):
+    """
+    Generate and submit jobs to EGI
+
+    :param mc_config: MC config to use
+    :param mc_flavor: MC flavor to use
+    :param mc_version: version of MC code to use
+    :param pax_version: version of PAX code to use
+    :param num_events: total number of events to generate
+    :param batch_size: number of events to generate per job
+    :return: True on success, False otherwise
+    """
+    pass
 
 
 def run_main():
@@ -109,16 +177,10 @@ def run_main():
                         choices=PAX_VERSIONS,
                         action='store', required=True,
                         help='version of pax to use')
-    parser.add_argument('--dagfile-file', dest='dag_file',
-                        action='store', default='mc.dag',
-                        help='file to write dag to')
-    parser.add_argument('--submit-file', dest='submit_file',
-                        action='store', default='mc.submit',
-                        help='name of submit to write out')
-    parser.add_argument('--retries', dest='retries',
-                        action='store', default=10, type=int,
-                        help='max number of times to retry a job '
-                             '(default is 10)')
+    parser.add_argument('--grid-type', dest='grid_type',
+                        choices=['osg', 'egi'],
+                        action='store', required=True,
+                        help='Grid to submit to')
 
     args = parser.parse_args(sys.argv[1:])
     if args.num_events == 0:
@@ -128,46 +190,26 @@ def run_main():
     sys.stdout.write("Generating {0} events ".format(args.num_events) +
                      "using {0} jobs\n".format(num_jobs))
 
-    if os.path.exists(args.submit_file):
-        sys.stderr.write("Submit file at {0} ".format(args.submit_file) +
-                         "already exists, exiting!\n")
+    if args.grid_type == 'osg':
+        if osg_submit(args.mc_config,
+                      args.mc_flavor,
+                      args.mc_version,
+                      args.pax_version,
+                      args.batch_size,
+                      args.num_events):
+            return 0
         return 1
-
-    if os.path.exists(args.dag_file):
-        sys.stderr.write("DAG file at {0} ".format(args.dag_file) +
-                         "already exists, exiting!\n")
+    elif args.grid_type == 'egi':
+        if egi_submit(args.mc_config,
+                      args.mc_flavor,
+                      args.mc_version,
+                      args.pax_version,
+                      args.batch_size,
+                      args.num_events):
+            return 0
         return 1
-
-    with open(args.dag_file, 'wt') as dag_file:
-        for job in range(0, num_jobs):
-            dag_file.write("JOB MC.{0} {1}\n".format(job, args.submit_file))
-            dag_file.write('VARS MC.{0} flavor="{1}" '.format(job, args.mc_flavor))
-            dag_file.write('config="{0}" '.format(args.mc_config))
-            dag_file.write('pax_version="{0}" '.format(args.pax_version))
-            dag_file.write('mc_version="{0}" '.format(args.mc_version))
-            if job == (num_jobs - 1):
-                left_events = args.num_events % args.batch_size
-                if left_events == 0:
-                    left_events = args.batch_size
-                dag_file.write('events="{0}" '.format(left_events))
-            else:
-                dag_file.write('events="{0}" '.format(args.batch_size))
-            dag_file.write('id="{0}" '.format(job))
-
-            dag_file.write("\n")
-            dag_file.write("Retry MC.{0} {1}\n".format(job, args.retries))
-    with open(args.submit_file, 'wt') as submit_file:
-        submit_file.write(SUBMIT_FILE)
-
-    if not os.path.exists('output'):
-        os.mkdir('output')
-    if not os.path.exists('log'):
-        os.mkdir('log')
-    sys.stdout.write("Generated DAG file at {0} ".format(args.dag_file) +
-                     "and submit file at {0}, run\n".format(args.submit_file) +
-                     "\t\t\tcondor_submit_dag {0}\n".format(args.dag_file) +
-                     "to submit.\n")
-    return 0
+    else:
+        return 1
 
 if __name__ == '__main__':
     sys.exit(run_main())
