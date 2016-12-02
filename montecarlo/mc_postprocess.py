@@ -8,6 +8,11 @@ import subprocess
 import ROOT
 
 EVENT_THRESHOLD = 0.05
+MINITREE_OUTPUTS = {'Basics': 'Basics.root',
+                    'Fundamentals': 'Fundamentals.root',
+                    'DoubleScatter': 'DoubleScatter.root',
+                    'LargestPeakProperties': 'LargestPeakProperties.root',
+                    'TotalProperties': 'TotalProperties.root'}
 
 
 def get_dag_information(dag_filename):
@@ -93,100 +98,43 @@ def run_main():
         sys.stderr.write("Output directory not present\n")
         return 1
     os.chdir('output')
+    root_files = {'PAX ROOT': ([], 'pax.root')}
     if flavor == 'NEST':
-        sort_suffix = 'Patch.root'
         geant_suffix = 'NEST.root'
+        root_files['Patch ROOT'] = ([], 'Patch.root')
     elif flavor == 'G4':
-        sort_suffix = 'Sort.root'
         geant_suffix = 'G4.root'
+        root_files['Sort ROOT'] = ([], 'Sort.root')
     elif flavor == 'G4p10':
-        sort_suffix = 'Sort.root'
         geant_suffix = 'G4p10.root'
+        root_files['Sort ROOT'] = ([], 'Sort.root')
     else:
         sys.stderr.write("MC flavor unknown: {0}\n".format(flavor))
         return 1
 
-    geant_root_files = []
-    pax_root_files = []
-    sort_root_files = []
-    basics_root_files = []
-    double_root_files = []
-    fundamentals_root_files = []
-    peak_root_files = []
-    total_root_files = []
-    for entry in os.listdir('.'):
-        if entry.endswith(geant_suffix):
-            geant_root_files.append(entry)
-        elif entry.endswith(sort_suffix):
-            sort_root_files.append(entry)
-        elif entry.endswith('pax.root'):
-            pax_root_files.append(entry)
-        elif entry.endswith('Basics.root'):
-            basics_root_files.append(entry)
-        elif entry.endswith('DoubleScatter.root'):
-            double_root_files.append(entry)
-        elif entry.endswith('Fundamentals.root'):
-            fundamentals_root_files.append(entry)
-        elif entry.endswith('LargestPeakProperties.root'):
-            peak_root_files.append(entry)
-        elif entry.endswith('TotalProperties.root'):
-            total_root_files.append(entry)
-    if len(geant_root_files) != jobs:
-        sys.stderr.write("Number of Geant root files doesn't match the number"
-                         " of jobs: {0} vs {1}\n".format(len(geant_root_files),
-                                                         jobs))
-        sys.stderr.write("An error probably occurred while processing.\n")
-        return 1
-    if len(sort_root_files) != jobs:
-        sys.stderr.write("Number of Sort root files doesn't match the number"
-                         " of jobs: {0} vs {1}\n".format(len(sort_root_files),
-                                                         jobs))
-        sys.stderr.write("An error probably occurred while processing.\n")
-        return 1
-    if len(pax_root_files) != jobs:
-        sys.stderr.write("Number of PAX root files doesn't match the number"
-                         " of jobs: {0} vs {1}\n".format(len(pax_root_files),
-                                                         jobs))
-        sys.stderr.write("An error probably occurred while processing.\n")
-        return 1
-    if len(basics_root_files) != jobs:
-        sys.stderr.write("Number of Basics root files doesn't match the number"
-                         " of jobs: {0} vs {1}\n".format(len(basics_root_files),
-                                                         jobs))
-        sys.stderr.write("An error probably occurred while processing.\n")
-        return 1
-    if len(double_root_files) != jobs:
-        sys.stderr.write("Number of DoubleScatter root files doesn't " +
-                         "match the number  of jobs: " +
-                         "{0} vs {1}\n".format(len(double_root_files),
-                                               jobs))
-        sys.stderr.write("An error probably occurred while processing.\n")
-        return 1
-    if len(fundamentals_root_files) != jobs:
-        sys.stderr.write("Number of Fundamentals root files doesn't match " +
-                         "the number of jobs: " +
-                         "{0} vs {1}\n".format(len(fundamentals_root_files),
-                                               jobs))
-        sys.stderr.write("An error probably occurred while processing.\n")
-        return 1
-    if len(peak_root_files) != jobs:
-        sys.stderr.write("Number of LargestPeakProperties root files doesn't " +
-                         "match the number  of jobs: " +
-                         "{0} vs {1}\n".format(len(peak_root_files),
-                                               jobs))
-        sys.stderr.write("An error probably occurred while processing.\n")
-        return 1
-    if len(total_root_files) != jobs:
-        sys.stderr.write("Number of TotalProperties root files doesn't match " +
-                         "the number of jobs: " +
-                         "{0} vs {1}\n".format(len(total_root_files),
-                                               jobs))
-        sys.stderr.write("An error probably occurred while processing.\n")
-        return 1
+    root_files['Geant ROOT'] = ([], geant_suffix),
+    for entry, suffix in MINITREE_OUTPUTS:
+        root_files[entry] = ([], suffix)
 
-    for output in (geant_root_files, sort_root_files):
+    for entry in os.listdir('.'):
+        for root_type in root_files:
+            if entry.endswith(root_files[root_type][1]):
+                root_files[root_type][0].append(entry)
+
+    for entry in root_files:
+        if len(root_files[entry][0]) != jobs:
+            sys.stderr.write("Number of {0} files doesn't".format(entry) +
+                             "match the number of jobs: "
+                             "{0} vs {1}\n".format(len(root_files[entry][0]),
+                                                   jobs))
+            sys.stderr.write("An error probably occurred while processing.\n")
+            return 1
+
+    for output in ['Geant ROOT', 'Sort ROOT', 'Patch ROOT']:
+        if output not in root_files:
+            continue
         total_events = 0
-        for root_file in output:
+        for root_file in root_files[output][0]:
             g4_file = ROOT.TFile.Open(root_file)
             g4_file.cd('events')
             root_events = g4_file.Get('events')
@@ -194,19 +142,13 @@ def run_main():
             total_events += ttree.GetEntries()
 
         if abs(events - total_events) > (EVENT_THRESHOLD * float(events)):
-            if output == geant_root_files:
-                a = "Geant"
-            elif flavor == 'NEST':
-                a = "Patch"
-            else:
-                a = "Sort"
-            sys.stderr.write("{0} events differs from requested ".format(a) +
+            sys.stderr.write("{0} events differs from requested ".format(output) +
                              "events by more than {0}: ".format(EVENT_THRESHOLD) +
                              "got {0} events, expected {1}\n".format(total_events,
                                                                      events))
 
     total_events = 0
-    for root_file in pax_root_files:
+    for root_file in root_files['PAX ROOT'][0]:
         pax_file = ROOT.TFile.Open(root_file)
         ttree = pax_file.Get('tree')
         total_events += ttree.GetEntries()
@@ -215,14 +157,9 @@ def run_main():
                          "events by more than {0}: ".format(EVENT_THRESHOLD) +
                          "got {0} events, expected {1}\n".format(total_events,
                                                                  events))
-    hax_outputs = {'Basics': basics_root_files,
-                   'Fundamentals': fundamentals_root_files,
-                   'DoubleScatter': double_root_files,
-                   'LargestPeakProperties': peak_root_files,
-                   'TotalProperties': total_root_files}
-    for output_type in hax_outputs:
+    for output_type in MINITREE_OUTPUTS:
         total_events = 0
-        for root_file in hax_outputs[output_type]:
+        for root_file in root_files[output_type][0]:
             output_file = ROOT.TFile.Open(root_file)
             ttree = output_file.Get(output_type)
             total_events += ttree.GetEntries()
@@ -235,30 +172,10 @@ def run_main():
     result_dir = os.path.join(cur_dir, 'merged_results')
     os.mkdir(result_dir)
 
-    if not merge_files(geant_root_files, result_dir):
-        sys.stderr.write("Can't merge Geant files, exiting\n")
-        return 1
-    if not merge_files(sort_root_files, result_dir):
-        sys.stderr.write("Can't merge sort/patch files, exiting\n")
-        return 1
-    if not merge_files(pax_root_files, result_dir):
-        sys.stderr.write("Can't merge [pax files, exiting\n")
-        return 1
-    if not merge_files(basics_root_files, result_dir):
-        sys.stderr.write("Can't merge basics files, exiting\n")
-        return 1
-    if not merge_files(fundamentals_root_files, result_dir):
-        sys.stderr.write("Can't merge fundamentals files, exiting\n")
-        return 1
-    if not merge_files(double_root_files, result_dir):
-        sys.stderr.write("Can't merge double scatter files, exiting\n")
-        return 1
-    if not merge_files(peak_root_files, result_dir):
-        sys.stderr.write("Can't merge peak files, exiting\n")
-        return 1
-    if not merge_files(total_root_files, result_dir):
-        sys.stderr.write("Can't merge total properties files, exiting\n")
-        return 1
+    for output_type in root_files:
+        if not merge_files(root_files[output_type][0], result_dir):
+            sys.stderr.write("Can't merge {0} files, exiting\n".format(output_type))
+            return 1
 
     os.chdir(cur_dir)
 if __name__ == '__main__':
