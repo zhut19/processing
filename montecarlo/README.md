@@ -16,7 +16,6 @@ Detailed instructions to come...
 ~~~~
 
 ### Midway local running
-~~~~
 
 You may run locally on Midway with e.g.:
 ~~~~
