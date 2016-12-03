@@ -1,4 +1,4 @@
-# osg-montecarlo
+# MC Simulation Production
 Repository for scripts to run xenon1t MC code
 
 ## Instructions
