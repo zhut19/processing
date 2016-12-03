@@ -4,6 +4,9 @@ echo "Job is running on node: " `/bin/hostname`
 echo "Job running as user: " `/usr/bin/id`
 echo "Job is running in directory: $PWD"
 
+# Save raw waveforms (0: no, 1: yes)
+SAVE_RAW=1
+
 # used to label output
 JOBID=$1
 
@@ -114,13 +117,26 @@ else
     PAX_INPUT_FILENAME=${G4NSORT_FILENAME}
 fi
 
+RAW_FILENAME=${PAX_INPUT_FILENAME}_raw
 PAX_FILENAME=${PAX_INPUT_FILENAME}_pax
 HAX_FILENAME=${PAX_INPUT_FILENAME}_hax
 
-# fax+pax stage
+# fax+pax stages
 source deactivate &> /dev/null
 source activate pax_${PAXVERSION} &> /dev/null
-(time paxer --input ${PAX_INPUT_FILENAME}.root --config_string "[WaveformSimulator]truth_file_name=\"${FILENAME}_faxtruth\"" --config XENON1T SimulationMCInput --output ${PAX_FILENAME};) &> ${PAX_FILENAME}.log
+
+# Do not save raw waveforms
+if [[ ${SAVE_RAW} == 0 ]]; then
+    (time paxer --input ${PAX_INPUT_FILENAME}.root --config_string "[WaveformSimulator]truth_file_name=\"${FILENAME}_faxtruth\"" --config XENON1T SimulationMCInput --output ${PAX_FILENAME};) &> ${PAX_FILENAME}.log
+
+# Save raw waveforms
+else
+    (time paxer --input ${PAX_INPUT_FILENAME}.root --config_string "[WaveformSimulator]truth_file_name=\"${FILENAME}_faxtruth\"" --config XENON1T reduce_raw_data SimulationMCInput --output ${RAW_FILENAME};) &> ${RAW_FILENAME}.log
+
+    (time paxer --ignore_rundb --input ${RAW_FILENAME} --config XENON1T --output ${PAX_FILENAME};) &> ${PAX_FILENAME}.log
+
+fi
+
 if [ $? -ne 0 ];
 then
   exit 1
