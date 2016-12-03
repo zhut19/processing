@@ -32,4 +32,7 @@ where
     PAX_VERSION: pax (also fax) GitHub release number (https://github.com/XENON1T/pax/releases)
     SAVE_WAVEFORMS: Flag to save raw waveforms (disk space intensive); 0 - off (default), 1 - on
 ~~~~
+
+This will create output files in "output" directory.
+
 We advise to run this in the [batch queue or interactive job](https://xecluster.lngs.infn.it/dokuwiki/doku.php?id=xenon:xenon1t:analysis:beginnersguide#the_midway_batch_queue)
