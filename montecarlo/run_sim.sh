@@ -4,9 +4,6 @@ echo "Job is running on node: " `/bin/hostname`
 echo "Job running as user: " `/usr/bin/id`
 echo "Job is running in directory: $PWD"
 
-# Save raw waveforms (0: no, 1: yes)
-SAVE_RAW=1
-
 # used to label output
 JOBID=$1
 
@@ -27,7 +24,11 @@ MCVERSION=$5
 # Select fax+pax version
 PAXVERSION=$6
 
-
+# Save raw waveforms (0: no, 1: yes)
+SAVE_RAW=0
+if [[ "$7" == 1 ]]; then
+    SAVE_RAW=$7
+fi
 
 # runPatch argument corresponding to CONFIG variable above
 if [[ ${CONFIG} == *"Kr83m"* ]]; then
