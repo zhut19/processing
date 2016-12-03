@@ -4,6 +4,7 @@ import sys
 import os
 import re
 import subprocess
+import math
 
 import ROOT
 
@@ -43,39 +44,48 @@ def get_dag_information(dag_filename):
     return jobs, events, flavor
 
 
-def merge_files(file_list, result_dir):
+def merge_files(file_list, result_dir, merge_size=50):
     """
+    Use hadd to merge outputs from the run into a smaller set of
+    output files
 
     :param file_list: list with root files to merge
     :param result_dir: path to directory to place results in
+    :param merge_size: number of files to merge into each output file
     :return: True on success, False otherwise
     """
+    num_output_files = math.ceil(len(file_list) / float(merge_size))
     sample_file = file_list[0]
     fields = sample_file.split('_')
     del fields[3]
-    output_file = "_".join(fields)
-    command_line = ['hadd', output_file]
-    command_line.extend(file_list)
-    try:
-        subprocess.check_call(command_line)
-    except subprocess.CalledProcessError:
-        sys.stderr.write("Can't combine files into {0}\n".format(file_list))
-        return False
+    fields[-1] = fields[-1].replace('.root', '')
+    fields.append(1)
     if not os.path.isdir(result_dir):
         sys.stderr.write("{0} not present\n".format(result_dir))
         return False
-    if not os.path.isfile(output_file):
-        sys.stderr.write("{0} not present, couldn't ".format(output_file) +
-                         "merge files\n")
-        return False
-    try:
-        os.rename(output_file, os.path.join(result_dir, output_file))
-    except IOError as e:
-        sys.stderr.write("Got exception while moving results: {0}\n".format(e))
-        return False
-    except OSError as e:
-        sys.stderr.write("Got exception while moving results: {0}\n".format(e))
-        return False
+    for x in range(num_output_files):
+        fields[-1] = x
+        output_file = "_".join(fields)
+        command_line = ['hadd', output_file]
+        slice_start = x * merge_size
+        command_line.extend(file_list[slice_start:slice_start + merge_size - 1])
+        try:
+            subprocess.check_call(command_line)
+        except subprocess.CalledProcessError:
+            sys.stderr.write("Can't combine files into {0}\n".format(file_list))
+            return False
+        if not os.path.isfile(output_file):
+            sys.stderr.write("{0} not present, couldn't ".format(output_file) +
+                             "merge files\n")
+            return False
+        try:
+            os.rename(output_file, os.path.join(result_dir, output_file))
+        except IOError as e:
+            sys.stderr.write("Got exception while moving results: {0}\n".format(e))
+            return False
+        except OSError as e:
+            sys.stderr.write("Got exception while moving results: {0}\n".format(e))
+            return False
     return True
 
 
