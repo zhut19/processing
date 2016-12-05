@@ -122,8 +122,8 @@ def run_main():
         sys.stderr.write("MC flavor unknown: {0}\n".format(flavor))
         return 1
 
-    root_files['Geant ROOT'] = ([], geant_suffix),
-    for entry, suffix in MINITREE_OUTPUTS:
+    root_files['Geant ROOT'] = ([], geant_suffix)
+    for entry, suffix in MINITREE_OUTPUTS.iteritems():
         root_files[entry] = ([], suffix)
 
     for entry in os.listdir('.'):
@@ -133,7 +133,7 @@ def run_main():
 
     for entry in root_files:
         if len(root_files[entry][0]) != jobs:
-            sys.stderr.write("Number of {0} files doesn't".format(entry) +
+            sys.stderr.write("Number of {0} files doesn't ".format(entry) +
                              "match the number of jobs: "
                              "{0} vs {1}\n".format(len(root_files[entry][0]),
                                                    jobs))
