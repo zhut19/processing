@@ -219,8 +219,8 @@ def run_main():
                       args.mc_flavor,
                       args.mc_version,
                       args.pax_version,
-                      args.batch_size,
-                      args.num_events):
+                      args.num_events,
+                      args.batch_size):
             return 0
         return 1
     elif args.grid_type == 'egi':
@@ -228,8 +228,8 @@ def run_main():
                       args.mc_flavor,
                       args.mc_version,
                       args.pax_version,
-                      args.batch_size,
-                      args.num_events):
+                      args.num_events,
+                      args.batch_size):
             return 0
         return 1
     else:
