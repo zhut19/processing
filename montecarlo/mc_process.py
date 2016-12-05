@@ -139,7 +139,6 @@ def osg_submit(mc_config, mc_flavor, mc_version, pax_version, num_events, batch_
 
             dag_file.write("\n")
             dag_file.write("Retry MC.{0} {1}\n".format(job, DAG_RETRIES))
-            dag_file.write("POST")
     with open(HTCONDOR_SUBMIT_FILE, 'wt') as submit_file:
         submit_file.write(HTCONDOR_SUBMIT_FILE)
 
