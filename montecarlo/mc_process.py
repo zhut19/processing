@@ -30,10 +30,35 @@ queue 1
 
 '''
 
-MC_FLAVORS = ('G4', 'NEST', 'G4p10')
-CONFIGS = ('TPC_Kr83m', 'TPC_Kr85', 'WholeLXe_Rn220', 'WholeLXe_Rn222')
 MC_PATH = '/cvmfs/xenon.opensciencegrid.org/releases/mc/'
 PAX_PATH = "/cvmfs/xenon.opensciencegrid.org/releases/anaconda/2.4/envs/"
+MC_FLAVORS = ('G4', 'NEST', 'G4p10')
+CONFIGS = (
+'AmBe_neutronISO',
+'Cryostat_Co60',
+'Cryostat_K40',
+'Cryostat_neutron',
+'Cryostat_Th232',
+'Cryostat_U238',
+'DDFusion_neutron',
+#'Disk15m_muon', # Not yet tested
+'ib1sp1_Cs137',
+'ib1sp2_Cs137',
+#'optPhot', # Not yet tested
+'Pmt_Co60',
+'Pmt_K40',
+'Pmt_neutron',
+'Pmt_Th232',
+'Pmt_U238',
+'TPC_2n2b',
+'TPC_ERsolar',
+'TPC_Kr83m',
+'TPC_Kr85',
+'TPC_Rn222',
+'TPC_WIMP',
+'WholeLXe_Rn220',
+'WholeLXe_Rn222'
+)
 
 # condor / osg specific constants
 HTCONDOR_SUBMIT_FILE = 'mc.submit'

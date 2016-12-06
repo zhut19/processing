@@ -39,11 +39,16 @@ elif [[ ${CONFIG} == *"Rn220"* ]]; then
     PATCHTYPE=21
 elif [[ ${CONFIG} == *"Rn222"* ]]; then
     PATCHTYPE=31
-else
-    echo "Error: No PATCHTYPE for CONFIG = ${CONFIG}"
-    exit
 fi
-    
+ 
+# preinit file for Geant4
+PREINIT=preinit.mac
+if [[ ${CONFIG} == *"Cs137"* ]]; then
+    PREINIT=preinit_${CONFIG}.mac
+elif [[ ${CONFIG} == *"muon"* || ${CONFIG} == *"MV"* ]]; then
+    PREINIT=preinit_MV.mac
+fi
+
 ########################################
 
 # Setup the software
@@ -89,7 +94,8 @@ G4NSORT_FILENAME=${G4_FILENAME}_Sort
 # Geant4 stage
 G4EXEC=${RELEASEDIR}/xenon1t_${MCFLAVOR}
 MACROSDIR=${RELEASEDIR}/macros
-(time ${G4EXEC} -p ${MACROSDIR}/preinit.mac -f ${MACROSDIR}/run_${CONFIG}.mac -n ${NEVENTS} -o ${G4_FILENAME}.root;) &> ${G4_FILENAME}.log
+ln -sf ${MACROSDIR} # For reading e.g. input spectra from CWD
+(time ${G4EXEC} -p ${MACROSDIR}/${PREINIT} -f ${MACROSDIR}/run_${CONFIG}.mac -n ${NEVENTS} -o ${G4_FILENAME}.root;) &> ${G4_FILENAME}.log
 if [ $? -ne 0 ];
 then
   exit 1
@@ -99,13 +105,19 @@ source ${CVMFSDIR}/software/mc_old_setup.sh
 
 if [[ ${MCFLAVOR} == NEST ]]; then
     # Patch stage
-    PATCHEXEC=${RELEASEDIR}/runPatch
-    (time ${PATCHEXEC} -i ${G4_FILENAME}.root -o ${G4PATCH_FILENAME}.root -t ${PATCHTYPE};) &> ${G4PATCH_FILENAME}.log
-    if [ $? -ne 0 ];
-    then
-      exit 1
+    if [[ ${PATCHTYPE} != "" ]]; then
+        PATCHEXEC=${RELEASEDIR}/runPatch
+        (time ${PATCHEXEC} -i ${G4_FILENAME}.root -o ${G4PATCH_FILENAME}.root -t ${PATCHTYPE};) &> ${G4PATCH_FILENAME}.log
+        if [ $? -ne 0 ];
+        then
+          exit 1
+        fi
+        PAX_INPUT_FILENAME=${G4PATCH_FILENAME}
+
+    # Some configurations do not require Patch (or are not yet implemented)
+    else
+        PAX_INPUT_FILENAME=${G4_FILENAME}
     fi
-    PAX_INPUT_FILENAME=${G4PATCH_FILENAME}
 else
     # nSort Stage
     NSORTEXEC=${RELEASEDIR}/nSort
