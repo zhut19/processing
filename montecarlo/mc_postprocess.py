@@ -126,7 +126,9 @@ def run_main():
     for entry, suffix in MINITREE_OUTPUTS.iteritems():
         root_files[entry] = ([], suffix)
 
-    for entry in os.listdir('.'):
+    dir_entries = os.listdir('.')
+    dir_entries.sort()
+    for entry in dir_entries:
         for root_type in root_files:
             if entry.endswith(root_files[root_type][1]):
                 root_files[root_type][0].append(entry)
