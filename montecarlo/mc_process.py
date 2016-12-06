@@ -61,7 +61,7 @@ CONFIGS = (
 )
 
 # condor / osg specific constants
-HTCONDOR_SUBMIT_FILE = 'mc.submit'
+HTCONDOR_SUBMIT_FILENAME = 'mc.submit'
 DAG_FILE = 'mc.dag'
 DAG_RETRIES = 10
 
@@ -132,8 +132,8 @@ def osg_submit(mc_config, mc_flavor, mc_version, pax_version, num_events, batch_
     :return: True on success, False otherwise
     """
 
-    if os.path.exists(HTCONDOR_SUBMIT_FILE):
-        sys.stderr.write("Submit file at {0} ".format(HTCONDOR_SUBMIT_FILE) +
+    if os.path.exists(HTCONDOR_SUBMIT_FILENAME):
+        sys.stderr.write("Submit file at {0} ".format(HTCONDOR_SUBMIT_FILENAME) +
                          "already exists, exiting!\n")
         return 1
 
@@ -148,7 +148,8 @@ def osg_submit(mc_config, mc_flavor, mc_version, pax_version, num_events, batch_
 
     with open(DAG_FILE, 'wt') as dag_file:
         for job in range(0, num_jobs):
-            dag_file.write("JOB MC.{0} {1}\n".format(job, HTCONDOR_SUBMIT_FILE))
+            dag_file.write("JOB MC.{0} {1}\n".format(job,
+                                                     HTCONDOR_SUBMIT_FILENAME))
             dag_file.write('VARS MC.{0} flavor="{1}" '.format(job, mc_flavor))
             dag_file.write('config="{0}" '.format(mc_config))
             dag_file.write('pax_version="{0}" '.format(pax_version))
@@ -164,8 +165,7 @@ def osg_submit(mc_config, mc_flavor, mc_version, pax_version, num_events, batch_
 
             dag_file.write("\n")
             dag_file.write("Retry MC.{0} {1}\n".format(job, DAG_RETRIES))
-            dag_file.write("POST")
-    with open(HTCONDOR_SUBMIT_FILE, 'wt') as submit_file:
+    with open(HTCONDOR_SUBMIT_FILENAME, 'wt') as submit_file:
         submit_file.write(HTCONDOR_SUBMIT_FILE)
 
     if not os.path.exists('output'):
@@ -244,8 +244,8 @@ def run_main():
                       args.mc_flavor,
                       args.mc_version,
                       args.pax_version,
-                      args.batch_size,
-                      args.num_events):
+                      args.num_events,
+                      args.batch_size):
             return 0
         return 1
     elif args.grid_type == 'egi':
@@ -253,8 +253,8 @@ def run_main():
                       args.mc_flavor,
                       args.mc_version,
                       args.pax_version,
-                      args.batch_size,
-                      args.num_events):
+                      args.num_events,
+                      args.batch_size):
             return 0
         return 1
     else:
