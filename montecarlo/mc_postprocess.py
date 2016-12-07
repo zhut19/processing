@@ -54,7 +54,7 @@ def merge_files(file_list, result_dir, merge_size=50):
     :param merge_size: number of files to merge into each output file
     :return: True on success, False otherwise
     """
-    num_output_files = math.ceil(len(file_list) / float(merge_size))
+    num_output_files = int(math.ceil(len(file_list) / float(merge_size)))
     sample_file = file_list[0]
     fields = sample_file.split('_')
     del fields[3]
@@ -64,8 +64,8 @@ def merge_files(file_list, result_dir, merge_size=50):
         sys.stderr.write("{0} not present\n".format(result_dir))
         return False
     for x in range(num_output_files):
-        fields[-1] = x
-        output_file = "_".join(fields)
+        fields[-1] = str(x)
+        output_file = "_".join(fields) + '.root'
         command_line = ['hadd', output_file]
         slice_start = x * merge_size
         command_line.extend(file_list[slice_start:slice_start + merge_size - 1])
@@ -126,7 +126,9 @@ def run_main():
     for entry, suffix in MINITREE_OUTPUTS.iteritems():
         root_files[entry] = ([], suffix)
 
-    for entry in os.listdir('.'):
+    dir_entries = os.listdir('.')
+    dir_entries.sort()
+    for entry in dir_entries:
         for root_type in root_files:
             if entry.endswith(root_files[root_type][1]):
                 root_files[root_type][0].append(entry)
@@ -180,7 +182,8 @@ def run_main():
 
                                                                      events))
     result_dir = os.path.join(cur_dir, 'merged_results')
-    os.mkdir(result_dir)
+    if not os.path.exists(result_dir):
+        os.mkdir(result_dir)
 
     for output_type in root_files:
         if not merge_files(root_files[output_type][0], result_dir):
