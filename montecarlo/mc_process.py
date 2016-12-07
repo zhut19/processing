@@ -83,7 +83,8 @@ def get_mc_versions():
         return ()
     except OSError:
         sys.stderr.write("Can't get mc versions from {0}\n".format(MC_PATH))
-        return ()
+        # hard coded for xe-grid
+        return ('v0.1.0')
 
 
 def get_pax_versions():
@@ -103,7 +104,8 @@ def get_pax_versions():
         return tuple(versions)
     except OSError:
         sys.stderr.write("Can't get pax versions from {0}\n".format(PAX_PATH))
-        return ()
+        # hard coded for xe-grid
+        return ('v6.1.1')
 
 # needs to be set after functions defined
 MC_VERSIONS = get_mc_versions()
@@ -346,11 +348,11 @@ def run_main():
                         help='max number of events to generate per job '
                              '(default is 2000)')
     parser.add_argument('--mc-version', dest='mc_version',
-                        choices=('v0.1.0'),
+                        choices=MC_VERSION,
                         action='store', required=True,
                         help='version of MC code to use')
     parser.add_argument('--pax-version', dest='pax_version',
-                        choices=('v6.1.1'),
+                        choices=PAX_VERSION,
                         action='store', required=True,
                         help='version of pax to use')
     parser.add_argument('--grid-type', dest='grid_type',
