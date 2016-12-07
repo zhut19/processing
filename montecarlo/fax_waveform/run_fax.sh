@@ -22,6 +22,8 @@ ElectronNumUpper=400
 
 RecoilType=ER
 
+IfNoS2Afterpulses = true
+
 # Select fax+pax version
 PAXVERSION=v6.0.2
 
@@ -46,7 +48,6 @@ RELEASEDIR=`( cd "$MY_PATH" && pwd )`
 # Setting up directories
 #start_dir=$PWD
 
-
 OUTDIR=$1/${SUBRUN}
 mkdir -p ${OUTDIR}
 cd ${OUTDIR}
@@ -69,6 +70,7 @@ PKL_FILENAME=${FILENAME}_truth.pkl # converted fax truth info
 RAW_FILENAME=${FILENAME}_raw       # fax simulated raw data
 PAX_FILENAME=${FILENAME}_pax       # pax processed data
 HAX_FILENAME=${FILENAME}_hax       # hax reduced data
+CustomIniFilename = ${RELEASEDIR}/NoS2Afterpulses.ini
 
 # Create the fake input data
 python ${RELEASEDIR}/CreateFakeCSV.py ${Detector} ${NumEvents} ${PhotonNumLower} ${PhotonNumUpper} ${ElectronNumLower} ${ElectronNumUpper} ${RecoilType} ${CSV_FILENAME}
@@ -76,7 +78,11 @@ python ${RELEASEDIR}/CreateFakeCSV.py ${Detector} ${NumEvents} ${PhotonNumLower}
 # Start of simulations #
 
 # fax stage
-(time paxer --input ${CSV_FILENAME} --config ${Detector} reduce_raw_data Simulation --config_string "[WaveformSimulator]truth_file_name=\"${FAX_FILENAME}\"" --output ${RAW_FILENAME};) &> ${RAW_FILENAME}.log
+if $IfNoS2Afterpulses ; then
+	(time paxer --input ${CSV_FILENAME} --config ${Detector} reduce_raw_data Simulation --config_path ${CustomIniFilename} --config_string "[WaveformSimulator]truth_file_name=\"${FAX_FILENAME}\"" --output ${RAW_FILENAME};) &> ${RAW_FILENAME}.log
+else
+	(time paxer --input ${CSV_FILENAME} --config ${Detector} reduce_raw_data Simulation --config_string "[WaveformSimulator]truth_file_name=\"${FAX_FILENAME}\"" --output ${RAW_FILENAME};) &> ${RAW_FILENAME}.log
+fi
 
 # convert fax truth to pickle
 python ${RELEASEDIR}/ConvertFaxTruthToPickle.py ${FAX_FILENAME} ${PKL_FILENAME}
