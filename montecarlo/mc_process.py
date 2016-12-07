@@ -80,11 +80,11 @@ def get_mc_versions():
             versions = os.listdir(MC_PATH)
             versions.sort()
             return tuple(versions)
-        return ()
+        # hard coded for xe-grid  
+        return ('v0.1.0',)
     except OSError:
         sys.stderr.write("Can't get mc versions from {0}\n".format(MC_PATH))
-        # hard coded for xe-grid
-        return ('v0.1.0',)
+        return ()
 
 
 def get_pax_versions():
@@ -96,7 +96,7 @@ def get_pax_versions():
     try:
         versions = []
         if not os.path.isdir(PAX_PATH):
-            return ()
+            return ('v6.1.1',)
         for entry in os.listdir(PAX_PATH):
             if entry.startswith('pax_'):
                 versions.append(entry.replace('pax_', ''))
@@ -104,8 +104,7 @@ def get_pax_versions():
         return tuple(versions)
     except OSError:
         sys.stderr.write("Can't get pax versions from {0}\n".format(PAX_PATH))
-        # hard coded for xe-grid
-        return ('v6.1.1',)
+        return ()
 
 # needs to be set after functions defined
 MC_VERSIONS = get_mc_versions()
