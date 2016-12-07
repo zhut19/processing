@@ -84,7 +84,7 @@ def get_mc_versions():
     except OSError:
         sys.stderr.write("Can't get mc versions from {0}\n".format(MC_PATH))
         # hard coded for xe-grid
-        return ('v0.1.0')
+        return ('v0.1.0',)
 
 
 def get_pax_versions():
@@ -105,7 +105,7 @@ def get_pax_versions():
     except OSError:
         sys.stderr.write("Can't get pax versions from {0}\n".format(PAX_PATH))
         # hard coded for xe-grid
-        return ('v6.1.1')
+        return ('v6.1.1',)
 
 # needs to be set after functions defined
 MC_VERSIONS = get_mc_versions()
