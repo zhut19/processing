@@ -40,20 +40,30 @@ OutputFilename = sys.argv[8]
 ####################################
 ## Some functions (HARDCODE WARNING):
 ####################################
-def IfPass48kg(x,y,z):
+
+# Current FV cut for Xe1T
+scalecmtomm=1
+def radius2_cut(zpos):
+    return 1400*scalecmtomm**2+(zpos+100*scalecmtomm)*(2250-1900)*scalecmtomm/100
+
+def IfPassFV(x,y,z):
 
     if Detector == "XENON100":
         # check if the x,y,z passing X48kg0
         I = np.power( (z+15.)/14.6, 4.)
         I += np.power( (x**2+y**2)/20000., 4.)
-
+        if I<1:
+            return True
     elif Detector == "XENON1T": # NEED TO UPDATE THIS
-        I = np.power( (z+15.)/14.6, 4.)
-        I += np.power( (x**2+y**2)/20000., 4.)
+        Zlower, Zupper = -90*scalecmtomm, -15*scalecmtomm
+        Zcut = ((z>=Zlower) & (z<=Zupper))
+        R2upper=radius2_cut(z)
+        Rcut = (x**2+y**2<R2upper)
+        if(Zcut & Rcut):
+            return True
 
-    if I<1:
-        return True
     return False
+
 
 def RandomizeFV():
 
@@ -63,14 +73,14 @@ def RandomizeFV():
         Rlower, Rupper = -np.sqrt(200.), np.sqrt(200.)
 
     elif Detector == "XENON1T": # NEED TO UPDATE THIS
-        Zlower, Zupper = -14.6-15.0, -14.6+15.0
-        Rlower, Rupper = -np.sqrt(200.), np.sqrt(200.)
+        Zlower, Zupper = -90*scalecmtomm, -15*scalecmtomm
+        Rlower, Rupper = -46*scalecmtomm, 46*scalecmtomm
 
     for i in range(100000):
         x = np.random.uniform(Rlower,Rupper)
         y = np.random.uniform(Rlower,Rupper)
         z = np.random.uniform(Zlower,Zupper)
-        if IfPass48kg(x,y,z):
+        if IfPassFV(x,y,z):
             return (x,y,z)
     return (0,0,0)
 
@@ -89,10 +99,10 @@ for i in range(NumEvents):
     fout.write(str(i)+",")
     fout.write(DefaultType+",")
     X, Y, Z = RandomizeFV()
-    #fout.write(str(X)+",")
-    #fout.write(str(Y)+",")
-    fout.write("random,")
-    fout.write("random,")
+    fout.write(str(X)+",")
+    fout.write(str(Y)+",")
+    #fout.write("random,")
+    #fout.write("random,")
     fout.write(str(-Z)+",")
     NumPhoton = int( np.random.uniform(PhotonNumLower, PhotonNumUpper) )
     fout.write(str(NumPhoton)+",")

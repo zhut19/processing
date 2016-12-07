@@ -20,10 +20,11 @@ OutputGeneralPath = sys.argv[1]
 NumJobs = int(sys.argv[2])
 IfUsePublicNodes = int(sys.argv[3])
 
-MaxNumJob = 30
+MaxNumJob = 100
 
 ##### Start batching #########
 CurrentPath = os.getcwd()
+print (CurrentPath)
 CurrentUser = getpass.getuser()
 for i in range(NumJobs):
 
@@ -44,7 +45,7 @@ for i in range(NumJobs):
     subp.call("echo '#!/bin/bash\n' >> "+SubmitFile, shell=True)
     subp.call("echo '#SBATCH --output="+SubmitOutputFilename+"' >> "+SubmitFile, shell=True)
     subp.call("echo '#SBATCH --error="+SubmitErrorFilename+"' >> "+SubmitFile, shell=True)
-    subp.call("echo '#SBATCH --time=00:59:00' >> "+SubmitFile, shell=True)
+    subp.call("echo '#SBATCH --time=05:59:00' >> "+SubmitFile, shell=True)
     subp.call("echo '#SBATCH --account=pi-lgrandi' >> "+SubmitFile, shell=True)
     if IfUsePublicNodes==0:
         subp.call("echo '#SBATCH --qos=xenon1t' >> "+SubmitFile, shell=True)
