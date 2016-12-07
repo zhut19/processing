@@ -5,6 +5,9 @@ import math
 import os
 import subprocess
 import sys
+import shlex
+from shutil import copyfile
+import time
 
 HTCONDOR_SUBMIT_FILE = '''
 executable     = run_sim.sh
@@ -77,7 +80,8 @@ def get_mc_versions():
             versions = os.listdir(MC_PATH)
             versions.sort()
             return tuple(versions)
-        return ()
+        # hard coded for xe-grid  
+        return ('v0.1.0',)
     except OSError:
         sys.stderr.write("Can't get mc versions from {0}\n".format(MC_PATH))
         return ()
@@ -92,7 +96,7 @@ def get_pax_versions():
     try:
         versions = []
         if not os.path.isdir(PAX_PATH):
-            return ()
+            return ('v6.1.1',)
         for entry in os.listdir(PAX_PATH):
             if entry.startswith('pax_'):
                 versions.append(entry.replace('pax_', ''))
@@ -181,6 +185,80 @@ def osg_submit(mc_config, mc_flavor, mc_version, pax_version, num_events, batch_
         return False
 
 
+def set_folders(ids_directory, jdl_directory):
+
+    if not os.path.exists(ids_directory):
+        os.makedirs(ids_directory)
+
+    if not os.path.exists(jdl_directory):
+        os.makedirs(jdl_directory)
+
+    return 0
+
+def set_jdl_arguments(mc_config, mc_flavor, mc_version, pax_version, str_job_nb, jdl_directory, jdl_name, num_events):
+
+    command_line = "sed -i s/RUN_NUMBER/" + str_job_nb + "/g " + jdl_directory + "/" + jdl_name
+    args = shlex.split(command_line)
+    execute = subprocess.Popen(args,
+                               stdin=subprocess.PIPE,
+                               stdout=subprocess.PIPE,
+                               stderr=subprocess.STDOUT,
+                               shell=False,
+                               universal_newlines=False)
+    execute.communicate()
+
+    command_line = "sed -i s/MC_FLAVOR/" + mc_flavor + "/g " + jdl_directory + "/" + jdl_name
+    args = shlex.split(command_line)
+    execute = subprocess.Popen(args,
+                               stdin=subprocess.PIPE,
+                               stdout=subprocess.PIPE,
+                               stderr=subprocess.STDOUT,
+                               shell=False,
+                               universal_newlines=False)
+    execute.communicate()
+
+    command_line = "sed -i s/MC_CONFIG/" + mc_config + "/g " + jdl_directory + "/" + jdl_name
+    args = shlex.split(command_line)
+    execute = subprocess.Popen(args,
+                               stdin=subprocess.PIPE,
+                               stdout=subprocess.PIPE,
+                               stderr=subprocess.STDOUT,
+                               shell=False,
+                               universal_newlines=False)
+    execute.communicate()
+
+    command_line = "sed -i s/NB_EVENTS/" + str(num_events) + "/g " + jdl_directory + "/" + jdl_name
+    args = shlex.split(command_line)
+    execute = subprocess.Popen(args,
+                               stdin=subprocess.PIPE,
+                               stdout=subprocess.PIPE,
+                               stderr=subprocess.STDOUT,
+                               shell=False,
+                               universal_newlines=False)
+    execute.communicate()
+
+    command_line = "sed -i s/MC_VERSION/" + mc_version + "/g " + jdl_directory + "/" + jdl_name
+    args = shlex.split(command_line)
+    execute = subprocess.Popen(args,
+                               stdin=subprocess.PIPE,
+                               stdout=subprocess.PIPE,
+                               stderr=subprocess.STDOUT,
+                               shell=False,
+                               universal_newlines=False)
+    execute.communicate()
+
+    command_line = "sed -i s/PAX_VERSION/" + pax_version + "/g " + jdl_directory + "/" + jdl_name
+    args = shlex.split(command_line)
+    execute = subprocess.Popen(args,
+                               stdin=subprocess.PIPE,
+                               stdout=subprocess.PIPE,
+                               stderr=subprocess.STDOUT,
+                               shell=False,
+                               universal_newlines=False)
+    execute.communicate()
+
+    return 0
+
 def egi_submit(mc_config, mc_flavor, mc_version, pax_version, num_events, batch_size):
     """
     Generate and submit jobs to EGI
@@ -193,8 +271,55 @@ def egi_submit(mc_config, mc_flavor, mc_version, pax_version, num_events, batch_
     :param batch_size: number of events to generate per job
     :return: True on success, False otherwise
     """
-    return False
 
+    ids_directory = "./job_id"
+    jdl_directory = "./jdl_files"
+    set_folders(ids_directory, jdl_directory)
+
+    filelist = [f for f in os.listdir(jdl_directory) if f.endswith(".bak")]
+    for f in filelist:
+        os.remove(f)
+
+    num_jobs = get_num_jobs(num_events, batch_size)
+    job_nb = 1
+
+    while (job_nb <= num_jobs):
+
+        str_job_nb = str(job_nb)
+
+        jdl_template_name = "job_template.jdl"
+        jdl_name = "job_" + str_job_nb + ".jdl"
+
+        destination_file = jdl_directory + "/" + jdl_name
+        copyfile(jdl_template_name, destination_file)
+
+        set_jdl_arguments(mc_config, mc_flavor, mc_version, pax_version, str_job_nb, jdl_directory, jdl_name, num_events)
+
+        jdl_path = jdl_directory + "/" + jdl_name
+        id_file  = "id_" + str_job_nb + ".txt"
+        id_path  = ids_directory + "/" + id_file
+
+        command_line_2 = "glite-wms-job-submit -a -e " \
+                         "https://wms-multi.grid.cnaf.infn.it:7443/glite_wms_wmproxy_server " \
+                         "-o " + id_path + " " + jdl_path
+        args2 = shlex.split(command_line_2)
+        execute2 = subprocess.Popen(args2,
+                                   stdin=subprocess.PIPE,
+                                   stdout=subprocess.PIPE,
+                                   stderr=subprocess.STDOUT,
+                                   shell=False,
+                                   universal_newlines=False)
+        stdout_value, stderr_value = execute2.communicate()
+        stdout_value = stdout_value.decode("utf-8")
+        stdout_value = stdout_value.split("\n")
+        stdout_value = list(filter(None,
+                                   stdout_value))
+        print stdout_value, stderr_value
+
+        time.sleep(3)
+        job_nb += 1
+
+    return True
 
 def run_main():
     """
