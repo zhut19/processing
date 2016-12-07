@@ -348,11 +348,11 @@ def run_main():
                         help='max number of events to generate per job '
                              '(default is 2000)')
     parser.add_argument('--mc-version', dest='mc_version',
-                        choices=MC_VERSION,
+                        choices=MC_VERSIONS,
                         action='store', required=True,
                         help='version of MC code to use')
     parser.add_argument('--pax-version', dest='pax_version',
-                        choices=PAX_VERSION,
+                        choices=PAX_VERSIONS,
                         action='store', required=True,
                         help='version of pax to use')
     parser.add_argument('--grid-type', dest='grid_type',
