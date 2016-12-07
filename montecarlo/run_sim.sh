@@ -177,7 +177,7 @@ fi
 #hadd ${HAX_FILENAME}.root ${PAX_FILENAME}_*
 
 # tar all files                                                                         
-tar -czf ${G4_FILENAME}.tgz ${OUTDIR}/*
+tar -czf ${G4_FILENAME}.tgz -C ${OUTDIR} .
 
 # copy files on stash                                                                    
 gfal-copy -p file://${G4_FILENAME}.tgz gsiftp://gridftp.grid.uchicago.edu:2811/cephfs/srm/xenon/xenon1t/simulations/mc_$MCVERSION/pax_$PAXVERSION/$MCFLAVOR/$CONFIG/${G4_FILENAME##*/}.tgz
