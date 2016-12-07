@@ -54,7 +54,7 @@ fi
 # Setup the software
 CVMFSDIR=/cvmfs/xenon.opensciencegrid.org
 export PATH="${CVMFSDIR}/releases/anaconda/2.4/bin:$PATH"
-source activate mc &> /dev/null
+source activate mc
 
 if [[ ${MCFLAVOR} == G4p10 ]]; then
     source ${CVMFSDIR}/software/mc_setup.sh
@@ -95,10 +95,10 @@ G4NSORT_FILENAME=${G4_FILENAME}_Sort
 G4EXEC=${RELEASEDIR}/xenon1t_${MCFLAVOR}
 MACROSDIR=${RELEASEDIR}/macros
 ln -sf ${MACROSDIR} # For reading e.g. input spectra from CWD
-(time ${G4EXEC} -p ${MACROSDIR}/${PREINIT} -f ${MACROSDIR}/run_${CONFIG}.mac -n ${NEVENTS} -o ${G4_FILENAME}.root;) &> ${G4_FILENAME}.log
+(time ${G4EXEC} -p ${MACROSDIR}/${PREINIT} -f ${MACROSDIR}/run_${CONFIG}.mac -n ${NEVENTS} -o ${G4_FILENAME}.root;) 2>&1 | tee ${G4_FILENAME}.log
 if [ $? -ne 0 ];
 then
-  exit 1
+  exit 10
 fi
 
 source ${CVMFSDIR}/software/mc_old_setup.sh
@@ -107,10 +107,10 @@ if [[ ${MCFLAVOR} == NEST ]]; then
     # Patch stage
     if [[ ${PATCHTYPE} != "" ]]; then
         PATCHEXEC=${RELEASEDIR}/runPatch
-        (time ${PATCHEXEC} -i ${G4_FILENAME}.root -o ${G4PATCH_FILENAME}.root -t ${PATCHTYPE};) &> ${G4PATCH_FILENAME}.log
+        (time ${PATCHEXEC} -i ${G4_FILENAME}.root -o ${G4PATCH_FILENAME}.root -t ${PATCHTYPE};) 2>&1 | tee ${G4PATCH_FILENAME}.log
         if [ $? -ne 0 ];
         then
-          exit 1
+          exit 11
         fi
         PAX_INPUT_FILENAME=${G4PATCH_FILENAME}
 
@@ -122,10 +122,10 @@ else
     # nSort Stage
     NSORTEXEC=${RELEASEDIR}/nSort
     ln -sf ${RELEASEDIR}/data
-    (time ${NSORTEXEC} -i ${G4_FILENAME};) &> ${G4NSORT_FILENAME}.log
+    (time ${NSORTEXEC} -i ${G4_FILENAME};) 2>&1 | tee ${G4NSORT_FILENAME}.log
     if [ $? -ne 0 ];
     then
-      exit 1
+      exit 12
     fi
     PAX_INPUT_FILENAME=${G4NSORT_FILENAME}
 fi
@@ -135,24 +135,33 @@ PAX_FILENAME=${PAX_INPUT_FILENAME}_pax
 HAX_FILENAME=${PAX_INPUT_FILENAME}_hax
 
 # fax+pax stages
-source deactivate &> /dev/null
-source activate pax_${PAXVERSION} &> /dev/null
+source deactivate
+source activate pax_${PAXVERSION}
 
 # Do not save raw waveforms
 if [[ ${SAVE_RAW} == 0 ]]; then
-    (time paxer --input ${PAX_INPUT_FILENAME}.root --config_string "[WaveformSimulator]truth_file_name=\"${FILENAME}_faxtruth\"" --config XENON1T SimulationMCInput --output ${PAX_FILENAME};) &> ${PAX_FILENAME}.log
+    (time paxer --input ${PAX_INPUT_FILENAME}.root --config_string "[WaveformSimulator]truth_file_name=\"${FILENAME}_faxtruth\"" --config XENON1T SimulationMCInput --output ${PAX_FILENAME};) 2>&1 | tee ${PAX_FILENAME}.log
+
+    if [ $? -ne 0 ];
+    then
+	exit 13
+    fi
 
 # Save raw waveforms
 else
-    (time paxer --input ${PAX_INPUT_FILENAME}.root --config_string "[WaveformSimulator]truth_file_name=\"${FILENAME}_faxtruth\"" --config XENON1T reduce_raw_data SimulationMCInput --output ${RAW_FILENAME};) &> ${RAW_FILENAME}.log
+    (time paxer --input ${PAX_INPUT_FILENAME}.root --config_string "[WaveformSimulator]truth_file_name=\"${FILENAME}_faxtruth\"" --config XENON1T reduce_raw_data SimulationMCInput --output ${RAW_FILENAME};) 2>&1 | tee ${RAW_FILENAME}.log
 
-    (time paxer --ignore_rundb --input ${RAW_FILENAME} --config XENON1T --output ${PAX_FILENAME};) &> ${PAX_FILENAME}.log
+    if [ $? -ne 0 ];
+    then
+	exit 14
+    fi
 
-fi
-
-if [ $? -ne 0 ];
-then
-  exit 1
+    (time paxer --ignore_rundb --input ${RAW_FILENAME} --config XENON1T --output ${PAX_FILENAME};) 2>&1 | tee ${PAX_FILENAME}.log
+    
+    if [ $? -ne 0 ];
+    then
+	exit 15
+    fi
 fi
 
 # hax stage
@@ -160,10 +169,10 @@ HAXPYTHON="import hax; "
 HAXPYTHON+="hax.init(main_data_paths=['${OUTDIR}'], minitree_paths=['${OUTDIR}'], pax_version_policy = 'loose'); "
 HAXPYTHON+="hax.minitrees.load('${PAX_FILENAME##*/}', ['Basics', 'Fundamentals', 'DoubleScatter', 'LargestPeakProperties', 'TotalProperties']);"
 
-(time python -c "${HAXPYTHON}";)  &> ${HAX_FILENAME}.log
+(time python -c "${HAXPYTHON}";)  2>&1 | tee ${HAX_FILENAME}.log
 if [ $? -ne 0 ];
 then
-  exit 1
+  exit 16
 fi
 #hadd ${HAX_FILENAME}.root ${PAX_FILENAME}_*
 
