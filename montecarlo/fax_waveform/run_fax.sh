@@ -15,18 +15,20 @@ echo "Job is running in directory: $PWD"
 Detector=XENON1T
 
 ###### Simulation parameters #####
-PhotonNumLower=1
-PhotonNumUpper=2000
+PhotonNumLower=0
+PhotonNumUpper=0
 ElectronNumLower=1
-ElectronNumUpper=500
+ElectronNumUpper=100
 
 RecoilType=ER
 
+IfNoS2Afterpulses=true
+
 # Select fax+pax version
-PAXVERSION=v6.1.0
+PAXVERSION=v6.1.1
 
 # Specify number of events
-NumEvents=200
+NumEvents=10000
 
 # This run number (from command line argument)
 SUBRUN=$2
@@ -71,6 +73,9 @@ PKL_FILENAME=${FILENAME}_truth.pkl # converted fax truth info
 RAW_FILENAME=${FILENAME}_raw       # fax simulated raw data
 PAX_FILENAME=${FILENAME}_pax       # pax processed data
 HAX_FILENAME=${FILENAME}_hax       # hax reduced data
+CustomIniFilename=${RELEASEDIR}/NoS2Afterpulses.ini
+echo ${CustomIniFilename}
+
 
 # Create the fake input data
 python ${RELEASEDIR}/CreateFakeCSV.py ${Detector} ${NumEvents} ${PhotonNumLower} ${PhotonNumUpper} ${ElectronNumLower} ${ElectronNumUpper} ${RecoilType} ${CSV_FILENAME}
@@ -78,7 +83,14 @@ python ${RELEASEDIR}/CreateFakeCSV.py ${Detector} ${NumEvents} ${PhotonNumLower}
 # Start of simulations #
 
 # fax stage
-(time paxer --input ${CSV_FILENAME} --config ${Detector} reduce_raw_data Simulation --config_string "[WaveformSimulator]truth_file_name=\"${FAX_FILENAME}\"" --output ${RAW_FILENAME};) &> ${RAW_FILENAME}.log
+if $IfNoS2Afterpulses; then
+	(time paxer --input ${CSV_FILENAME} --config ${Detector} reduce_raw_data Simulation --config_path ${CustomIniFilename} --config_string "[WaveformSimulator]truth_file_name=\"${FAX_FILENAME}\"" --output ${RAW_FILENAME};) &> ${RAW_FILENAME}.log
+else
+	(time paxer --input ${CSV_FILENAME} --config ${Detector} reduce_raw_data Simulation --config_string "[WaveformSimulator]truth_file_name=\"${FAX_FILENAME}\"" --output ${RAW_FILENAME};) &> ${RAW_FILENAME}.log
+fi
+
+#	(time paxer --input ${CSV_FILENAME} --config ${Detector} reduce_raw_data Simulation --config_string "[WaveformSimulator]truth_file_name=\"${FAX_FILENAME}\"" --output ${RAW_FILENAME};) &> ${RAW_FILENAME}.log
+
 
 # convert fax truth to pickle
 python ${RELEASEDIR}/ConvertFaxTruthToPickle.py ${FAX_FILENAME} ${PKL_FILENAME}
