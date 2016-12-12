@@ -22,7 +22,9 @@ ElectronNumUpper=$4
 
 RecoilType=ER
 
-IfNoS2Afterpulses=true
+# enable s2 after pulse depending on the argument
+# 1 for enable
+S2AfterpulseEnableFlag=$5 
 
 # Select fax+pax version
 PAXVERSION=v6.1.1
@@ -31,7 +33,7 @@ PAXVERSION=v6.1.1
 NumEvents=1000
 
 # This run number (from command line argument)
-SUBRUN=$6
+SUBRUN=$7
 
 ########################################
 
@@ -51,7 +53,7 @@ RELEASEDIR=`( cd "$MY_PATH" && pwd )`
 #start_dir=$PWD
 
 
-OUTDIR=$5/${SUBRUN}
+OUTDIR=$6/${SUBRUN}
 mkdir -p ${OUTDIR}
 cd ${OUTDIR}
 
@@ -84,7 +86,7 @@ python ${RELEASEDIR}/CreateFakeCSV.py ${Detector} ${NumEvents} ${PhotonNumLower}
 # Start of simulations #
 
 # fax stage
-if $IfNoS2Afterpulses; then
+if (($S2AfterpulseEnableFlag==0)); then
 	(time paxer --input ${CSV_FILENAME} --config ${Detector} reduce_raw_data Simulation --config_path ${NoPMTAfterpulseIniFilename} ${CustomIniFilename} --config_string "[WaveformSimulator]truth_file_name=\"${FAX_FILENAME}\"" --output ${RAW_FILENAME};) &> ${RAW_FILENAME}.log
 else
 	(time paxer --input ${CSV_FILENAME} --config ${Detector} reduce_raw_data Simulation --config_path ${NoPMTAfterpulseIniFilename} --config_string "[WaveformSimulator]truth_file_name=\"${FAX_FILENAME}\"" --output ${RAW_FILENAME};) &> ${RAW_FILENAME}.log

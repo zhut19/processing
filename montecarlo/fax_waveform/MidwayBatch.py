@@ -13,6 +13,7 @@ if len(sys.argv)<2:
     print("python BatchSimulation.py ....")
     print("<Output path (abs.)>")
     print("<number of jobs>")
+    print("<enable S2 after pulses ?(0 for disable)>")
     print("<photon number lower>")
     print("<photon number upper>")
     print("<electron number lower>")
@@ -22,11 +23,12 @@ if len(sys.argv)<2:
 
 OutputGeneralPath = sys.argv[1]
 NumJobs = int(sys.argv[2])
-PhotonNumLower = int(sys.argv[3])
-PhotonNumUpper = int(sys.argv[4])
-ElectronNumLower = int(sys.argv[5])
-ElectronNumUpper = int(sys.argv[6])
-IfUsePublicNodes = int(sys.argv[7])
+S2AfterpulseFlag = int(sys.argv[3])
+PhotonNumLower = int(sys.argv[4])
+PhotonNumUpper = int(sys.argv[5])
+ElectronNumLower = int(sys.argv[6])
+ElectronNumUpper = int(sys.argv[7])
+IfUsePublicNodes = int(sys.argv[8])
 
 MaxNumJob = 30
 
