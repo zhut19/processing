@@ -15,10 +15,10 @@ echo "Job is running in directory: $PWD"
 Detector=XENON1T
 
 ###### Simulation parameters #####
-PhotonNumLower=1
-PhotonNumUpper=20000
-ElectronNumLower=1
-ElectronNumUpper=20000
+PhotonNumLower=$1
+PhotonNumUpper=$2
+ElectronNumLower=$3
+ElectronNumUpper=$4
 
 RecoilType=ER
 
@@ -31,7 +31,7 @@ PAXVERSION=v6.1.1
 NumEvents=1000
 
 # This run number (from command line argument)
-SUBRUN=$2
+SUBRUN=$6
 
 ########################################
 
@@ -51,7 +51,7 @@ RELEASEDIR=`( cd "$MY_PATH" && pwd )`
 #start_dir=$PWD
 
 
-OUTDIR=$1/${SUBRUN}
+OUTDIR=$5/${SUBRUN}
 mkdir -p ${OUTDIR}
 cd ${OUTDIR}
 

@@ -13,14 +13,22 @@ if len(sys.argv)<2:
     print("python BatchSimulation.py ....")
     print("<Output path (abs.)>")
     print("<number of jobs>")
+    print("<photon number lower>")
+    print("<photon number upper>")
+    print("<electron number lower>")
+    print("<electron number upper>")
     print("<If use Public node (0 for no(xenon1t nodes); 1 for yes; 2 for kicp nodes)>")
     exit()
 
 OutputGeneralPath = sys.argv[1]
 NumJobs = int(sys.argv[2])
-IfUsePublicNodes = int(sys.argv[3])
+PhotonNumLower = int(sys.argv[3])
+PhotonNumUpper = int(sys.argv[4])
+ElectronNumLower = int(sys.argv[5])
+ElectronNumUpper = int(sys.argv[6])
+IfUsePublicNodes = int(sys.argv[7])
 
-MaxNumJob = 100
+MaxNumJob = 30
 
 ##### Start batching #########
 CurrentPath = os.getcwd()
@@ -54,7 +62,7 @@ for i in range(NumJobs):
         subp.call("echo '#SBATCH --qos=xenon1t-kicp' >> "+SubmitFile, shell=True)
         subp.call("echo '#SBATCH --partition=kicp\n' >> "+SubmitFile, shell=True)
 
-    Command = CurrentPath+"/./run_fax.sh "+OutputGeneralPath+" "+RunString
+    Command = CurrentPath+"/./run_fax.sh "+str(PhotonNumLower)+" "+str(PhotonNumUpper)+" "+str(ElectronNumLower)+" "+str(ElectronNumUpper)+" "+OutputGeneralPath+" "+RunString
     subp.call("echo '"+Command+"\n' >> "+SubmitFile, shell=True)
 
     SubmitPath = OutputPath
