@@ -32,7 +32,7 @@ ElectronNumLower = int(sys.argv[7])
 ElectronNumUpper = int(sys.argv[8])
 IfUsePublicNodes = int(sys.argv[9])
 
-MaxNumJob = 30
+MaxNumJob = 48
 
 ##### Start batching #########
 CurrentPath = os.getcwd()
@@ -57,7 +57,7 @@ for i in range(NumJobs):
     subp.call("echo '#!/bin/bash\n' >> "+SubmitFile, shell=True)
     subp.call("echo '#SBATCH --output="+SubmitOutputFilename+"' >> "+SubmitFile, shell=True)
     subp.call("echo '#SBATCH --error="+SubmitErrorFilename+"' >> "+SubmitFile, shell=True)
-    subp.call("echo '#SBATCH --time=01:59:00' >> "+SubmitFile, shell=True)
+    subp.call("echo '#SBATCH --time=03:59:00' >> "+SubmitFile, shell=True)
     subp.call("echo '#SBATCH --account=pi-lgrandi' >> "+SubmitFile, shell=True)
     if IfUsePublicNodes==0:
         subp.call("echo '#SBATCH --qos=xenon1t' >> "+SubmitFile, shell=True)
