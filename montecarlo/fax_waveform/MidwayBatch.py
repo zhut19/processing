@@ -13,6 +13,7 @@ if len(sys.argv)<2:
     print("python BatchSimulation.py ....")
     print("<Output path (abs.)>")
     print("<number of jobs>")
+    print("<number of events in each job>")
     print("<enable S2 after pulses ?(0 for disable)>")
     print("<photon number lower>")
     print("<photon number upper>")
@@ -23,12 +24,13 @@ if len(sys.argv)<2:
 
 OutputGeneralPath = sys.argv[1]
 NumJobs = int(sys.argv[2])
-S2AfterpulseFlag = int(sys.argv[3])
-PhotonNumLower = int(sys.argv[4])
-PhotonNumUpper = int(sys.argv[5])
-ElectronNumLower = int(sys.argv[6])
-ElectronNumUpper = int(sys.argv[7])
-IfUsePublicNodes = int(sys.argv[8])
+NumEvents = int(sys.argv[3])
+S2AfterpulseFlag = int(sys.argv[4])
+PhotonNumLower = int(sys.argv[5])
+PhotonNumUpper = int(sys.argv[6])
+ElectronNumLower = int(sys.argv[7])
+ElectronNumUpper = int(sys.argv[8])
+IfUsePublicNodes = int(sys.argv[9])
 
 MaxNumJob = 30
 
@@ -55,7 +57,7 @@ for i in range(NumJobs):
     subp.call("echo '#!/bin/bash\n' >> "+SubmitFile, shell=True)
     subp.call("echo '#SBATCH --output="+SubmitOutputFilename+"' >> "+SubmitFile, shell=True)
     subp.call("echo '#SBATCH --error="+SubmitErrorFilename+"' >> "+SubmitFile, shell=True)
-    subp.call("echo '#SBATCH --time=05:59:00' >> "+SubmitFile, shell=True)
+    subp.call("echo '#SBATCH --time=01:59:00' >> "+SubmitFile, shell=True)
     subp.call("echo '#SBATCH --account=pi-lgrandi' >> "+SubmitFile, shell=True)
     if IfUsePublicNodes==0:
         subp.call("echo '#SBATCH --qos=xenon1t' >> "+SubmitFile, shell=True)
@@ -64,7 +66,7 @@ for i in range(NumJobs):
         subp.call("echo '#SBATCH --qos=xenon1t-kicp' >> "+SubmitFile, shell=True)
         subp.call("echo '#SBATCH --partition=kicp\n' >> "+SubmitFile, shell=True)
 
-    Command = CurrentPath+"/./run_fax.sh "+str(PhotonNumLower)+" "+str(PhotonNumUpper)+" "+str(ElectronNumLower)+" "+str(ElectronNumUpper)+" "+OutputGeneralPath+" "+RunString
+    Command = CurrentPath+"/./run_fax.sh "+str(PhotonNumLower)+" "+str(PhotonNumUpper)+" "+str(ElectronNumLower)+" "+str(ElectronNumUpper)+" "+str(NumEvents)+" "+str(S2AfterpulseFlag)+" "+OutputGeneralPath+" "+RunString
     subp.call("echo '"+Command+"\n' >> "+SubmitFile, shell=True)
 
     SubmitPath = OutputPath

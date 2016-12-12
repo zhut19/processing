@@ -30,10 +30,10 @@ S2AfterpulseEnableFlag=$5
 PAXVERSION=v6.1.1
 
 # Specify number of events
-NumEvents=1000
+NumEvents=$6
 
 # This run number (from command line argument)
-SUBRUN=$7
+SUBRUN=$8
 
 ########################################
 
@@ -53,7 +53,7 @@ RELEASEDIR=`( cd "$MY_PATH" && pwd )`
 #start_dir=$PWD
 
 
-OUTDIR=$6/${SUBRUN}
+OUTDIR=$7/${SUBRUN}
 mkdir -p ${OUTDIR}
 cd ${OUTDIR}
 
