@@ -15,10 +15,10 @@ echo "Job is running in directory: $PWD"
 Detector=XENON1T
 
 ###### Simulation parameters #####
-PhotonNumLower=0
-PhotonNumUpper=0
+PhotonNumLower=1
+PhotonNumUpper=20000
 ElectronNumLower=1
-ElectronNumUpper=100
+ElectronNumUpper=20000
 
 RecoilType=ER
 
@@ -28,7 +28,7 @@ IfNoS2Afterpulses=true
 PAXVERSION=v6.1.1
 
 # Specify number of events
-NumEvents=10000
+NumEvents=1000
 
 # This run number (from command line argument)
 SUBRUN=$2
