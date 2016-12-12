@@ -15,6 +15,15 @@ Detailed instructions to come...
     https://github.com/XENON1T/processing/blob/master/montecarlo/mc_process.py
 ~~~~
 
+### EGI submission 
+~~~~
+In order to submit jobs on the EGI sites, you first have the following three steps:
+1) get a certificate
+2) register at the XENON VO
+3) initiate a proxy
+Detailed instructions can be found here: https://xecluster.lngs.infn.it/dokuwiki/doku.php?id=xenon:xenon1t:sim:grid
+
+
 ### Midway local running
 
 You may run locally on Midway with e.g.:
