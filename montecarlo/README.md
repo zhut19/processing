@@ -17,7 +17,7 @@ Detailed instructions to come...
 
 ### EGI submission 
 
-In order to submit jobs on the EGI sites, you first have the following three steps:
+In order to submit jobs on the EGI sites, you first have to:
 1) get a certificate
 2) register at the XENON VO
 3) initiate a proxy
@@ -36,6 +36,7 @@ jdl_files: contains the .jdl file for each submitted job
 job_id: contains the .txt files that contain the id of the submitted jobs
 ~~~~
 The .jdl and .txt files are automatically generated/updated by the script
+Currently, only available CNAF and Nikhef sites.
 
 ### Midway local running
 
