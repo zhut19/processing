@@ -23,6 +23,7 @@ In order to submit jobs on the EGI sites, you first have the following three ste
 3) initiate a proxy
 Detailed instructions can be found here: https://xecluster.lngs.infn.it/dokuwiki/doku.php?id=xenon:xenon1t:sim:grid
 
+~~~~
 
 ### Midway local running
 
