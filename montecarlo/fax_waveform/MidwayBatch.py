@@ -66,7 +66,7 @@ for i in range(NumJobs):
         subp.call("echo '#SBATCH --qos=xenon1t-kicp' >> "+SubmitFile, shell=True)
         subp.call("echo '#SBATCH --partition=kicp\n' >> "+SubmitFile, shell=True)
 
-    Command = CurrentPath+"/./run_fax.sh "+str(PhotonNumLower)+" "+str(PhotonNumUpper)+" "+str(ElectronNumLower)+" "+str(ElectronNumUpper)+" "+str(NumEvents)+" "+str(S2AfterpulseFlag)+" "+OutputGeneralPath+" "+RunString
+    Command = CurrentPath+"/./run_fax.sh "+str(PhotonNumLower)+" "+str(PhotonNumUpper)+" "+str(ElectronNumLower)+" "+str(ElectronNumUpper)+" "+str(S2AfterpulseFlag)+" "+str(NumEvents)+" "+OutputGeneralPath+" "+RunString
     subp.call("echo '"+Command+"\n' >> "+SubmitFile, shell=True)
 
     SubmitPath = OutputPath
