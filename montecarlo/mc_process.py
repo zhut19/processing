@@ -1,10 +1,14 @@
 #!/usr/bin/env python
 
 import argparse
+import json
 import math
 import os
 import subprocess
 import sys
+
+import Pegasus.DAX3
+
 
 HTCONDOR_SUBMIT_FILE = '''
 executable     = run_sim.sh
@@ -34,36 +38,65 @@ MC_PATH = '/cvmfs/xenon.opensciencegrid.org/releases/mc/'
 PAX_PATH = "/cvmfs/xenon.opensciencegrid.org/releases/anaconda/2.4/envs/"
 MC_FLAVORS = ('G4', 'NEST', 'G4p10')
 CONFIGS = (
-'AmBe_neutronISO',
-'Cryostat_Co60',
-'Cryostat_K40',
-'Cryostat_neutron',
-'Cryostat_Th232',
-'Cryostat_U238',
-'DDFusion_neutron',
-#'Disk15m_muon', # Not yet tested
-'ib1sp1_Cs137',
-'ib1sp2_Cs137',
-#'optPhot', # Not yet tested
-'Pmt_Co60',
-'Pmt_K40',
-'Pmt_neutron',
-'Pmt_Th232',
-'Pmt_U238',
-'TPC_2n2b',
-'TPC_ERsolar',
-'TPC_Kr83m',
-'TPC_Kr85',
-'TPC_Rn222',
-'TPC_WIMP',
-'WholeLXe_Rn220',
-'WholeLXe_Rn222'
+    'AmBe_neutronISO',
+    'Cryostat_Co60',
+    'Cryostat_K40',
+    'Cryostat_neutron',
+    'Cryostat_Th232',
+    'Cryostat_U238',
+    'DDFusion_neutron',
+    #'Disk15m_muon', # Not yet tested
+    'ib1sp1_Cs137',
+    'ib1sp2_Cs137',
+    #'optPhot', # Not yet tested
+    'Pmt_Co60',
+    'Pmt_K40',
+    'Pmt_neutron',
+    'Pmt_Th232',
+    'Pmt_U238',
+    'TPC_2n2b',
+    'TPC_ERsolar',
+    'TPC_Kr83m',
+    'TPC_Kr85',
+    'TPC_Rn222',
+    'TPC_WIMP',
+    'WholeLXe_Rn220',
+    'WholeLXe_Rn222'
 )
 
 # condor / osg specific constants
 HTCONDOR_SUBMIT_FILENAME = 'mc.submit'
 DAG_FILE = 'mc.dag'
 DAG_RETRIES = 10
+
+# pegasus constants
+PEGASUSRC_PATH = './pegasusrc'
+
+
+def pegasus_submit(dax, site, output_directory):
+    """
+    Submit a workflow to pegasus
+
+    :param dax:  path to xml file with DAX, used for submit
+    :param site: condorpool for osg, egi for EGI submission
+    :param output_directory:  directory for workflow output
+    :return: the output from pegasus
+    """
+    try:
+        subprocess.check_call(['/usr/bin/pegasus-plan',
+                               '--sites',
+                               site,
+                               '--conf',
+                               PEGASUSRC_PATH,
+                               '--output-dir',
+                               output_directory,
+                               '--dax',
+                               dax,
+                               '--submit'])
+    except subprocess.CalledProcessError as err:
+        sys.stderr.write("Error with workflow: {0}\n".format(err.output))
+        return err.returncode
+    return 0
 
 
 def get_mc_versions():
@@ -107,6 +140,68 @@ MC_VERSIONS = get_mc_versions()
 PAX_VERSIONS = get_pax_versions()
 
 
+def generate_mc_workflow(mc_config,
+                         mc_flavor,
+                         mc_version,
+                         pax_version,
+                         num_events,
+                         batch_size):
+    """
+    Generate a Pegasus workflow to do X1T MC processing
+
+    :param mc_config: MC config to use
+    :param mc_flavor: MC flavor to use
+    :param mc_version: version of MC code to use
+    :param pax_version: version of PAX code to use
+    :param num_events: total number of events to generate
+    :param batch_size: number of events to generate per job
+    :return: True on success, False otherwise
+    """
+    dax = Pegasus.DAX3.ADAG('montecarlo')
+    run_sim = Pegasus.DAX3.Executable(name="run_sim.sh", arch="x86_64", installed=False)
+    run_sim.addPFN(Pegasus.DAX3.PFN("file://{0}".format(os.path.join(os.getcwd(), "run_sim.sh")), "local"))
+    dax.addExecutable(run_sim)
+
+    num_jobs = get_num_jobs(num_events, batch_size)
+    sys.stdout.write("Generating {0} events ".format(num_events) +
+                     "using {0} jobs\n".format(num_jobs))
+
+    for job in range(0, num_jobs):
+        run_sim_job = Pegasus.DAX3.Job(id="run_sim_{0}".format(job), name="run_sim.sh")
+        if job == (num_jobs - 1):
+            left_events = num_events % batch_size
+            if left_events == 0:
+                left_events = batch_size
+            run_sim_job.addArguments(str(job),
+                                     mc_flavor,
+                                     mc_config,
+                                     str(left_events),
+                                     mc_version,
+                                     pax_version)
+        else:
+            run_sim_job.addArguments(str(job),
+                                     mc_flavor,
+                                     mc_config,
+                                     str(batch_size),
+                                     mc_version,
+                                     pax_version)
+        output = Pegasus.DAX3.File("{0}_output.tar.bz2".format(job))
+        run_sim_job.uses(output, link=Pegasus.DAX3.Link.OUTPUT, transfer=True)
+        dax.addJob(run_sim_job)
+    with open('mc_process.xml', 'w') as f:
+        dax.writeXML(f)
+    with open('mc_workflow.json', 'w') as f:
+        workflow_info = [num_jobs,
+                         num_events,
+                         mc_flavor,
+                         mc_config,
+                         batch_size,
+                         mc_version,
+                         pax_version]
+        f.write(json.dumps(workflow_info))
+    return True
+
+
 def get_num_jobs(total_events, batch_size):
     """
     Get the number of jobs to use for MC simulation
@@ -117,83 +212,6 @@ def get_num_jobs(total_events, batch_size):
     """
     num_jobs = int(math.ceil(total_events / float(batch_size)))
     return num_jobs
-
-
-def osg_submit(mc_config, mc_flavor, mc_version, pax_version, num_events, batch_size):
-    """
-    Generate and submit jobs to OSG
-
-    :param mc_config: MC config to use
-    :param mc_flavor: MC flavor to use
-    :param mc_version: version of MC code to use
-    :param pax_version: version of PAX code to use
-    :param num_events: total number of events to generate
-    :param batch_size: number of events to generate per job
-    :return: True on success, False otherwise
-    """
-
-    if os.path.exists(HTCONDOR_SUBMIT_FILENAME):
-        sys.stderr.write("Submit file at {0} ".format(HTCONDOR_SUBMIT_FILENAME) +
-                         "already exists, exiting!\n")
-        return 1
-
-    if os.path.exists(DAG_FILE):
-        sys.stderr.write("DAG file at {0} ".format(DAG_FILE) +
-                         "already exists, exiting!\n")
-        return 1
-
-    num_jobs = get_num_jobs(num_events, batch_size)
-    sys.stdout.write("Generating {0} events ".format(num_events) +
-                     "using {0} jobs\n".format(num_jobs))
-
-    with open(DAG_FILE, 'wt') as dag_file:
-        for job in range(0, num_jobs):
-            dag_file.write("JOB MC.{0} {1}\n".format(job,
-                                                     HTCONDOR_SUBMIT_FILENAME))
-            dag_file.write('VARS MC.{0} flavor="{1}" '.format(job, mc_flavor))
-            dag_file.write('config="{0}" '.format(mc_config))
-            dag_file.write('pax_version="{0}" '.format(pax_version))
-            dag_file.write('mc_version="{0}" '.format(mc_version))
-            if job == (num_jobs - 1):
-                left_events = num_events % batch_size
-                if left_events == 0:
-                    left_events = batch_size
-                dag_file.write('events="{0}" '.format(left_events))
-            else:
-                dag_file.write('events="{0}" '.format(batch_size))
-            dag_file.write('id="{0}" '.format(job))
-
-            dag_file.write("\n")
-            dag_file.write("Retry MC.{0} {1}\n".format(job, DAG_RETRIES))
-    with open(HTCONDOR_SUBMIT_FILENAME, 'wt') as submit_file:
-        submit_file.write(HTCONDOR_SUBMIT_FILE)
-
-    if not os.path.exists('output'):
-        os.mkdir('output')
-    if not os.path.exists('log'):
-        os.mkdir('log')
-    try:
-        subprocess.check_call(['condor_submit_dag', 'mc.dag'])
-        sys.stdout.write("Submitted jobs to OSG\n")
-        return True
-    except subprocess.CalledProcessError as e:
-        sys.stderr.write("Exception while submitting dag: {0}\n".format(e))
-        return False
-
-
-def egi_submit(mc_config, mc_flavor, mc_version, pax_version, num_events, batch_size):
-    """
-    Generate and submit jobs to EGI
-
-    :param mc_config: MC config to use
-    :param mc_flavor: MC flavor to use
-    :param mc_version: version of MC code to use
-    :param pax_version: version of PAX code to use
-    :param num_events: total number of events to generate
-    :param batch_size: number of events to generate per job
-    :return: True on success, False otherwise
-    """
-    return False
 
 
 def run_main():
@@ -239,23 +257,29 @@ def run_main():
         sys.stdout.write("No events to generate, exiting")
         return 0
 
+    output_directory = os.path.join(os.getcwd(), 'output')
     if args.grid_type == 'osg':
-        if osg_submit(args.mc_config,
-                      args.mc_flavor,
-                      args.mc_version,
-                      args.pax_version,
-                      args.num_events,
-                      args.batch_size):
-            return 0
+        if generate_mc_workflow(args.mc_config,
+                                args.mc_flavor,
+                                args.mc_version,
+                                args.pax_version,
+                                args.num_events,
+                                args.batch_size):
+            return pegasus_submit('mc_process.xml',
+                                  'condorpool',
+                                  output_directory)
+
         return 1
     elif args.grid_type == 'egi':
-        if egi_submit(args.mc_config,
-                      args.mc_flavor,
-                      args.mc_version,
-                      args.pax_version,
-                      args.num_events,
-                      args.batch_size):
-            return 0
+        if generate_mc_workflow(args.mc_config,
+                                args.mc_flavor,
+                                args.mc_version,
+                                args.pax_version,
+                                args.num_events,
+                                args.batch_size):
+            return pegasus_submit('mc_process.xml',
+                                  'egi',
+                                  output_directory)
         return 1
     else:
         return 1

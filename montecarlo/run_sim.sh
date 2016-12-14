@@ -165,11 +165,13 @@ if [ $? -ne 0 ];
 then
   exit 1
 fi
-#hadd ${HAX_FILENAME}.root ${PAX_FILENAME}_*
 
 # Cleanup
 rm -f pax*
 
+
+cd  $OUTDIR
+tar cvjf ${start_dir}/${JOBID}_output.tar.bz2 *
 
 cd $start_dir
 rm -fr $work_dir
