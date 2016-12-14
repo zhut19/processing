@@ -1,0 +1,28 @@
+[
+
+    VirtualOrganisation = "xenon.biggrid.nl";
+    Executable = "run_sim.sh";
+    Arguments = "RUN_NUMBER MC_FLAVOR MC_CONFIG NB_EVENTS MC_VERSION PAX_VERSION";
+    StdOutput = "Std_output";
+    StdError = "Std_error";
+    OutputSandbox = {
+        "Std_output",
+        "Std_error"
+    };
+    JobType = "normal";
+    Type = "Job";
+    InputSandbox = "run_sim.sh";
+    rank = (-other.GlueCEStateWaitingJobs==0 ? -other.GlueCEStateFreeCPUs : -other.GlueCEStateWaitingJobs);
+    requirements = other.GlueCEStateStatus == "Production";
+    #requirements = (other.GlueCEUniqueID == "gazon.nikhef.nl:8443/cream-pbs-short"); 
+    #requirements = (other.GlueCEUniqueID == "dissel.nikhef.nl:2119/jobmanager-pbs-short");
+    #requirements = (other.GlueCEUniqueID == "juk.nikhef.nl:8443/cream-pbs-short");
+    #requirements = (other.GlueCEUniqueID == "klomp.nikhef.nl:8443/cream-pbs-short");
+    #requirements = (other.GlueCEUniqueID == "creamce.gina.sara.nl:8443/cream-pbs-medium");
+    #requirements = (other.GlueCEUniqueID == "creamce2.gina.sara.nl:8443/cream-pbs-medium");
+    #requirements = (other.GlueCEUniqueID == "creamce3.gina.sara.nl:8443/cream-pbs-mediu");
+    requirements = (other.GlueCEUniqueID == "ce01-lcg.cr.cnaf.infn.it:8443/cream-lsf-xenon" || other.GlueCEUniqueID == "ce04-lcg.cr.cnaf.infn.it:8443/cream-lsf-xenon" || other.GlueCEUniqueID == "ce05-lcg.cr.cnaf.infn.it:8443/cream-lsf-xenon" || other.GlueCEUniqueID == "ce06-lcg.cr.cnaf.infn.it:8443/cream-lsf-xenon" || other.GlueCEUniqueID == "ce07-lcg.cr.cnaf.infn.it:8443/cream-lsf-xenon" || other.GlueCEUniqueID == "ce08-lcg.cr.cnaf.infn.it:8443/cream-lsf-xenon");
+    #requirements = (other.GlueCEUniqueID == "wipp-crm.weizmann.ac.il:8443/cream-pbs-xenon");
+    #requirements = (other.GlueCEUniqueID == "cccreamceli09.in2p3.fr:8443/cream-sge-long");
+    #requirements = Member("VO-xenon.biggrid.nl-Geant",other.GlueHostApplicationSoftwareRunTimeEnvironment);
+]

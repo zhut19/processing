@@ -15,6 +15,33 @@ Detailed instructions to come...
     https://github.com/XENON1T/processing/blob/master/montecarlo/mc_process.py
 ~~~~
 
+### EGI submission 
+
+In order to submit jobs on the EGI sites, you first have to:
+
+1) get a certificate
+
+2) register at the XENON VO
+
+3) initiate a proxy
+~~~~
+Detailed instructions can be found here: https://xecluster.lngs.infn.it/dokuwiki/doku.php?id=xenon:xenon1t:sim:grid
+~~~~
+To submit jobs from xe-grid01:
+~~~~
+cd processing/montecarlo/
+./mc_process.py  <MC_FLAVOR> <MC_CONFIG> <NUM_EVENTS> <MC_VERSION> <PAX_VERSION> <GRID_TYPE>
+with <GRID_TYPE> = egi
+~~~~
+After the submission, there will be created two folders (if they don't exist yet): 
+~~~~
+jdl_files: contains the .jdl file for each submitted job
+job_id: contains the .txt files that contain the id of the submitted jobs
+~~~~
+The .jdl and .txt files are automatically generated/updated by the script.
+
+Currently, only available CNAF and Nikhef sites.
+
 ### Midway local running
 
 You may run locally on Midway with e.g.:
