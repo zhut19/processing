@@ -166,6 +166,7 @@ def run_main():
             sys.stderr.write("An error probably occurred while processing.\n")
             return 1
 
+    error = False
     for output in ['Geant ROOT', 'Sort ROOT', 'Patch ROOT']:
         if output not in root_files:
             continue
@@ -182,6 +183,7 @@ def run_main():
                              "events by more than {0}: ".format(EVENT_THRESHOLD) +
                              "got {0} events, expected {1}\n".format(total_events,
                                                                      events))
+            error = True
 
     total_events = 0
     for root_file in root_files['PAX ROOT'][0]:
@@ -189,6 +191,7 @@ def run_main():
         ttree = pax_file.Get('tree')
         total_events += ttree.GetEntries()
     if abs(events - total_events) > (EVENT_THRESHOLD * float(events)):
+        error = True
         sys.stderr.write("PAX events differs from requested " +
                          "events by more than {0}: ".format(EVENT_THRESHOLD) +
                          "got {0} events, expected {1}\n".format(total_events,
@@ -200,11 +203,14 @@ def run_main():
             ttree = output_file.Get(output_type)
             total_events += ttree.GetEntries()
         if abs(events - total_events) > (EVENT_THRESHOLD * float(events)):
+            error = True
             sys.stderr.write("{0} differs from requested ".format(output_type) +
                              "events by more than {0}: ".format(EVENT_THRESHOLD) +
                              "got {0} events, expected {1}\n".format(total_events,
-
                                                                      events))
+    if error:
+        sys.exit(1)
+
     result_dir = os.path.join(cur_dir, 'merged_results')
     if not os.path.exists(result_dir):
         os.mkdir(result_dir)
