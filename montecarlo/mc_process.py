@@ -81,7 +81,7 @@ def get_mc_versions():
             versions.sort()
             return tuple(versions)
         # hard coded for xe-grid  
-        return ('v0.1.0',)
+        return ('v0.1.2',)
     except OSError:
         sys.stderr.write("Can't get mc versions from {0}\n".format(MC_PATH))
         return ()
@@ -293,10 +293,11 @@ def egi_submit(mc_config, mc_flavor, mc_version, pax_version, num_events, batch_
         destination_file = jdl_directory + "/" + jdl_name
         copyfile(jdl_template_name, destination_file)
 
-        set_jdl_arguments(mc_config, mc_flavor, mc_version, pax_version, str_job_nb, jdl_directory, jdl_name, num_events)
+        set_jdl_arguments(mc_config, mc_flavor, mc_version, pax_version, str_job_nb, jdl_directory, jdl_name, batch_size)
 
         jdl_path = jdl_directory + "/" + jdl_name
-        id_file  = "id_" + str_job_nb + ".txt"
+        #id_file  = "id_" + str_job_nb + ".txt"
+        id_file  = "job_ids.txt"
         id_path  = ids_directory + "/" + id_file
 
         command_line_2 = "glite-wms-job-submit -a -e " \
@@ -314,9 +315,9 @@ def egi_submit(mc_config, mc_flavor, mc_version, pax_version, num_events, batch_
         stdout_value = stdout_value.split("\n")
         stdout_value = list(filter(None,
                                    stdout_value))
-        print stdout_value, stderr_value
+        print (stdout_value, stderr_value)
 
-        time.sleep(3)
+        #time.sleep(0.5)
         job_nb += 1
 
     return True
