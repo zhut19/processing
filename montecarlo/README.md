@@ -8,7 +8,7 @@ Repository for scripts to run xenon1t MC code
     git clone https://github.com/XENON1T/processing.git
 ~~~~
 
-### OSG/EGI submission 
+### OSG submission 
 
 Detailed instructions to come...
 ~~~~
@@ -36,11 +36,19 @@ with <GRID_TYPE> = egi
 After the submission, there will be created two folders (if they don't exist yet): 
 ~~~~
 jdl_files: contains the .jdl file for each submitted job
-job_id: contains the .txt files that contain the id of the submitted jobs
+job_id: contains the job_ids.txt file that contains the ID of all the submitted jobs
 ~~~~
 The .jdl and .txt files are automatically generated/updated by the script.
 
-Currently, only available CNAF and Nikhef sites.
+You can check job status with e.g
+~~~
+glite-wms-job-status -i job_id/job_ids.txt --noint
+~~~
+
+If you are not explicitly copying results out at the bottom of run_sim.sh, then you can grab the files with
+~~~
+glite-wms-job-output --dir output -i job_id/job_ids.txt --noint
+~~~
 
 ### Midway local running
 
