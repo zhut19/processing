@@ -4,11 +4,11 @@ import argparse
 import json
 import math
 import os
+import re
 import subprocess
 import sys
 
 import Pegasus.DAX3
-
 
 HTCONDOR_SUBMIT_FILE = '''
 executable     = run_sim.sh
@@ -80,23 +80,29 @@ def pegasus_submit(dax, site, output_directory):
     :param dax:  path to xml file with DAX, used for submit
     :param site: condorpool for osg, egi for EGI submission
     :param output_directory:  directory for workflow output
-    :return: the output from pegasus
+    :return: the pegasus workflow id
     """
     try:
-        subprocess.check_call(['/usr/bin/pegasus-plan',
-                               '--sites',
-                               site,
-                               '--conf',
-                               PEGASUSRC_PATH,
-                               '--output-dir',
-                               output_directory,
-                               '--dax',
-                               dax,
-                               '--submit'])
+        output = subprocess.check_output(['/usr/bin/pegasus-plan',
+                                          '--sites',
+                                          site,
+                                          '--conf',
+                                          PEGASUSRC_PATH,
+                                          '--output-dir',
+                                          output_directory,
+                                          '--dax',
+                                          dax,
+                                          '--submit'],
+                                         stderr=subprocess.STDOUT)
+        match = re.search('running in the base directory:.*?(\d{8}T\d{6}-\d{4})',
+                          output,
+                          re.MULTILINE|re.DOTALL)
+        if match:
+            return match.group(1)
     except subprocess.CalledProcessError as err:
         sys.stderr.write("Error with workflow: {0}\n".format(err.output))
-        return err.returncode
-    return 0
+        return None
+    return None
 
 
 def get_mc_versions():
@@ -155,7 +161,7 @@ def generate_mc_workflow(mc_config,
     :param pax_version: version of PAX code to use
     :param num_events: total number of events to generate
     :param batch_size: number of events to generate per job
-    :return: True on success, False otherwise
+    :return: number of jobs in the workflow
     """
     dax = Pegasus.DAX3.ADAG('montecarlo')
     run_sim = Pegasus.DAX3.Executable(name="run_sim.sh", arch="x86_64", installed=False)
@@ -165,41 +171,34 @@ def generate_mc_workflow(mc_config,
     num_jobs = get_num_jobs(num_events, batch_size)
     sys.stdout.write("Generating {0} events ".format(num_events) +
                      "using {0} jobs\n".format(num_jobs))
-
-    for job in range(0, num_jobs):
-        run_sim_job = Pegasus.DAX3.Job(id="run_sim_{0}".format(job), name="run_sim.sh")
-        if job == (num_jobs - 1):
-            left_events = num_events % batch_size
-            if left_events == 0:
-                left_events = batch_size
-            run_sim_job.addArguments(str(job),
-                                     mc_flavor,
-                                     mc_config,
-                                     str(left_events),
-                                     mc_version,
-                                     pax_version)
-        else:
-            run_sim_job.addArguments(str(job),
-                                     mc_flavor,
-                                     mc_config,
-                                     str(batch_size),
-                                     mc_version,
-                                     pax_version)
-        output = Pegasus.DAX3.File("{0}_output.tar.bz2".format(job))
-        run_sim_job.uses(output, link=Pegasus.DAX3.Link.OUTPUT, transfer=True)
-        dax.addJob(run_sim_job)
-    with open('mc_process.xml', 'w') as f:
-        dax.writeXML(f)
-    with open('mc_workflow.json', 'w') as f:
-        workflow_info = [num_jobs,
-                         num_events,
-                         mc_flavor,
-                         mc_config,
-                         batch_size,
-                         mc_version,
-                         pax_version]
-        f.write(json.dumps(workflow_info))
-    return True
+    try:
+        for job in range(0, num_jobs):
+            run_sim_job = Pegasus.DAX3.Job(id="run_sim_{0}".format(job), name="run_sim.sh")
+            if job == (num_jobs - 1):
+                left_events = num_events % batch_size
+                if left_events == 0:
+                    left_events = batch_size
+                run_sim_job.addArguments(str(job),
+                                         mc_flavor,
+                                         mc_config,
+                                         str(left_events),
+                                         mc_version,
+                                         pax_version)
+            else:
+                run_sim_job.addArguments(str(job),
+                                         mc_flavor,
+                                         mc_config,
+                                         str(batch_size),
+                                         mc_version,
+                                         pax_version)
+            output = Pegasus.DAX3.File("{0}_output.tar.bz2".format(job))
+            run_sim_job.uses(output, link=Pegasus.DAX3.Link.OUTPUT, transfer=True)
+            dax.addJob(run_sim_job)
+        with open('mc_process.xml', 'w') as f:
+            dax.writeXML(f)
+    except:
+        return 0
+    return num_jobs
 
 
 def get_num_jobs(total_events, batch_size):
@@ -258,31 +257,62 @@ def run_main():
         return 0
 
     output_directory = os.path.join(os.getcwd(), 'output')
-    if args.grid_type == 'osg':
-        if generate_mc_workflow(args.mc_config,
-                                args.mc_flavor,
-                                args.mc_version,
-                                args.pax_version,
-                                args.num_events,
-                                args.batch_size):
-            return pegasus_submit('mc_process.xml',
-                                  'condorpool',
-                                  output_directory)
+    workflow_info = [0,
+                     args.num_events,
+                     args.mc_flavor,
+                     args.mc_config,
+                     args.batch_size,
+                     args.mc_version,
+                     args.pax_version]
 
+    workflow_info[0] = generate_mc_workflow(args.mc_config,
+                                            args.mc_flavor,
+                                            args.mc_version,
+                                            args.pax_version,
+                                            args.num_events,
+                                            args.batch_size)
+    if workflow_info[0] == 0:
+        sys.stderr.write("Can't generate workflow, exiting")
         return 1
+    if args.grid_type == 'osg':
+        pegasus_id = pegasus_submit('mc_process.xml',
+                                    'condorpool',
+                                    output_directory)
+        workflow_info.append(pegasus_id)
     elif args.grid_type == 'egi':
-        if generate_mc_workflow(args.mc_config,
-                                args.mc_flavor,
-                                args.mc_version,
-                                args.pax_version,
-                                args.num_events,
-                                args.batch_size):
-            return pegasus_submit('mc_process.xml',
-                                  'egi',
-                                  output_directory)
+        pegasus_id = pegasus_submit('mc_process.xml',
+                                    'egi',
+                                    output_directory)
+    if pegasus_id is None:
+        sys.stderr.write("Couldn't start pegasus workflow")
         return 1
-    else:
-        return 1
+    workflow_info.append(pegasus_id)
+    with open('mc_workflow.json', 'w') as f:
+        f.write(json.dumps(workflow_info))
+    return 0
 
 if __name__ == '__main__':
+    # workaround missing subprocess.check_output
+    if "check_output" not in dir(subprocess):  # duck punch it in!
+        def check_output(*popenargs, **kwargs):
+            """
+            Run command with arguments and return its output as a byte string.
+
+            Backported from Python 2.7 as it's implemented as pure python
+            on stdlib.
+
+            """
+            process = subprocess.Popen(stdout=subprocess.PIPE, *popenargs, **kwargs)
+            output, unused_err = process.communicate()
+            retcode = process.poll()
+            if retcode:
+                cmd = kwargs.get("args")
+                if cmd is None:
+                    cmd = popenargs[0]
+                error = subprocess.CalledProcessError(retcode, cmd)
+                error.output = output
+                raise error
+            return output
+        subprocess.check_output = check_output
+
     sys.exit(run_main())
