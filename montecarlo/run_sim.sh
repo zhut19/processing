@@ -55,21 +55,37 @@ fi
 CVMFSDIR=/cvmfs/xenon.opensciencegrid.org
 export PATH="${CVMFSDIR}/releases/anaconda/2.4/bin:$PATH"
 source activate mc
+if [ $? -ne 0 ];
+then
+  exit 1
+fi
 
 if [[ ${MCFLAVOR} == G4p10 ]]; then
     source ${CVMFSDIR}/software/mc_setup.sh
 else
     source ${CVMFSDIR}/software/mc_old_setup.sh
 fi
+if [ $? -ne 0 ];
+then
+  exit 2
+fi
 
 RELEASEDIR=${CVMFSDIR}/releases/mc/${MCVERSION}
 source ${RELEASEDIR}/setup.sh
+if [ $? -ne 0 ];
+then
+  exit 3
+fi
 
 # Setting up directories
 start_dir=$PWD
 
 OUTDIR=$start_dir/output
 mkdir -p  ${OUTDIR}
+if [ $? -ne 0 ];
+then
+  exit 4
+fi
 
 if [ "$OSG_WN_TMP" == "" ];
 then
