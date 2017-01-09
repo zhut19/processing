@@ -19,6 +19,7 @@ if len(sys.argv)<2:
     print("<photon number upper>")
     print("<electron number lower>")
     print("<electron number upper>")
+    print("<If enable S1-S2 correlation (0 for no, 1 for yes)>")
     print("<If use Public node (0 for no(xenon1t nodes); 1 for yes; 2 for kicp nodes)>")
     exit()
 
@@ -30,9 +31,10 @@ PhotonNumLower = int(sys.argv[5])
 PhotonNumUpper = int(sys.argv[6])
 ElectronNumLower = int(sys.argv[7])
 ElectronNumUpper = int(sys.argv[8])
-IfUsePublicNodes = int(sys.argv[9])
+IfEnableS1S2Correlation = int(sys.argv[9])
+IfUsePublicNodes = int(sys.argv[10])
 
-MaxNumJob = 48
+MaxNumJob = 64
 
 ##### Start batching #########
 CurrentPath = os.getcwd()
@@ -66,7 +68,7 @@ for i in range(NumJobs):
         subp.call("echo '#SBATCH --qos=xenon1t-kicp' >> "+SubmitFile, shell=True)
         subp.call("echo '#SBATCH --partition=kicp\n' >> "+SubmitFile, shell=True)
 
-    Command = CurrentPath+"/./run_fax.sh "+str(PhotonNumLower)+" "+str(PhotonNumUpper)+" "+str(ElectronNumLower)+" "+str(ElectronNumUpper)+" "+str(S2AfterpulseFlag)+" "+str(NumEvents)+" "+OutputGeneralPath+" "+RunString
+    Command = CurrentPath+"/./run_fax.sh "+str(PhotonNumLower)+" "+str(PhotonNumUpper)+" "+str(ElectronNumLower)+" "+str(ElectronNumUpper)+" "+str(S2AfterpulseFlag)+" "+str(NumEvents)+" "+OutputGeneralPath+" "+RunString+" "+str(IfEnableS1S2Correlation)
     subp.call("echo '"+Command+"\n' >> "+SubmitFile, shell=True)
 
     SubmitPath = OutputPath

@@ -26,6 +26,7 @@ if len(sys.argv)<2:
     print("<electron number upper>")
     print("<recoil type: ER, NR>")
     print("<output file (abs. path)>")
+    print("<If force S1-S2 correlation (0 for no; 1 for yes)>")
     exit()
 
 Detector = sys.argv[1]
@@ -36,6 +37,10 @@ ElectronNumLower = float(sys.argv[5])
 ElectronNumUpper = float(sys.argv[6])
 DefaultType = sys.argv[7]
 OutputFilename = sys.argv[8]
+IfS1S2Correlation = True
+if int(sys.argv[9])==0:
+    IfS1S2Correlation = False
+
 
 ####################################
 ## Some functions (HARDCODE WARNING):
@@ -94,19 +99,45 @@ DefaultEventTime = 10000
 fout = open(OutputFilename, 'w')
 # headers
 fout.write("instruction,recoil_type,x,y,depth,s1_photons,s2_electrons,t\n")
-# events loop
-for i in range(NumEvents):
-    fout.write(str(i)+",")
-    fout.write(DefaultType+",")
-    X, Y, Z = RandomizeFV()
-    fout.write(str(X)+",")
-    fout.write(str(Y)+",")
-    #fout.write("random,")
-    #fout.write("random,")
-    fout.write(str(-Z)+",")
-    NumPhoton = int( np.random.uniform(PhotonNumLower, PhotonNumUpper) )
-    fout.write(str(NumPhoton)+",")
-    NumElectron = int( np.random.uniform(ElectronNumLower, ElectronNumUpper) )
-    fout.write(str(NumElectron)+",")
-    fout.write(str(DefaultEventTime)+"\n")
+if IfS1S2Correlation:
+    # events loop
+    for i in range(NumEvents):
+        fout.write(str(i)+",")
+        fout.write(DefaultType+",")
+        X, Y, Z = RandomizeFV()
+        fout.write(str(X)+",")
+        fout.write(str(Y)+",")
+        #fout.write("random,")
+        #fout.write("random,")
+        fout.write(str(-Z)+",")
+        NumPhoton = int( np.random.uniform(PhotonNumLower, PhotonNumUpper) )
+        fout.write(str(NumPhoton)+",")
+        NumElectron = int( np.random.uniform(ElectronNumLower, ElectronNumUpper) )
+        fout.write(str(NumElectron)+",")
+        fout.write(str(DefaultEventTime)+"\n")
+else:
+    # events loop S1-S2 no correlation
+    for i in range(NumEvents):
+        # first for S1
+        fout.write(str(i)+",")
+        fout.write(DefaultType+",")
+        X, Y, Z = RandomizeFV()
+        fout.write(str(X)+",")
+        fout.write(str(Y)+",")
+        fout.write(str(-Z)+",")
+        NumPhoton = int( np.random.uniform(PhotonNumLower, PhotonNumUpper) )
+        fout.write(str(NumPhoton)+",")
+        fout.write("0,")
+        fout.write(str(DefaultEventTime)+"\n")
+        # second for S2
+        fout.write(str(i)+",")
+        fout.write(DefaultType+",")
+        X, Y, Z = RandomizeFV()
+        fout.write(str(X)+",")
+        fout.write(str(Y)+",")
+        fout.write(str(-Z)+",")
+        fout.write("0,")
+        NumElectron = int( np.random.uniform(ElectronNumLower, ElectronNumUpper) )
+        fout.write(str(NumElectron)+",")
+        fout.write(str(DefaultEventTime)+"\n")
 fout.close()
