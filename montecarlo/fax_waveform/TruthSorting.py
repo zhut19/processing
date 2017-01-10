@@ -53,6 +53,7 @@ NumStepsInTruth = truth_tree.GetEntries()
 Data = {}
 
 # initialize Data for truth 
+Data['index_truth'] = []
 Data['s1_time_truth'] = [] 
 Data['s1_time_std_truth'] = [] 
 Data['s1_area_truth'] = [] 
@@ -106,6 +107,7 @@ for event_id in range(10000000):
         if iteration_id>=NumStepsInTruth:
             break
         truth_tree.GetEntry(iteration_id)
+    Data['index_truth'].append(event_id)
     Data['s1_time_truth'].append(s1_time_truth)
     Data['s1_time_std_truth'].append(s1_time_std_truth)
     Data['s1_area_truth'].append(s1_area_truth)
