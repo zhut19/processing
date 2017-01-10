@@ -62,8 +62,6 @@ for i, line in enumerate(lines):
                                                  ]
                                                  )
 
-for branch in BranchesToKeep:
-    print(branch[0]+"\t"+branch[1])
 
 
 #################
