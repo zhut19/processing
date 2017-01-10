@@ -14,6 +14,7 @@ if len(sys.argv)<2:
     print("<Output path (abs.)>")
     print("<number of jobs>")
     print("<number of events in each job>")
+    print("<enable PMT after pulses ?(0 for disable)>")
     print("<enable S2 after pulses ?(0 for disable)>")
     print("<photon number lower>")
     print("<photon number upper>")
@@ -26,13 +27,14 @@ if len(sys.argv)<2:
 OutputGeneralPath = sys.argv[1]
 NumJobs = int(sys.argv[2])
 NumEvents = int(sys.argv[3])
-S2AfterpulseFlag = int(sys.argv[4])
-PhotonNumLower = int(sys.argv[5])
-PhotonNumUpper = int(sys.argv[6])
-ElectronNumLower = int(sys.argv[7])
-ElectronNumUpper = int(sys.argv[8])
-IfEnableS1S2Correlation = int(sys.argv[9])
-IfUsePublicNodes = int(sys.argv[10])
+PMTAfterpulseFlag = int(sys.argv[4])
+S2AfterpulseFlag = int(sys.argv[5])
+PhotonNumLower = int(sys.argv[6])
+PhotonNumUpper = int(sys.argv[7])
+ElectronNumLower = int(sys.argv[8])
+ElectronNumUpper = int(sys.argv[9])
+IfEnableS1S2Correlation = int(sys.argv[10])
+IfUsePublicNodes = int(sys.argv[11])
 
 MaxNumJob = 64
 
@@ -68,7 +70,7 @@ for i in range(NumJobs):
         subp.call("echo '#SBATCH --qos=xenon1t-kicp' >> "+SubmitFile, shell=True)
         subp.call("echo '#SBATCH --partition=kicp\n' >> "+SubmitFile, shell=True)
 
-    Command = CurrentPath+"/./run_fax.sh "+str(PhotonNumLower)+" "+str(PhotonNumUpper)+" "+str(ElectronNumLower)+" "+str(ElectronNumUpper)+" "+str(S2AfterpulseFlag)+" "+str(NumEvents)+" "+OutputGeneralPath+" "+RunString+" "+str(IfEnableS1S2Correlation)
+    Command = CurrentPath+"/./run_fax.sh "+str(PhotonNumLower)+" "+str(PhotonNumUpper)+" "+str(ElectronNumLower)+" "+str(ElectronNumUpper)+" "+str(PMTAfterpulseFlag)+" "+str(S2AfterpulseFlag)+" "+str(NumEvents)+" "+OutputGeneralPath+" "+RunString+" "+str(IfEnableS1S2Correlation)
     subp.call("echo '"+Command+"\n' >> "+SubmitFile, shell=True)
 
     SubmitPath = OutputPath
