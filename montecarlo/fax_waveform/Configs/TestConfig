@@ -1,0 +1,14 @@
+Name: S1S2Properties
+S1sPeakTime									s1_time_processed
+S1sPeakTimeStd								s1_time_std_processed
+S1sTot												s1_area_processed
+S1TopFraction								s1_top_fraction_processed
+S2sPeakTime									s2_time_processed
+S2sPeakTimeStd								s2_time_std_processed
+S2sTot												s2_area_processed
+S2TopFraction								s2_top_fraction_processed
+S2_X_PosRecTopPatternFit			x_processed
+S2_Y_PosRecTopPatternFit			y_processed
+S1PatternLnL									s1_pattern_lnl_processed
+S1S2InMainInteraction					if_largest_s1s2_main_interaction_processed
+S2PosGoodnessOfFit						s2_goodness_of_fit_processed
