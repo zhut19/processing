@@ -3,6 +3,11 @@
 ## the output is the Merged.p under target directory
 ## by Qing Lin
 ####################################
+import pickle
+import sys, os
+import subprocess as subp
+import numpy as np
+import pandas as pd
 
 if len(sys.argv)<=1:
     print("======== Syntax ========")
