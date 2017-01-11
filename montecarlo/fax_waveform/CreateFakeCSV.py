@@ -41,6 +41,11 @@ IfS1S2Correlation = True
 if int(sys.argv[9])==0:
     IfS1S2Correlation = False
 
+####################################
+## Some nuisance parameters (HARDCODE WARNING):
+####################################
+MaxDriftTime = 650. # us
+
 
 ####################################
 ## Some functions (HARDCODE WARNING):
@@ -94,7 +99,7 @@ def RandomizeFV():
 ## Starts to create
 ####################################
 # Some default
-DefaultEventTime = 10000
+DefaultEventTime = MaxDriftTime*1000.
 ##########
 fout = open(OutputFilename, 'w')
 # headers
@@ -139,5 +144,7 @@ else:
         fout.write("0,")
         NumElectron = int( np.random.uniform(ElectronNumLower, ElectronNumUpper) )
         fout.write(str(NumElectron)+",")
-        fout.write(str(DefaultEventTime)+"\n")
+        TimeOffset = np.random.uniform(-MaxDriftTime*1000., MaxDriftTime*1000.)
+        S2EventTime = DefaultEventTime+TimeOffset
+        fout.write(str(S2EventTime)+"\n")
 fout.close()
