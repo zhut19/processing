@@ -83,7 +83,7 @@ for i in range(NumJobs):
     while IfSubmitted==0:
         Partition = "sandyb" # public
         if not IfUsePublicNodes:
-            Parition = "xenon1t"
+            Partition = "xenon1t"
         elif IfUsePublicNodes==2:
             Partition = "kicp"
         p1 = Popen(["squeue","--partition="+Partition, "--user="+CurrentUser], stdout=PIPE)
