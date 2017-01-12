@@ -21,7 +21,9 @@ ElectronNumLower=$3
 ElectronNumUpper=$4
 
 RecoilType=ER
-IfS1S2Correlation=$10
+IfS1S2Correlation=${10}
+
+echo 'IfS1S2Correlation = ${IfS1S2Correlation}'
 # enable s2 after pulse depending on the argument
 # 1 for enable
 PMTAfterpulseEnableFlag=$5
