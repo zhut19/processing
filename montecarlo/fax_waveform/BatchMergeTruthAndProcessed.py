@@ -39,7 +39,9 @@ if len(sys.argv)>8:
 #######################
 ## Define the exe1&2
 ########################
-MaxNumJob = 48
+MaxNumJob = 64
+if not IfUsePublicNodes:
+    MaxNumJob=200
 CurrentPath = os.getcwd()
 
 EXE_Path = CurrentEXE.split("BatchMergeTruthAndProcessed.py")[0]

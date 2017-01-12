@@ -37,6 +37,8 @@ IfEnableS1S2Correlation = int(sys.argv[10])
 IfUsePublicNodes = int(sys.argv[11])
 
 MaxNumJob = 64
+if not IfUsePublicNodes:
+    MaxNumJob=200
 
 
 ##### Start batching #########
