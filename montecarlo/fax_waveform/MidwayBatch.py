@@ -38,6 +38,7 @@ IfUsePublicNodes = int(sys.argv[11])
 
 MaxNumJob = 64
 
+
 ##### Start batching #########
 CurrentPath = os.getcwd()
 print (CurrentPath)
@@ -78,11 +79,16 @@ for i in range(NumJobs):
     #submit
     IfSubmitted=0
     while IfSubmitted==0:
-        p1 = Popen(["squeue","--user="+CurrentUser], stdout=PIPE)
+        Partition = "sandyb" # public
+        if not IfPublicNode:
+            Parition = "xenon1t"
+        elif IfPublicNode==2:
+            Partition = "kicp"
+        p1 = Popen(["squeue","--partition="+Partition, "--user="+CurrentUser], stdout=PIPE)
         p2 = Popen(["wc", "-l"], stdin=p1.stdout, stdout=PIPE)
         p1.stdout.close()  # Allow p1 to receive a SIGPIPE if p2 exits.
         output = p2.communicate()[0]
-        Status=subp.call("squeue --user="+CurrentUser+" | wc -l", shell=True)
+        Status=subp.call("squeue --partition="+Partition+" --user=mcfate | wc -l", shell=True)
         Output=int(output)
         #print(Status)
         

@@ -110,11 +110,16 @@ for j, ID_job in enumerate(IDList):
     #submit
     IfSubmitted=0
     while IfSubmitted==0:
-        p1 = Popen(["squeue","--user=mcfate"], stdout=PIPE)
+        Partition = "sandyb" # public
+        if not IfPublicNode:
+            Parition = "xenon1t"
+        elif IfPublicNode==2:
+            Partition = "kicp"
+        p1 = Popen(["squeue","--partition="+Partition, "--user="+CurrentUser], stdout=PIPE)
         p2 = Popen(["wc", "-l"], stdin=p1.stdout, stdout=PIPE)
         p1.stdout.close()  # Allow p1 to receive a SIGPIPE if p2 exits.
         output = p2.communicate()[0]
-        Status=subp.call("squeue --user=mcfate | wc -l", shell=True)
+        Status=subp.call("squeue --partition="+Partition+" --user=mcfate | wc -l", shell=True)
         Output=int(output)
         #print(Status)
         print("Current job running number "+str(Output))            
