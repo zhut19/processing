@@ -4,7 +4,7 @@
 ## which has a corresponding file under processed root path
 ########################################################
 #!/usr/bin/python
-import sys, array, os
+import sys, array, os, getpass
 from subprocess import call
 import subprocess as subp
 import time
@@ -43,7 +43,7 @@ MaxNumJob = 64
 if not IfUsePublicNodes:
     MaxNumJob=200
 CurrentPath = os.getcwd()
-
+CurrentUser = getpass.getuser()
 EXE_Path = CurrentEXE.split("BatchMergeTruthAndProcessed.py")[0]
 EXE1 = CurrentPath+"/"+EXE_Path+"TruthSorting.py"
 EXE2 = CurrentPath+"/"+EXE_Path+"MergeTruthAndProcessed.py"

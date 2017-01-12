@@ -3,7 +3,7 @@
 ## by Qing Lin @ 2017-01-12
 ########################################################
 #!/usr/bin/python
-import sys, array, os
+import sys, array, os, getpass
 from subprocess import call
 import subprocess as subp
 import time
@@ -40,7 +40,7 @@ if len(sys.argv)>6:
 ## Some nuisance settings
 ##########################
 CurrentPath = os.getcwd()
-CurrentUser = glob.getuser()
+CurrentUser = getpass.getuser()
 EXE = CurrentPath+"/"+EXE_Path+"/ReduceDataNormal.py"
 MaxNumJob = 64
 if not IfPublicNode:
