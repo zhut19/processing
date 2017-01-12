@@ -113,9 +113,9 @@ for j, ID_job in enumerate(IDList):
     IfSubmitted=0
     while IfSubmitted==0:
         Partition = "sandyb" # public
-        if not IfPublicNode:
+        if not IfUsePublicNodes:
             Parition = "xenon1t"
-        elif IfPublicNode==2:
+        elif IfUsePublicNodes==2:
             Partition = "kicp"
         p1 = Popen(["squeue","--partition="+Partition, "--user="+CurrentUser], stdout=PIPE)
         p2 = Popen(["wc", "-l"], stdin=p1.stdout, stdout=PIPE)
