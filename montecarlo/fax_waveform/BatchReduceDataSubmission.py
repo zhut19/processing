@@ -22,7 +22,7 @@ if len(sys.argv)<=1:
     print(".....")
     exit()
 
-EXE_Path = sys.argv[0].split("ReduceDataNormal.py")[0]
+EXE_Path = sys.argv[0].split("BatchReduceDataSubmission.py")[0]
 ListFile = sys.argv[1]
 DataPath = sys.argv[2]
 OutputPath = sys.argv[3]
