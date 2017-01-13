@@ -40,7 +40,7 @@ if len(sys.argv)>8:
 ## Define the exe1&2
 ########################
 MaxNumJob = 64
-if not IfUsePublicNodes:
+if not IfPublicNode:
     MaxNumJob=200
 CurrentPath = os.getcwd()
 CurrentUser = getpass.getuser()
