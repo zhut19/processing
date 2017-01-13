@@ -100,6 +100,6 @@ for i in range(NumJobs):
             #sbatch it 
             subp.call("cd "+SubmitPath+";sbatch "+SubmitFile+";cd -", shell=True)
             IfSubmitted=1
-            time.sleep(0.5)
+            time.sleep(2.0)
         else:
             time.sleep(30) 
