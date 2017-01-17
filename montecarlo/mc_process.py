@@ -83,11 +83,18 @@ def pegasus_submit(dax, site, output_directory):
     :return: the pegasus workflow id
     """
     try:
+        if site == 'osg':
+            pegasus_rc = './osg-pegasusrc'
+        elif site == 'egi':
+            pegasus_rc = './egi-pegasusrc'
+        else:
+            sys.stderr.write("Invalid grid type: {0}\n".format(site))
+            sys.exit(1)
         output = subprocess.check_output(['/usr/bin/pegasus-plan',
                                           '--sites',
                                           site,
                                           '--conf',
-                                          PEGASUSRC_PATH,
+                                          pegasus_rc,
                                           '--output-dir',
                                           output_directory,
                                           '--dax',
@@ -277,12 +284,14 @@ def run_main():
     if args.grid_type == 'osg':
         pegasus_id = pegasus_submit('mc_process.xml',
                                     'condorpool',
-                                    output_directory)
+                                    output_directory,
+                                    args.grid_type)
         workflow_info.append(pegasus_id)
     elif args.grid_type == 'egi':
         pegasus_id = pegasus_submit('mc_process.xml',
                                     'egi',
-                                    output_directory)
+                                    output_directory,
+                                    args.grid_type)
     if pegasus_id is None:
         sys.stderr.write("Couldn't start pegasus workflow")
         return 1
