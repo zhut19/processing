@@ -83,7 +83,7 @@ def pegasus_submit(dax, site, output_directory):
     :return: the pegasus workflow id
     """
     try:
-        if site == 'osg':
+        if site == 'condorpool':
             pegasus_rc = './osg-pegasusrc'
         elif site == 'egi':
             pegasus_rc = './egi-pegasusrc'
@@ -284,14 +284,12 @@ def run_main():
     if args.grid_type == 'osg':
         pegasus_id = pegasus_submit('mc_process.xml',
                                     'condorpool',
-                                    output_directory,
-                                    args.grid_type)
+                                    output_directory)
         workflow_info.append(pegasus_id)
     elif args.grid_type == 'egi':
         pegasus_id = pegasus_submit('mc_process.xml',
                                     'egi',
-                                    output_directory,
-                                    args.grid_type)
+                                    output_directory)
     if pegasus_id is None:
         sys.stderr.write("Couldn't start pegasus workflow")
         return 1
