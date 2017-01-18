@@ -17,7 +17,7 @@ echo "Job running as user: " `/usr/bin/id`
 echo "Job is running in directory: $PWD"
 
 ###### General parameters #####
-Detector=XENON1T
+Detector=XENON100
 
 ###### Simulation parameters #####
 PhotonNumLower=$1
@@ -26,11 +26,12 @@ ElectronNumLower=$3
 ElectronNumUpper=$4
 
 RecoilType=ER
-IfS1S2Correlation=${10}
+IFS1S2CORRELATION=${10}
 
-ZLE_Threshold=${12}
+ZLE_THRESHOLD=${12}
+echo "zle_threshold=${ZLE_THRESHOLD}"
 
-echo 'IfS1S2Correlation = ${IfS1S2Correlation}'
+echo "IFS1S2CORRELATION=${IFS1S2CORRELATION}"
 # enable s2 after pulse depending on the argument
 # 1 for enable
 PMTAfterpulseEnableFlag=$5
@@ -93,7 +94,7 @@ echo ${CustomIniFilename}
 
 
 # Create the fake input data
-python ${RELEASEDIR}/CreateFakeCSV.py ${Detector} ${NumEvents} ${PhotonNumLower} ${PhotonNumUpper} ${ElectronNumLower} ${ElectronNumUpper} ${RecoilType} ${CSV_FILENAME} ${IfS1S2Correlation}
+python ${RELEASEDIR}/CreateFakeCSV.py ${Detector} ${NumEvents} ${PhotonNumLower} ${PhotonNumUpper} ${ElectronNumLower} ${ElectronNumUpper} ${RecoilType} ${CSV_FILENAME} ${IFS1S2CORRELATION}
 
 # Start of simulations #
 
@@ -101,18 +102,18 @@ python ${RELEASEDIR}/CreateFakeCSV.py ${Detector} ${NumEvents} ${PhotonNumLower}
 if (($S2AfterpulseEnableFlag==0)); then
 	if (($PMTAfterpulseEnableFlag==0)); then
 		echo 'Both S2 and PMT afterpulse disabled'
-		(time paxer --input ${CSV_FILENAME} --config ${Detector} reduce_raw_data Simulation --config_path ${NoPMTAfterpulseIniFilename} ${NoS2AfterpulseIniFilename} ${CustomIniFilename} --config_string "[WaveformSimulator]truth_file_name=\"${FAX_FILENAME}\"[ZLE]zle_threshold=${ZLE_Threshold}" --output ${RAW_FILENAME};) &> ${RAW_FILENAME}.log
+		(time paxer --input ${CSV_FILENAME} --config ${Detector} reduce_raw_data Simulation --config_path ${NoPMTAfterpulseIniFilename} ${NoS2AfterpulseIniFilename} ${CustomIniFilename} --config_string "[WaveformSimulator]truth_file_name=\"${FAX_FILENAME}\";[ZLE]zle_threshold=${ZLE_THRESHOLD}" --output ${RAW_FILENAME};) &> ${RAW_FILENAME}.log
 	else
 		echo 'Only S2 afterpulse disabled'
-		(time paxer --input ${CSV_FILENAME} --config ${Detector} reduce_raw_data Simulation --config_path ${NoS2AfterpulseIniFilename} ${CustomIniFilename} --config_string "[WaveformSimulator]truth_file_name=\"${FAX_FILENAME}\"[ZLE]zle_threshold=${ZLE_Threshold}" --output ${RAW_FILENAME};) &> ${RAW_FILENAME}.log
+		(time paxer --input ${CSV_FILENAME} --config ${Detector} reduce_raw_data Simulation --config_path ${NoS2AfterpulseIniFilename} ${CustomIniFilename} --config_string "[WaveformSimulator]truth_file_name=\"${FAX_FILENAME}\";[ZLE]zle_threshold=${ZLE_THRESHOLD}" --output ${RAW_FILENAME};) &> ${RAW_FILENAME}.log
 	fi
 else
 	if (($PMTAfterpulseEnableFlag==0)); then
 		echo 'Only PMT afterpulse disabled'
-		(time paxer --input ${CSV_FILENAME} --config ${Detector} reduce_raw_data Simulation --config_path ${NoPMTAfterpulseIniFilename} ${CustomIniFilename} --config_string "[WaveformSimulator]truth_file_name=\"${FAX_FILENAME}\"[ZLE]zle_threshold=${ZLE_Threshold}" --output ${RAW_FILENAME};) &> ${RAW_FILENAME}.log
+		(time paxer --input ${CSV_FILENAME} --config ${Detector} reduce_raw_data Simulation --config_path ${NoPMTAfterpulseIniFilename} ${CustomIniFilename} --config_string "[WaveformSimulator]truth_file_name=\"${FAX_FILENAME}\";[ZLE]zle_threshold=${ZLE_THRESHOLD}" --output ${RAW_FILENAME};) &> ${RAW_FILENAME}.log
 	else
 		echo 'Both S2 and PMT afterpulse enabled'
-		(time paxer --input ${CSV_FILENAME} --config ${Detector} reduce_raw_data Simulation  --config_path ${CustomIniFilename} --config_string "[WaveformSimulator]truth_file_name=\"${FAX_FILENAME}\"[ZLE]zle_threshold=${ZLE_Threshold}" --output ${RAW_FILENAME};) &> ${RAW_FILENAME}.log
+		(time paxer --input ${CSV_FILENAME} --config ${Detector} reduce_raw_data Simulation  --config_path ${CustomIniFilename} --config_string "[WaveformSimulator]truth_file_name=\"${FAX_FILENAME}\";[ZLE]zle_threshold=${ZLE_THRESHOLD}" --output ${RAW_FILENAME};) &> ${RAW_FILENAME}.log
 	fi
 fi
 
