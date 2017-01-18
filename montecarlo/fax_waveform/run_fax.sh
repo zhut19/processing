@@ -4,6 +4,11 @@
 # Usage: Need to modify all parameters and paths below, then:
 #           ./run_fax.sh <output directory> <subrun number>
 #
+######
+# @ 2017-01-17
+# this branch specifically for checking the ZLE effect
+# ${11} -> custom ini filename
+# ${12} -> ZLE threshold
 ############################################
 
 echo "Start time: " `/bin/date`
@@ -22,6 +27,8 @@ ElectronNumUpper=$4
 
 RecoilType=ER
 IfS1S2Correlation=${10}
+
+ZLE_Threshold=${12}
 
 echo 'IfS1S2Correlation = ${IfS1S2Correlation}'
 # enable s2 after pulse depending on the argument
@@ -79,8 +86,9 @@ PKL_FILENAME=${FILENAME}_truth.pkl # converted fax truth info
 RAW_FILENAME=${FILENAME}_raw       # fax simulated raw data
 PAX_FILENAME=${FILENAME}_pax       # pax processed data
 HAX_FILENAME=${FILENAME}_hax       # hax reduced data
-CustomIniFilename=${RELEASEDIR}/NoS2Afterpulses.ini
+NoS2AfterpulseIniFilename=${RELEASEDIR}/NoS2Afterpulses.ini
 NoPMTAfterpulseIniFilename=${RELEASEDIR}/NoPMTAfterpulses.ini
+CustomIniFilename=${RELEASEDIR}/${11}
 echo ${CustomIniFilename}
 
 
@@ -93,18 +101,18 @@ python ${RELEASEDIR}/CreateFakeCSV.py ${Detector} ${NumEvents} ${PhotonNumLower}
 if (($S2AfterpulseEnableFlag==0)); then
 	if (($PMTAfterpulseEnableFlag==0)); then
 		echo 'Both S2 and PMT afterpulse disabled'
-		(time paxer --input ${CSV_FILENAME} --config ${Detector} reduce_raw_data Simulation --config_path ${NoPMTAfterpulseIniFilename} ${CustomIniFilename} --config_string "[WaveformSimulator]truth_file_name=\"${FAX_FILENAME}\"" --output ${RAW_FILENAME};) &> ${RAW_FILENAME}.log
+		(time paxer --input ${CSV_FILENAME} --config ${Detector} reduce_raw_data Simulation --config_path ${NoPMTAfterpulseIniFilename} ${NoS2AfterpulseIniFilename} ${CustomIniFilename} --config_string "[WaveformSimulator]truth_file_name=\"${FAX_FILENAME}\"[ZLE]zle_threshold=${ZLE_Threshold}" --output ${RAW_FILENAME};) &> ${RAW_FILENAME}.log
 	else
 		echo 'Only S2 afterpulse disabled'
-		(time paxer --input ${CSV_FILENAME} --config ${Detector} reduce_raw_data Simulation --config_path ${CustomIniFilename} --config_string "[WaveformSimulator]truth_file_name=\"${FAX_FILENAME}\"" --output ${RAW_FILENAME};) &> ${RAW_FILENAME}.log
+		(time paxer --input ${CSV_FILENAME} --config ${Detector} reduce_raw_data Simulation --config_path ${NoS2AfterpulseIniFilename} ${CustomIniFilename} --config_string "[WaveformSimulator]truth_file_name=\"${FAX_FILENAME}\"[ZLE]zle_threshold=${ZLE_Threshold}" --output ${RAW_FILENAME};) &> ${RAW_FILENAME}.log
 	fi
 else
 	if (($PMTAfterpulseEnableFlag==0)); then
 		echo 'Only PMT afterpulse disabled'
-		(time paxer --input ${CSV_FILENAME} --config ${Detector} reduce_raw_data Simulation --config_path ${NoPMTAfterpulseIniFilename} --config_string "[WaveformSimulator]truth_file_name=\"${FAX_FILENAME}\"" --output ${RAW_FILENAME};) &> ${RAW_FILENAME}.log
+		(time paxer --input ${CSV_FILENAME} --config ${Detector} reduce_raw_data Simulation --config_path ${NoPMTAfterpulseIniFilename} ${CustomIniFilename} --config_string "[WaveformSimulator]truth_file_name=\"${FAX_FILENAME}\"[ZLE]zle_threshold=${ZLE_Threshold}" --output ${RAW_FILENAME};) &> ${RAW_FILENAME}.log
 	else
 		echo 'Both S2 and PMT afterpulse enabled'
-		(time paxer --input ${CSV_FILENAME} --config ${Detector} reduce_raw_data Simulation  --config_string "[WaveformSimulator]truth_file_name=\"${FAX_FILENAME}\"" --output ${RAW_FILENAME};) &> ${RAW_FILENAME}.log
+		(time paxer --input ${CSV_FILENAME} --config ${Detector} reduce_raw_data Simulation  --config_path ${CustomIniFilename} --config_string "[WaveformSimulator]truth_file_name=\"${FAX_FILENAME}\"[ZLE]zle_threshold=${ZLE_Threshold}" --output ${RAW_FILENAME};) &> ${RAW_FILENAME}.log
 	fi
 fi
 

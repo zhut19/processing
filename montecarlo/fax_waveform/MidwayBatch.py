@@ -21,6 +21,8 @@ if len(sys.argv)<2:
     print("<electron number lower>")
     print("<electron number upper>")
     print("<If enable S1-S2 correlation (0 for no, 1 for yes)>")
+    print("<custom ini filename>")
+    print("<zle threshold>")
     print("<If use Public node (0 for no(xenon1t nodes); 1 for yes; 2 for kicp nodes)>")
     exit()
 
@@ -34,7 +36,9 @@ PhotonNumUpper = int(sys.argv[7])
 ElectronNumLower = int(sys.argv[8])
 ElectronNumUpper = int(sys.argv[9])
 IfEnableS1S2Correlation = int(sys.argv[10])
-IfUsePublicNodes = int(sys.argv[11])
+CustomeIniFilename=sys.argv[11]
+ZLE_Threshold=int(sys.argv[12])
+IfUsePublicNodes = int(sys.argv[13])
 
 MaxNumJob = 64
 if not IfUsePublicNodes:
@@ -73,7 +77,7 @@ for i in range(NumJobs):
         subp.call("echo '#SBATCH --qos=xenon1t-kicp' >> "+SubmitFile, shell=True)
         subp.call("echo '#SBATCH --partition=kicp\n' >> "+SubmitFile, shell=True)
 
-    Command = CurrentPath+"/./run_fax.sh "+str(PhotonNumLower)+" "+str(PhotonNumUpper)+" "+str(ElectronNumLower)+" "+str(ElectronNumUpper)+" "+str(PMTAfterpulseFlag)+" "+str(S2AfterpulseFlag)+" "+str(NumEvents)+" "+OutputGeneralPath+" "+RunString+" "+str(IfEnableS1S2Correlation)
+    Command = CurrentPath+"/./run_fax.sh "+str(PhotonNumLower)+" "+str(PhotonNumUpper)+" "+str(ElectronNumLower)+" "+str(ElectronNumUpper)+" "+str(PMTAfterpulseFlag)+" "+str(S2AfterpulseFlag)+" "+str(NumEvents)+" "+OutputGeneralPath+" "+RunString+" "+str(IfEnableS1S2Correlation)+" "+CustomeIniFilename+" "+str(ZLE_Threshold)
     subp.call("echo '"+Command+"\n' >> "+SubmitFile, shell=True)
 
     SubmitPath = OutputPath
