@@ -124,7 +124,7 @@ fi
 python ${RELEASEDIR}/ConvertFaxTruthToPickle.py ${FAX_FILENAME} ${PKL_FILENAME}
 
 # pax stage
-(time paxer --ignore_rundb --input ${RAW_FILENAME} --config ${Detector} --config_string "[pax]input = \'Zip.ReadZipped\';decoder_plugin = \'Pickle.DecodeZPickle\'" --output ${PAX_FILENAME};) &> ${PAX_FILENAME}.log
+(time paxer --ignore_rundb --input ${RAW_FILENAME} --config ${Detector} --config_string "[pax]input = \"Zip.ReadZipped\";decoder_plugin = \"Pickle.DecodeZPickle\"" --output ${PAX_FILENAME};) &> ${PAX_FILENAME}.log
 
 # hax stage
 HAXPYTHON="import hax; "

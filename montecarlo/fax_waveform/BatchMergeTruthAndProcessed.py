@@ -56,7 +56,7 @@ FileList = glob.glob(TruthRootPath+"/*.root")
 # trail to IDList
 IDList = []
 for filename in FileList:
-    ID = filename.split("FakeWaveform_XENON1T_")[1].split("_truth.root")[0]
+    ID = filename.split("FakeWaveform_XENON100_")[1].split("_truth.root")[0]
     IDList.append(ID)
 
 # create temporary directory
@@ -81,13 +81,13 @@ for j, ID_job in enumerate(IDList):
     if os.path.exists(SubmitFile):
         subp.call("rm "+SubmitFile, shell=True)
     # start to fill the submitted job
-    OneProcessedFile = glob.glob(ProcessedRootPath+"/FakeWaveform_XENON1T_"+ID_job+"*.root")
+    OneProcessedFile = glob.glob(ProcessedRootPath+"/FakeWaveform_XENON100_"+ID_job+"*.root")
     if len(OneProcessedFile)==0:
         continue
     ProcessedRootFilename = OneProcessedFile[0]
-    TruthRootFilename = TruthRootPath+"/FakeWaveform_XENON1T_"+ID_job+"_truth.root"
-    TmpOutputFilename = TmpPath+"/FakeWaveform_XENON1T_"+ID_job+"_tmp.p"
-    OutputFilename = OutputPath+"/FakeWaveform_XENON1T_"+ID_job+"_merged.p"
+    TruthRootFilename = TruthRootPath+"/FakeWaveform_XENON100_"+ID_job+"_truth.root"
+    TmpOutputFilename = TmpPath+"/FakeWaveform_XENON100_"+ID_job+"_tmp.p"
+    OutputFilename = OutputPath+"/FakeWaveform_XENON100_"+ID_job+"_merged.p"
     AbsoluteConfigFile = CurrentPath+"/"+ConfigFile
     if len(ProcessedRootFilename)<2 or len(TruthRootFilename)<2:
         continue
