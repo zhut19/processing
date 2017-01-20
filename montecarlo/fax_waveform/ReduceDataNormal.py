@@ -169,7 +169,7 @@ class S1S2Properties(hax.minitrees.TreeMaker):
                         'S2sNbSaturationChannels': 'n_saturated_channels'
                       }
         peak_fields = {'PeaksTot': 'area',
-                        'S1TopFraction': 'area_fraction_top',
+                        'PeakTopFraction': 'area_fraction_top',
                         'PeaksPeakTime': 'area_midpoint',
                         'PeaksPeakTimeStd': 'hit_time_std',
                         'PeaksCoin': 'n_contributing_channels',
