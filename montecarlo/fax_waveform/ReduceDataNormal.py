@@ -111,6 +111,7 @@ class S1S2Properties(hax.minitrees.TreeMaker):
                 second_id = ID
         return (largest_id, second_id)
 
+
     def extract_data(self, event):  # This runs on each event
         # 'values' is returned once filled and each field defaults to zero.
         values = defaultdict(float)
@@ -146,6 +147,9 @@ class S1S2Properties(hax.minitrees.TreeMaker):
         if len(s2_ids)>1:
             second_s2_id = s2_ids[1]
 
+        largest_peak_id = -1
+        largest_peak_id, _ = self.find_first_two_largest_s1(event)
+
         # These are the peak properties that I'm interested in looking at.
         # Look here for more info: http://xenon1t.github.io/pax/format.html#peak
         s1_fields = {'S1sTot': 'area',
@@ -164,6 +168,14 @@ class S1S2Properties(hax.minitrees.TreeMaker):
                         'S2sHeight': 'height',
                         'S2sNbSaturationChannels': 'n_saturated_channels'
                       }
+        peak_fields = {'PeaksTot': 'area',
+                        'S1TopFraction': 'area_fraction_top',
+                        'PeaksPeakTime': 'area_midpoint',
+                        'PeaksPeakTimeStd': 'hit_time_std',
+                        'PeaksCoin': 'n_contributing_channels',
+                        'PeaksHeight': 'height',
+                        'PeaksNbSaturationChannels': 'n_saturated_channels',
+                      }
 
         # Grab the biggest S1&S2 from the list of peaks
         peaks = event.peaks
@@ -173,6 +185,8 @@ class S1S2Properties(hax.minitrees.TreeMaker):
         s2peak = event.peaks[0]
         if not largest_s2_id==-1:
             s2peak = event.peaks[largest_s2_id]
+        if not largest_peak_id==-1:
+            anypeak = event.peaks[largest_peak_id]
         # The store each peak field we want in 'values'
         if not largest_s1_id==-1:
             for s1_field in s1_fields:
@@ -182,6 +196,10 @@ class S1S2Properties(hax.minitrees.TreeMaker):
             for s2_field in s2_fields:
                 values[s2_field] = getattr(s2peak,
                                         s2_fields[s2_field])
+        if not largest_peak_id==-1:
+            for peak_field in peak_fields:
+                values[peak_field] = getattr(anypeak,
+                                        peak_fields[peak_field])
         # Grab the second biggest S1 if it exists
         values['S1sTotSecond']=0
         if not second_s1_id==-1:
