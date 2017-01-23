@@ -41,6 +41,9 @@ cd processing/montecarlo
 ~~~~
 python mc_process.py --flavor <G4, NEST, G4p10> --config <MACRO_NAME> --batch-size <JOB_BATCH_SIZE> --events <TOTAL_NUM_EVENTS> --mc-version <MC_VERSION> --pax-version <PAX_VERSION> --grid-type osg
 ~~~~
+where ```MACRO_NAME``` is the string between ```run_``` and ```.mac``` of any of the macros here: https://github.com/XENON1T/mc/tree/master/macros
+
+Instructions for passing a custom macro to come...
 
 8) Check job status with:
 ~~~~
