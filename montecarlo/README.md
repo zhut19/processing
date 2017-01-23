@@ -39,9 +39,11 @@ cd processing/montecarlo
 
 7) Submit jobs (this creates one master job (DAG) which then submits the rest):
 ~~~~
-python mc_process.py --flavor <G4, NEST, G4p10> --config <MACRO_NAME> --batch-size <JOB_BATCH_SIZE> --events <TOTAL_NUM_EVENTS> --mc-version <MC_VERSION> --pax-version <PAX_VERSION> --grid-type osg
+python mc_process.py --flavor <G4, NEST, G4p10> --config <MACRO_NAME> --batch-size <JOB_BATCH_SIZE=2000> --events <TOTAL_NUM_EVENTS> --mc-version <MC_VERSION> --pax-version <PAX_VERSION> --grid-type osg
 ~~~~
 where ```MACRO_NAME``` is the string between ```run_``` and ```.mac``` of any of the macros here: https://github.com/XENON1T/mc/tree/master/macros
+
+and ```JOB_BATCH_SIZE``` default is 2000 events per job, which should be fine for most users running the full chain.
 
 For example:
 ~~~~
