@@ -3,19 +3,60 @@ Repository for scripts to run xenon1t MC code
 
 ## Instructions
 
-* Checkout this repository
-~~~~
-    git clone https://github.com/XENON1T/processing.git
-~~~~
+
 
 ### OSG submission 
 
-Detailed instructions to come...
+1) Get a CI-Connect account (second step after your Midway account):
+
+https://xecluster.lngs.infn.it/dokuwiki/doku.php?id=xenon:xenon1t:cmp:computing:midway_cluster:instructions
+
+2) ssh to:
 ~~~~
-    https://github.com/XENON1T/processing/blob/master/montecarlo/mc_process.py
+login.xenon.ci-connect.net
 ~~~~
 
+3) Create your scratch space:
+~~~~
+mkdir /scratch/${USER}
+~~~~
+
+4) Create new directory for your production:
+~~~~
+mkdir /scratch/${USER}/<production_name>
+~~~~
+
+5) Checkout this repository
+~~~~
+cd /scratch/${USER}/<production_name>
+git clone https://github.com/XENON1T/processing.git
+~~~~
+
+6) Switch to MC directory
+~~~~
+cd processing/montecarlo
+~~~~
+
+7) Submit jobs (this creates one master job (DAG) which then submits the rest):
+~~~~
+python mc_process.py --flavor <G4, NEST, G4p10> --config <MACRO_NAME> --batch-size <JOB_BATCH_SIZE> --events <TOTAL_NUM_EVENTS> --mc-version <MC_VERSION> --pax-version <PAX_VERSION> --grid-type osg
+~~~~
+
+8) Check job status with:
+~~~~
+condor_q
+pegasus-status -l /scratch/${USER}/<production_name>/processing/montecarlo/${USER}/pegasus/montecarlo
+~~~~
+
+9) Output should appear in:
+~~~~
+/scratch/${USER}/<production_name>/processing/montecarlo/output/${USER}/pegasus/montecarlo/*/
+~~~~
+
+
 ### EGI submission 
+
+(Under construction...)
 
 In order to submit jobs on the EGI sites, you first have to:
 
@@ -30,7 +71,7 @@ Detailed instructions can be found here: https://xecluster.lngs.infn.it/dokuwiki
 To submit jobs from xe-grid01:
 ~~~~
 cd processing/montecarlo/
-./mc_process.py  <MC_FLAVOR> <MC_CONFIG> <NUM_EVENTS> <MC_VERSION> <PAX_VERSION> <GRID_TYPE>
+./mc_process.py --flavor <MC_FLAVOR> --config <MC_CONFIG> --events <NUM_EVENTS> --mc-version <MC_VERSION> --pax-version <PAX_VERSION> --grid-type <GRID_TYPE>
 with <GRID_TYPE> = egi
 ~~~~
 After the submission, there will be created two folders (if they don't exist yet): 
