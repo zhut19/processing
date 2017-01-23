@@ -51,6 +51,9 @@ fi
 
 ########################################
 
+# Set pipe to propagate error codes to $?
+set -o pipefail
+
 # Setup the software
 CVMFSDIR=/cvmfs/xenon.opensciencegrid.org
 export PATH="${CVMFSDIR}/releases/anaconda/2.4/bin:$PATH"
