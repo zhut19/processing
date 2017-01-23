@@ -190,18 +190,15 @@ if [ $? -ne 0 ];
 then
   exit 16
 fi
-#hadd ${HAX_FILENAME}.root ${PAX_FILENAME}_*
 
 # tar all files                                                                         
-tar -czf ${JOBID}.tgz -C ${OUTDIR} .
-mv ${JOBID}.tgz $start_dir/.
+cd ${OUTDIR}
+tar cvjf ${start_dir}/${JOBID}_output.tar.bz2 *
 
 # copy files on stash                                                                    
-#gfal-copy -p file://${G4_FILENAME}.tgz gsiftp://gridftp.grid.uchicago.edu:2811/cephfs/srm/xenon/xenon1t/simulations/mc_$MCVERSION/pax_$PAXVERSION/$MCFLAVOR/$CONFIG/${G4_FILENAME##*/}.tgz
+#gfal-copy -p file://${G4_FILENAME}.tgz gsiftp://gridftp.grid.uchicago.edu:2811/cephfs/srm/xenon/xenon1t/simulations/mc_$MCVERSION/pax_$PAXVERSION/$MCFLAVOR/$CONFIG/${JOBID}_output.tar.bz2
 
 # Cleanup
-rm -f pax*
-
+rm -fr $work_dir
 
 cd $start_dir
-rm -fr $work_dir

@@ -1,0 +1,16 @@
+pegasus.metrics.app = x1tmc
+
+pegasus.catalog.site = XML4
+pegasus.catalog.site.file = ./osg-sites.xml
+
+pegasus.dir.useTimestamp = true
+pegasus.dir.storage.deep = true
+pegasus.condor.logs.symlink = false
+
+pegasus.dir.storage.mapper = Flat
+pegasus.dir.storage.deep = True
+#pegasus.dir.storage.mapper = Hashed
+
+pegasus.data.configuration = condorio
+
+dagman.maxidle = 1000

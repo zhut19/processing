@@ -1,13 +1,14 @@
 #!/usr/bin/env python
 
 import argparse
+import json
 import math
 import os
+import re
 import subprocess
 import sys
-import shlex
-from shutil import copyfile
-import time
+
+import Pegasus.DAX3
 
 HTCONDOR_SUBMIT_FILE = '''
 executable     = run_sim.sh
@@ -37,36 +38,78 @@ MC_PATH = '/cvmfs/xenon.opensciencegrid.org/releases/mc/'
 PAX_PATH = "/cvmfs/xenon.opensciencegrid.org/releases/anaconda/2.4/envs/"
 MC_FLAVORS = ('G4', 'NEST', 'G4p10')
 CONFIGS = (
-'AmBe_neutronISO',
-'Cryostat_Co60',
-'Cryostat_K40',
-'Cryostat_neutron',
-'Cryostat_Th232',
-'Cryostat_U238',
-'DDFusion_neutron',
-#'Disk15m_muon', # Not yet tested
-'ib1sp1_Cs137',
-'ib1sp2_Cs137',
-#'optPhot', # Not yet tested
-'Pmt_Co60',
-'Pmt_K40',
-'Pmt_neutron',
-'Pmt_Th232',
-'Pmt_U238',
-'TPC_2n2b',
-'TPC_ERsolar',
-'TPC_Kr83m',
-'TPC_Kr85',
-'TPC_Rn222',
-'TPC_WIMP',
-'WholeLXe_Rn220',
-'WholeLXe_Rn222'
+    'AmBe_neutronISO',
+    'Cryostat_Co60',
+    'Cryostat_K40',
+    'Cryostat_neutron',
+    'Cryostat_Th232',
+    'Cryostat_U238',
+    'DDFusion_neutron',
+    #'Disk15m_muon', # Not yet tested
+    'ib1sp1_Cs137',
+    'ib1sp2_Cs137',
+    #'optPhot', # Not yet tested
+    'Pmt_Co60',
+    'Pmt_K40',
+    'Pmt_neutron',
+    'Pmt_Th232',
+    'Pmt_U238',
+    'TPC_2n2b',
+    'TPC_ERsolar',
+    'TPC_Kr83m',
+    'TPC_Kr85',
+    'TPC_Rn222',
+    'TPC_WIMP',
+    'WholeLXe_Rn220',
+    'WholeLXe_Rn222'
 )
 
 # condor / osg specific constants
 HTCONDOR_SUBMIT_FILENAME = 'mc.submit'
 DAG_FILE = 'mc.dag'
 DAG_RETRIES = 10
+
+# pegasus constants
+PEGASUSRC_PATH = './pegasusrc'
+
+
+def pegasus_submit(dax, site, output_directory):
+    """
+    Submit a workflow to pegasus
+
+    :param dax:  path to xml file with DAX, used for submit
+    :param site: condorpool for osg, egi for EGI submission
+    :param output_directory:  directory for workflow output
+    :return: the pegasus workflow id
+    """
+    try:
+        if site == 'condorpool':
+            pegasus_rc = './osg-pegasusrc'
+        elif site == 'egi':
+            pegasus_rc = './egi-pegasusrc'
+        else:
+            sys.stderr.write("Invalid grid type: {0}\n".format(site))
+            sys.exit(1)
+        output = subprocess.check_output(['/usr/bin/pegasus-plan',
+                                          '--sites',
+                                          site,
+                                          '--conf',
+                                          pegasus_rc,
+                                          '--output-dir',
+                                          output_directory,
+                                          '--dax',
+                                          dax,
+                                          '--submit'],
+                                         stderr=subprocess.STDOUT)
+        match = re.search('running in the base directory:.*?(\d{8}T\d{6}-\d{4})',
+                          output,
+                          re.MULTILINE|re.DOTALL)
+        if match:
+            return match.group(1)
+    except subprocess.CalledProcessError as err:
+        sys.stderr.write("Error with workflow: {0}\n".format(err.output))
+        return None
+    return None
 
 
 def get_mc_versions():
@@ -80,8 +123,7 @@ def get_mc_versions():
             versions = os.listdir(MC_PATH)
             versions.sort()
             return tuple(versions)
-        # hard coded for xe-grid  
-        return ('v0.1.2',)
+        return ('v0.1.3)
     except OSError:
         sys.stderr.write("Can't get mc versions from {0}\n".format(MC_PATH))
         return ()
@@ -96,7 +138,7 @@ def get_pax_versions():
     try:
         versions = []
         if not os.path.isdir(PAX_PATH):
-            return ('v6.1.1',)
+            return ()
         for entry in os.listdir(PAX_PATH):
             if entry.startswith('pax_'):
                 versions.append(entry.replace('pax_', ''))
@@ -111,6 +153,61 @@ MC_VERSIONS = get_mc_versions()
 PAX_VERSIONS = get_pax_versions()
 
 
+def generate_mc_workflow(mc_config,
+                         mc_flavor,
+                         mc_version,
+                         pax_version,
+                         num_events,
+                         batch_size):
+    """
+    Generate a Pegasus workflow to do X1T MC processing
+
+    :param mc_config: MC config to use
+    :param mc_flavor: MC flavor to use
+    :param mc_version: version of MC code to use
+    :param pax_version: version of PAX code to use
+    :param num_events: total number of events to generate
+    :param batch_size: number of events to generate per job
+    :return: number of jobs in the workflow
+    """
+    dax = Pegasus.DAX3.ADAG('montecarlo')
+    run_sim = Pegasus.DAX3.Executable(name="run_sim.sh", arch="x86_64", installed=False)
+    run_sim.addPFN(Pegasus.DAX3.PFN("file://{0}".format(os.path.join(os.getcwd(), "run_sim.sh")), "local"))
+    dax.addExecutable(run_sim)
+
+    num_jobs = get_num_jobs(num_events, batch_size)
+    sys.stdout.write("Generating {0} events ".format(num_events) +
+                     "using {0} jobs\n".format(num_jobs))
+    try:
+        for job in range(0, num_jobs):
+            run_sim_job = Pegasus.DAX3.Job(id="run_sim_{0}".format(job), name="run_sim.sh")
+            if job == (num_jobs - 1):
+                left_events = num_events % batch_size
+                if left_events == 0:
+                    left_events = batch_size
+                run_sim_job.addArguments(str(job),
+                                         mc_flavor,
+                                         mc_config,
+                                         str(left_events),
+                                         mc_version,
+                                         pax_version)
+            else:
+                run_sim_job.addArguments(str(job),
+                                         mc_flavor,
+                                         mc_config,
+                                         str(batch_size),
+                                         mc_version,
+                                         pax_version)
+            output = Pegasus.DAX3.File("{0}_output.tar.bz2".format(job))
+            run_sim_job.uses(output, link=Pegasus.DAX3.Link.OUTPUT, transfer=True)
+            dax.addJob(run_sim_job)
+        with open('mc_process.xml', 'w') as f:
+            dax.writeXML(f)
+    except:
+        return 0
+    return num_jobs
+
+
 def get_num_jobs(total_events, batch_size):
     """
     Get the number of jobs to use for MC simulation
@@ -121,206 +218,6 @@ def get_num_jobs(total_events, batch_size):
     """
     num_jobs = int(math.ceil(total_events / float(batch_size)))
     return num_jobs
-
-
-def osg_submit(mc_config, mc_flavor, mc_version, pax_version, num_events, batch_size):
-    """
-    Generate and submit jobs to OSG
-
-    :param mc_config: MC config to use
-    :param mc_flavor: MC flavor to use
-    :param mc_version: version of MC code to use
-    :param pax_version: version of PAX code to use
-    :param num_events: total number of events to generate
-    :param batch_size: number of events to generate per job
-    :return: True on success, False otherwise
-    """
-
-    if os.path.exists(HTCONDOR_SUBMIT_FILENAME):
-        sys.stderr.write("Submit file at {0} ".format(HTCONDOR_SUBMIT_FILENAME) +
-                         "already exists, exiting!\n")
-        return 1
-
-    if os.path.exists(DAG_FILE):
-        sys.stderr.write("DAG file at {0} ".format(DAG_FILE) +
-                         "already exists, exiting!\n")
-        return 1
-
-    num_jobs = get_num_jobs(num_events, batch_size)
-    sys.stdout.write("Generating {0} events ".format(num_events) +
-                     "using {0} jobs\n".format(num_jobs))
-
-    with open(DAG_FILE, 'wt') as dag_file:
-        for job in range(0, num_jobs):
-            dag_file.write("JOB MC.{0} {1}\n".format(job,
-                                                     HTCONDOR_SUBMIT_FILENAME))
-            dag_file.write('VARS MC.{0} flavor="{1}" '.format(job, mc_flavor))
-            dag_file.write('config="{0}" '.format(mc_config))
-            dag_file.write('pax_version="{0}" '.format(pax_version))
-            dag_file.write('mc_version="{0}" '.format(mc_version))
-            if job == (num_jobs - 1):
-                left_events = num_events % batch_size
-                if left_events == 0:
-                    left_events = batch_size
-                dag_file.write('events="{0}" '.format(left_events))
-            else:
-                dag_file.write('events="{0}" '.format(batch_size))
-            dag_file.write('id="{0}" '.format(job))
-
-            dag_file.write("\n")
-            dag_file.write("Retry MC.{0} {1}\n".format(job, DAG_RETRIES))
-    with open(HTCONDOR_SUBMIT_FILENAME, 'wt') as submit_file:
-        submit_file.write(HTCONDOR_SUBMIT_FILE)
-
-    if not os.path.exists('output'):
-        os.mkdir('output')
-    if not os.path.exists('log'):
-        os.mkdir('log')
-    try:
-        subprocess.check_call(['condor_submit_dag', 'mc.dag'])
-        sys.stdout.write("Submitted jobs to OSG\n")
-        return True
-    except subprocess.CalledProcessError as e:
-        sys.stderr.write("Exception while submitting dag: {0}\n".format(e))
-        return False
-
-
-def set_folders(ids_directory, jdl_directory):
-
-    if not os.path.exists(ids_directory):
-        os.makedirs(ids_directory)
-
-    if not os.path.exists(jdl_directory):
-        os.makedirs(jdl_directory)
-
-    return 0
-
-def set_jdl_arguments(mc_config, mc_flavor, mc_version, pax_version, str_job_nb, jdl_directory, jdl_name, num_events):
-
-    command_line = "sed -i s/RUN_NUMBER/" + str_job_nb + "/g " + jdl_directory + "/" + jdl_name
-    args = shlex.split(command_line)
-    execute = subprocess.Popen(args,
-                               stdin=subprocess.PIPE,
-                               stdout=subprocess.PIPE,
-                               stderr=subprocess.STDOUT,
-                               shell=False,
-                               universal_newlines=False)
-    execute.communicate()
-
-    command_line = "sed -i s/MC_FLAVOR/" + mc_flavor + "/g " + jdl_directory + "/" + jdl_name
-    args = shlex.split(command_line)
-    execute = subprocess.Popen(args,
-                               stdin=subprocess.PIPE,
-                               stdout=subprocess.PIPE,
-                               stderr=subprocess.STDOUT,
-                               shell=False,
-                               universal_newlines=False)
-    execute.communicate()
-
-    command_line = "sed -i s/MC_CONFIG/" + mc_config + "/g " + jdl_directory + "/" + jdl_name
-    args = shlex.split(command_line)
-    execute = subprocess.Popen(args,
-                               stdin=subprocess.PIPE,
-                               stdout=subprocess.PIPE,
-                               stderr=subprocess.STDOUT,
-                               shell=False,
-                               universal_newlines=False)
-    execute.communicate()
-
-    command_line = "sed -i s/NB_EVENTS/" + str(num_events) + "/g " + jdl_directory + "/" + jdl_name
-    args = shlex.split(command_line)
-    execute = subprocess.Popen(args,
-                               stdin=subprocess.PIPE,
-                               stdout=subprocess.PIPE,
-                               stderr=subprocess.STDOUT,
-                               shell=False,
-                               universal_newlines=False)
-    execute.communicate()
-
-    command_line = "sed -i s/MC_VERSION/" + mc_version + "/g " + jdl_directory + "/" + jdl_name
-    args = shlex.split(command_line)
-    execute = subprocess.Popen(args,
-                               stdin=subprocess.PIPE,
-                               stdout=subprocess.PIPE,
-                               stderr=subprocess.STDOUT,
-                               shell=False,
-                               universal_newlines=False)
-    execute.communicate()
-
-    command_line = "sed -i s/PAX_VERSION/" + pax_version + "/g " + jdl_directory + "/" + jdl_name
-    args = shlex.split(command_line)
-    execute = subprocess.Popen(args,
-                               stdin=subprocess.PIPE,
-                               stdout=subprocess.PIPE,
-                               stderr=subprocess.STDOUT,
-                               shell=False,
-                               universal_newlines=False)
-    execute.communicate()
-
-    return 0
-
-def egi_submit(mc_config, mc_flavor, mc_version, pax_version, num_events, batch_size):
-    """
-    Generate and submit jobs to EGI
-
-    :param mc_config: MC config to use
-    :param mc_flavor: MC flavor to use
-    :param mc_version: version of MC code to use
-    :param pax_version: version of PAX code to use
-    :param num_events: total number of events to generate
-    :param batch_size: number of events to generate per job
-    :return: True on success, False otherwise
-    """
-
-    ids_directory = "./job_id"
-    jdl_directory = "./jdl_files"
-    set_folders(ids_directory, jdl_directory)
-
-    filelist = [f for f in os.listdir(jdl_directory) if f.endswith(".bak")]
-    for f in filelist:
-        os.remove(f)
-
-    num_jobs = get_num_jobs(num_events, batch_size)
-    job_nb = 1
-
-    while (job_nb <= num_jobs):
-
-        str_job_nb = str(job_nb)
-
-        jdl_template_name = "job_template.jdl"
-        jdl_name = "job_" + str_job_nb + ".jdl"
-
-        destination_file = jdl_directory + "/" + jdl_name
-        copyfile(jdl_template_name, destination_file)
-
-        set_jdl_arguments(mc_config, mc_flavor, mc_version, pax_version, str_job_nb, jdl_directory, jdl_name, batch_size)
-
-        jdl_path = jdl_directory + "/" + jdl_name
-        #id_file  = "id_" + str_job_nb + ".txt"
-        id_file  = "job_ids.txt"
-        id_path  = ids_directory + "/" + id_file
-
-        command_line_2 = "glite-wms-job-submit -a -e " \
-                         "https://wms-multi.grid.cnaf.infn.it:7443/glite_wms_wmproxy_server " \
-                         "-o " + id_path + " " + jdl_path
-        args2 = shlex.split(command_line_2)
-        execute2 = subprocess.Popen(args2,
-                                   stdin=subprocess.PIPE,
-                                   stdout=subprocess.PIPE,
-                                   stderr=subprocess.STDOUT,
-                                   shell=False,
-                                   universal_newlines=False)
-        stdout_value, stderr_value = execute2.communicate()
-        stdout_value = stdout_value.decode("utf-8")
-        stdout_value = stdout_value.split("\n")
-        stdout_value = list(filter(None,
-                                   stdout_value))
-        print (stdout_value, stderr_value)
-
-        #time.sleep(0.5)
-        job_nb += 1
-
-    return True
 
 def run_main():
     """
@@ -365,26 +262,63 @@ def run_main():
         sys.stdout.write("No events to generate, exiting")
         return 0
 
+    output_directory = os.path.join(os.getcwd(), 'output')
+    workflow_info = [0,
+                     args.num_events,
+                     args.mc_flavor,
+                     args.mc_config,
+                     args.batch_size,
+                     args.mc_version,
+                     args.pax_version]
+
+    workflow_info[0] = generate_mc_workflow(args.mc_config,
+                                            args.mc_flavor,
+                                            args.mc_version,
+                                            args.pax_version,
+                                            args.num_events,
+                                            args.batch_size)
+    if workflow_info[0] == 0:
+        sys.stderr.write("Can't generate workflow, exiting")
+        return 1
     if args.grid_type == 'osg':
-        if osg_submit(args.mc_config,
-                      args.mc_flavor,
-                      args.mc_version,
-                      args.pax_version,
-                      args.num_events,
-                      args.batch_size):
-            return 0
-        return 1
+        pegasus_id = pegasus_submit('mc_process.xml',
+                                    'condorpool',
+                                    output_directory)
+        workflow_info.append(pegasus_id)
     elif args.grid_type == 'egi':
-        if egi_submit(args.mc_config,
-                      args.mc_flavor,
-                      args.mc_version,
-                      args.pax_version,
-                      args.num_events,
-                      args.batch_size):
-            return 0
+        pegasus_id = pegasus_submit('mc_process.xml',
+                                    'egi',
+                                    output_directory)
+    if pegasus_id is None:
+        sys.stderr.write("Couldn't start pegasus workflow")
         return 1
-    else:
-        return 1
+    workflow_info.append(pegasus_id)
+    with open('mc_workflow.json', 'w') as f:
+        f.write(json.dumps(workflow_info))
+    return 0
 
 if __name__ == '__main__':
+    # workaround missing subprocess.check_output
+    if "check_output" not in dir(subprocess):  # duck punch it in!
+        def check_output(*popenargs, **kwargs):
+            """
+            Run command with arguments and return its output as a byte string.
+
+            Backported from Python 2.7 as it's implemented as pure python
+            on stdlib.
+
+            """
+            process = subprocess.Popen(stdout=subprocess.PIPE, *popenargs, **kwargs)
+            output, unused_err = process.communicate()
+            retcode = process.poll()
+            if retcode:
+                cmd = kwargs.get("args")
+                if cmd is None:
+                    cmd = popenargs[0]
+                error = subprocess.CalledProcessError(retcode, cmd)
+                error.output = output
+                raise error
+            return output
+        subprocess.check_output = check_output
+
     sys.exit(run_main())

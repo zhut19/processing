@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sitecatalog xmlns="http://pegasus.isi.edu/schema/sitecatalog"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://pegasus.isi.edu/schema/sitecatalog http://pegasus.isi.edu/schema/sc-4.0.xsd"
+             version="4.0">
+
+    <site  handle="local" arch="x86_64" os="LINUX">
+        <directory type="shared-scratch" path="/local-scratch/">
+            <file-server operation="all" url="file:///local-scratch/"/>
+        </directory>
+        <directory type="local-storage" path="/local-scratch/">
+            <file-server operation="all" url="file:///local-scratch/"/>
+        </directory>
+    </site>
+
+    <site  handle="egi" arch="x86_64" os="LINUX">
+        <grid type="cream" contact="https://ce01-lcg.cr.cnaf.infn.it:8443/ce-cream/services/CREAM2" scheduler="LSF" jobtype="compute" />
+        <grid type="cream" contact="https://ce04-lcg.cr.cnaf.infn.it:8443/ce-cream/services/CREAM2" scheduler="LSF" jobtype="compute" />
+        <grid type="cream" contact="https://ce05-lcg.cr.cnaf.infn.it:8443/ce-cream/services/CREAM2" scheduler="LSF" jobtype="compute" />
+        <grid type="cream" contact="https://ce06-lcg.cr.cnaf.infn.it:8443/ce-cream/services/CREAM2" scheduler="LSF" jobtype="compute" />
+        <grid type="cream" contact="https://ce07-lcg.cr.cnaf.infn.it:8443/ce-cream/services/CREAM2" scheduler="LSF" jobtype="compute" />
+        <grid type="cream" contact="https://ce08-lcg.cr.cnaf.infn.it:8443/ce-cream/services/CREAM2" scheduler="LSF" jobtype="compute" />
+        <profile namespace="pegasus" key="style">cream</profile>
+        <profile namespace="globus" key="queue">xenon</profile>
+    </site>
+
+</sitecatalog>
