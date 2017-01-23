@@ -62,6 +62,23 @@ pegasus-status -l /scratch/${USER}/<production_name>/processing/montecarlo/${USE
 /scratch/${USER}/<production_name>/processing/montecarlo/output/${USER}/pegasus/montecarlo/*/
 ~~~~
 
+10) Once everything's complete, copy tarballs to Midway using ```rsync``` or https://globus.rcc.uchicago.edu/globus-app/
+~~~~
+Source Endpoint: OSG Connect Stash
+Destination Endpoint: UChicago RCC Midway
+~~~~
+More details about using Globus online can be found here: https://rcc.uchicago.edu/docs/data-transfer/index.html#globus-online
+
+11) Untar all the files after transferred: 
+~~~~
+for f in *; do tar xf $f; done
+~~~~
+(and delete the tarballs after verified to save disk space). And organize them using this script:
+~~~~
+/project/lgrandi/xenon1t/simulations/organize.sh
+~~~~
+
+12) Keep track and share the details of your production here https://xecluster.lngs.infn.it/dokuwiki/doku.php?id=xenon:xenon1t:sim:data
 
 ### EGI submission 
 
