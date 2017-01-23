@@ -123,7 +123,7 @@ def get_mc_versions():
             versions = os.listdir(MC_PATH)
             versions.sort()
             return tuple(versions)
-        return ('v0.1.3)
+        return ()
     except OSError:
         sys.stderr.write("Can't get mc versions from {0}\n".format(MC_PATH))
         return ()
