@@ -3,19 +3,86 @@ Repository for scripts to run xenon1t MC code
 
 ## Instructions
 
-* Checkout this repository
-~~~~
-    git clone https://github.com/XENON1T/processing.git
-~~~~
+
 
 ### OSG submission 
 
-Detailed instructions to come...
+1) Get a CI-Connect account (second step after your Midway account):
+
+https://xecluster.lngs.infn.it/dokuwiki/doku.php?id=xenon:xenon1t:cmp:computing:midway_cluster:instructions
+
+2) ssh to:
 ~~~~
-    https://github.com/XENON1T/processing/blob/master/montecarlo/mc_process.py
+login.xenon.ci-connect.net
 ~~~~
 
+3) Create your scratch space:
+~~~~
+mkdir /scratch/${USER}
+~~~~
+
+4) Create new directory for your production:
+~~~~
+mkdir /scratch/${USER}/<production_name>
+~~~~
+
+5) Checkout this repository
+~~~~
+cd /scratch/${USER}/<production_name>
+git clone https://github.com/XENON1T/processing.git
+~~~~
+
+6) Switch to MC directory
+~~~~
+cd processing/montecarlo
+~~~~
+
+7) Submit jobs (this creates one master job (DAG) which then submits the rest):
+~~~~
+python mc_process.py --flavor <G4, NEST, G4p10> --config <MACRO_NAME> --batch-size <JOB_BATCH_SIZE=2000> --events <TOTAL_NUM_EVENTS> --mc-version <MC_VERSION> --pax-version <PAX_VERSION> --grid-type osg
+~~~~
+where ```MACRO_NAME``` is the string between ```run_``` and ```.mac``` of any of the macros here: https://github.com/XENON1T/mc/tree/master/macros
+
+and ```JOB_BATCH_SIZE``` default is 2000 events per job, which should be fine for most users running the full chain.
+
+For example:
+~~~~
+python mc_process.py --flavor G4 --config AmBe_neutronISO --batch-size 2000 --events 1000000 --mc-version v0.1.3 --pax-version v6.2.1 --grid-type osg
+~~~~
+Instructions for passing a custom macro to come...
+
+8) Check job status with:
+~~~~
+condor_q
+pegasus-status -l /scratch/${USER}/<production_name>/processing/montecarlo/${USER}/pegasus/montecarlo
+~~~~
+
+9) Output should appear in:
+~~~~
+/scratch/${USER}/<production_name>/processing/montecarlo/output/${USER}/pegasus/montecarlo/*/
+~~~~
+
+10) Once everything's complete, copy tarballs to Midway using ```rsync``` or https://globus.rcc.uchicago.edu/globus-app/
+~~~~
+Source Endpoint: OSG Connect Stash
+Destination Endpoint: UChicago RCC Midway
+~~~~
+More details about using Globus online can be found here: https://rcc.uchicago.edu/docs/data-transfer/index.html#globus-online
+
+11) Untar all the files after transferred: 
+~~~~
+for f in *; do tar xf $f; done
+~~~~
+(and delete the tarballs after verified to save disk space). And organize them using this script:
+~~~~
+/project/lgrandi/xenon1t/simulations/organize.sh
+~~~~
+
+12) Keep track and share the details of your production here https://xecluster.lngs.infn.it/dokuwiki/doku.php?id=xenon:xenon1t:sim:data
+
 ### EGI submission 
+
+(Under construction...)
 
 In order to submit jobs on the EGI sites, you first have to:
 
@@ -30,7 +97,7 @@ Detailed instructions can be found here: https://xecluster.lngs.infn.it/dokuwiki
 To submit jobs from xe-grid01:
 ~~~~
 cd processing/montecarlo/
-./mc_process.py  <MC_FLAVOR> <MC_CONFIG> <NUM_EVENTS> <MC_VERSION> <PAX_VERSION> <GRID_TYPE>
+./mc_process.py --flavor <MC_FLAVOR> --config <MC_CONFIG> --events <NUM_EVENTS> --mc-version <MC_VERSION> --pax-version <PAX_VERSION> --grid-type <GRID_TYPE>
 with <GRID_TYPE> = egi
 ~~~~
 After the submission, there will be created two folders (if they don't exist yet): 
