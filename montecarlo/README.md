@@ -43,6 +43,10 @@ python mc_process.py --flavor <G4, NEST, G4p10> --config <MACRO_NAME> --batch-si
 ~~~~
 where ```MACRO_NAME``` is the string between ```run_``` and ```.mac``` of any of the macros here: https://github.com/XENON1T/mc/tree/master/macros
 
+For example:
+~~~~
+python mc_process.py --flavor G4 --config AmBe_neutronISO --batch-size 2000 --events 1000000 --mc-version v0.1.3 --pax-version v6.2.1 --grid-type osg
+~~~~
 Instructions for passing a custom macro to come...
 
 8) Check job status with:
