@@ -123,7 +123,7 @@ def get_mc_versions():
             versions = os.listdir(MC_PATH)
             versions.sort()
             return tuple(versions)
-        return ()
+        return ('v0.1.3)
     except OSError:
         sys.stderr.write("Can't get mc versions from {0}\n".format(MC_PATH))
         return ()
@@ -218,7 +218,6 @@ def get_num_jobs(total_events, batch_size):
     """
     num_jobs = int(math.ceil(total_events / float(batch_size)))
     return num_jobs
-
 
 def run_main():
     """

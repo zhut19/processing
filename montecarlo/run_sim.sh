@@ -60,7 +60,6 @@ then
   exit 1
 fi
 
-
 if [[ ${MCFLAVOR} == G4p10 ]]; then
     source ${CVMFSDIR}/software/mc_setup.sh
 else
@@ -71,14 +70,12 @@ then
   exit 2
 fi
 
-
 RELEASEDIR=${CVMFSDIR}/releases/mc/${MCVERSION}
 source ${RELEASEDIR}/setup.sh
 if [ $? -ne 0 ];
 then
   exit 3
 fi
-
 
 # Setting up directories
 start_dir=$PWD
@@ -141,7 +138,7 @@ else
     # nSort Stage
     NSORTEXEC=${RELEASEDIR}/nSort
     ln -sf ${RELEASEDIR}/data
-    (time ${NSORTEXEC} -i ${G4_FILENAME};) 2>&1 | tee ${G4NSORT_FILENAME}.log
+    (time ${NSORTEXEC} -s 2 -i ${G4_FILENAME};) 2>&1 | tee ${G4NSORT_FILENAME}.log
     if [ $? -ne 0 ];
     then
       exit 12
@@ -195,17 +192,13 @@ then
 fi
 
 # tar all files                                                                         
-tar -czf ${G4_FILENAME}.tgz -C ${OUTDIR} .
-
-# copy files on stash                                                                    
-gfal-copy -p file://${G4_FILENAME}.tgz gsiftp://gridftp.grid.uchicago.edu:2811/cephfs/srm/xenon/xenon1t/simulations/mc_$MCVERSION/pax_$PAXVERSION/$MCFLAVOR/$CONFIG/${G4_FILENAME##*/}.tgz
-
-# Cleanup
-rm -f pax*
-
-
-cd  $OUTDIR
+cd ${OUTDIR}
 tar cvjf ${start_dir}/${JOBID}_output.tar.bz2 *
 
-cd $start_dir
+# copy files on stash                                                                    
+#gfal-copy -p file://${G4_FILENAME}.tgz gsiftp://gridftp.grid.uchicago.edu:2811/cephfs/srm/xenon/xenon1t/simulations/mc_$MCVERSION/pax_$PAXVERSION/$MCFLAVOR/$CONFIG/${JOBID}_output.tar.bz2
+
+# Cleanup
 rm -fr $work_dir
+
+cd $start_dir
