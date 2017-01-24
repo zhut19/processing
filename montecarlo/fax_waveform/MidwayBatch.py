@@ -90,7 +90,7 @@ for i in range(NumJobs):
         p2 = Popen(["wc", "-l"], stdin=p1.stdout, stdout=PIPE)
         p1.stdout.close()  # Allow p1 to receive a SIGPIPE if p2 exits.
         output = p2.communicate()[0]
-        Status=subp.call("squeue --partition="+Partition+" --user=mcfate | wc -l", shell=True)
+        Status=subp.call("squeue --partition="+Partition+" --user="+CurrentUser | wc -l", shell=True)
         Output=int(output)
         #print(Status)
         
