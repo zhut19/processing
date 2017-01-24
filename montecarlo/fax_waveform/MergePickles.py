@@ -1,6 +1,6 @@
 ####################################
 ## Code for merging all the pickle under one directory into one
-## the output is the Merged.p under target directory
+## the output is the Merged.pkl under target directory
 ## by Qing Lin
 ####################################
 import pickle
@@ -23,7 +23,7 @@ InputListFilename = OperationPath+"/TmpList.txt"
 
 if os.path.exists(InputListFilename):
     subp.call("rm "+InputListFilename, shell=True)
-subp.call(" ls "+OperationPath+"/*.p >> "+InputListFilename, shell=True)
+subp.call(" ls "+OperationPath+"/*.pkl >> "+InputListFilename, shell=True)
 
 
 
@@ -50,7 +50,7 @@ for i, InputFile in enumerate(InputFiles):
     print("\n finishing"+InputFile+"\n")
 
 # output
-OutputFilename = OperationPath+"/Merged.p"
+OutputFilename = OperationPath+"/Merged.pkl"
 pickle.dump(Data, open(OutputFilename,'wb'))
 
 # delete temporary list

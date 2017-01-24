@@ -23,7 +23,7 @@ import sys
 
 if len(sys.argv)<2:
     print("============= Syntax =============")
-    print("python MergeTruthAndProcessed.py <configuration file> <truth file.root (abs.)> <processed file.root (abs.)> <output file.p>")
+    print("python MergeTruthAndProcessed.py <configuration file> <truth file.pkl (abs.)> <processed file.root (abs.)> <output file.pkl>")
     exit()
 
 

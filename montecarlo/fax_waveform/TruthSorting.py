@@ -16,12 +16,14 @@ import ROOT
 from ROOT import TFile
 from ROOT import TTree
 
+import root_pandas
+
 import sys
 
 
 if len(sys.argv)<2:
     print("============= Syntax =============")
-    print("python TruthSorting.py <truth file.root (abs.)> <output file.p> <(opt) top-to-total fraction; default = 0.68>")
+    print("python TruthSorting.py <truth file.root (abs.)> <output file (no ext)> <(opt) top-to-total fraction; default = 0.68> <output format; 0=pickle (default), 1=ROOT, 2=both>")
     exit()
 
 
@@ -31,6 +33,12 @@ mean_top_fraction = 0.68
 if len(sys.argv)>3:
     mean_top_fraction = float(sys.argv[3])
 
+OutputFormat=0
+if len(sys.argv)>4:
+    OutputFormat = float(sys.argv[4])
+
+print ("Input file: ", TruthFile)
+print ("Mean top fraction: ", mean_top_fraction)
 
 #################
 ## load the root files
@@ -120,6 +128,7 @@ for event_id in range(10000000):
     Data['x_truth'].append(x_truth)
     Data['y_truth'].append(y_truth)
 
+print ("Number of events: ", event_id)
 
 ######################
 ## Convert to data format in pandas
@@ -130,6 +139,17 @@ for item in Data:
 df = pd.DataFrame(PandasData)
 
 #######################
+## Save to ROOT
+#######################
+if OutputFormat == 1 or OutputFormat == 2:
+    df.to_root(OutputFile+".root", 'fax_truth_sort')
+    print ("Written to: ", OutputFile+".root")
+
+
+#######################
 ## Save to pickle
 #######################
-pickle.dump(df, open(OutputFile, 'wb'))
+if OutputFormat == 0 or OutputFormat == 2:
+    pickle.dump(df, open(OutputFile+".pkl", 'wb'))
+    print ("Written to: ", OutputFile+".pkl")
+

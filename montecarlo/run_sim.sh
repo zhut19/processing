@@ -152,6 +152,7 @@ fi
 RAW_FILENAME=${PAX_INPUT_FILENAME}_raw
 PAX_FILENAME=${PAX_INPUT_FILENAME}_pax
 HAX_FILENAME=${PAX_INPUT_FILENAME}_hax
+FAX_FILENAME=${FILENAME}_faxtruth
 
 # fax+pax stages
 source deactivate
@@ -159,7 +160,7 @@ source activate pax_${PAXVERSION}
 
 # Do not save raw waveforms
 if [[ ${SAVE_RAW} == 0 ]]; then
-    (time paxer --input ${PAX_INPUT_FILENAME}.root --config_string "[WaveformSimulator]truth_file_name=\"${FILENAME}_faxtruth\"" --config XENON1T SimulationMCInput --output ${PAX_FILENAME};) 2>&1 | tee ${PAX_FILENAME}.log
+    (time paxer --input ${PAX_INPUT_FILENAME}.root --config_string "[WaveformSimulator]truth_file_name=\"${FAX_FILENAME}\"" --config XENON1T SimulationMCInput --output ${PAX_FILENAME};) 2>&1 | tee ${PAX_FILENAME}.log
 
     if [ $? -ne 0 ];
     then
@@ -168,7 +169,7 @@ if [[ ${SAVE_RAW} == 0 ]]; then
 
 # Save raw waveforms
 else
-    (time paxer --input ${PAX_INPUT_FILENAME}.root --config_string "[WaveformSimulator]truth_file_name=\"${FILENAME}_faxtruth\"" --config XENON1T reduce_raw_data SimulationMCInput --output ${RAW_FILENAME};) 2>&1 | tee ${RAW_FILENAME}.log
+    (time paxer --input ${PAX_INPUT_FILENAME}.root --config_string "[WaveformSimulator]truth_file_name=\"${FAX_FILENAME}\"" --config XENON1T reduce_raw_data SimulationMCInput --output ${RAW_FILENAME};) 2>&1 | tee ${RAW_FILENAME}.log
 
     if [ $? -ne 0 ];
     then
@@ -183,15 +184,31 @@ else
     fi
 fi
 
-# hax stage
-HAXPYTHON="import hax; "
-HAXPYTHON+="hax.init(main_data_paths=['${OUTDIR}'], minitree_paths=['${OUTDIR}'], pax_version_policy = 'loose'); "
-HAXPYTHON+="hax.minitrees.load('${PAX_FILENAME##*/}', ['Basics', 'Fundamentals', 'DoubleScatter', 'LargestPeakProperties', 'TotalProperties']);"
-
-(time python -c "${HAXPYTHON}";)  2>&1 | tee ${HAX_FILENAME}.log
+# Flatten fax truth info
+FAXSORT_FILENAME=${FAX_FILENAME}_sort
+MEAN_TOP_FRACTION=0.68 # To be improved: https://github.com/XENON1T/mc/issues/20
+FAXSORT_OUTPUT_FORMAT=2 # Pickle + ROOT
+(time python ${CVMFSDIR}/releases/processing/montecarlo/fax_waveform/TruthSorting.py ${FAX_FILENAME}.root ${FAXSORT_FILENAME} ${MEAN_TOP_FRACTION} ${FAXSORT_OUTPUT_FORMAT};) 2>&1 | tee ${FAXSORT_FILENAME}.log
 if [ $? -ne 0 ];
 then
-  exit 16
+    exit 16
+fi
+
+# hax stage
+HAX_TREEMAKERS="Basics Fundamentals DoubleScatter LargestPeakProperties TotalProperties"
+
+# ROOT output
+(time haxer --input ${PAX_FILENAME##*/} --pax_version_policy loose --treemakers ${HAX_TREEMAKERS} --force_reload;) 2>&1 | tee ${HAX_FILENAME}.log
+if [ $? -ne 0 ];
+then
+  exit 17
+fi
+
+# Pickle output
+(time haxer --input ${PAX_FILENAME##*/} --pax_version_policy loose --treemakers ${HAX_TREEMAKERS} --force_reload --preferred_minitree_format pklz;) 2>&1 | tee -a ${HAX_FILENAME}.log
+if [ $? -ne 0 ];
+then
+  exit 18
 fi
 
 # tar all files                                                                         

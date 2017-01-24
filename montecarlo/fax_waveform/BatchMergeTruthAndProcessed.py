@@ -86,8 +86,8 @@ for j, ID_job in enumerate(IDList):
         continue
     ProcessedRootFilename = OneProcessedFile[0]
     TruthRootFilename = TruthRootPath+"/FakeWaveform_XENON1T_"+ID_job+"_truth.root"
-    TmpOutputFilename = TmpPath+"/FakeWaveform_XENON1T_"+ID_job+"_tmp.p"
-    OutputFilename = OutputPath+"/FakeWaveform_XENON1T_"+ID_job+"_merged.p"
+    TmpOutputFilename = TmpPath+"/FakeWaveform_XENON1T_"+ID_job+"_tmp.pkl"
+    OutputFilename = OutputPath+"/FakeWaveform_XENON1T_"+ID_job+"_merged.pkl"
     AbsoluteConfigFile = CurrentPath+"/"+ConfigFile
     if len(ProcessedRootFilename)<2 or len(TruthRootFilename)<2:
         continue
