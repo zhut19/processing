@@ -114,7 +114,10 @@ G4NSORT_FILENAME=${G4_FILENAME}_Sort
 G4EXEC=${RELEASEDIR}/xenon1t_${MCFLAVOR}
 MACROSDIR=${RELEASEDIR}/macros
 ln -sf ${MACROSDIR} # For reading e.g. input spectra from CWD
-(time ${G4EXEC} -p ${MACROSDIR}/${PREINIT} -s ${MACROSDIR}/setup_optical_S1.mac  -f ${MACROSDIR}/run_${CONFIG}.mac -n ${NEVENTS} -o ${G4_FILENAME}.root;) 2>&1 | tee ${G4_FILENAME}.log
+PREINIT_MACRO=${MACROSDIR}/${PREINIT}
+OPTICAL_SETUP=${MACROSDIR}/setup_optical_S1.mac
+SOURCE_MACRO=${MACROSDIR}/run_${CONFIG}.mac
+(time ${G4EXEC} -p ${PREINIT_MACRO} -s ${OPTICAL_SETUP} -f ${SOURCE_MACRO} -n ${NEVENTS} -o ${G4_FILENAME}.root;) 2>&1 | tee ${G4_FILENAME}.log
 if [ $? -ne 0 ];
 then
   exit 10
