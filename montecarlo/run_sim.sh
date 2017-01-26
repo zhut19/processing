@@ -71,7 +71,7 @@ fi
 # set HOME directory if it's not set
 if [[ ${HOME} == "" ]];
 then
-    HOME=$PWD
+    export HOME=$PWD
 fi
 
 ########################################
