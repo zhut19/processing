@@ -68,6 +68,12 @@ elif [[ ${CONFIG} == *"muon"* || ${CONFIG} == *"MV"* ]]; then
     PREINIT=preinit_MV.mac
 fi
 
+# set HOME directory if it's not set
+if [[ ${HOME} == "" ]];
+then
+    HOME=$PWD
+fi
+
 ########################################
 
 # Set pipe to propagate error codes to $?
