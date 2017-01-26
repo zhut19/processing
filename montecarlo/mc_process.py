@@ -10,30 +10,6 @@ import sys
 
 import Pegasus.DAX3
 
-HTCONDOR_SUBMIT_FILE = '''
-executable     = run_sim.sh
-universe       = vanilla
-
-Error   = log/err.$(Cluster).$(Process)
-Output  = log/out.$(Cluster).$(Process)
-Log     = log/log.$(Cluster).$(Process)
-
-Requirements = (HAS_CVMFS_xenon_opensciencegrid_org ) && \\
-               (OpSysAndVer =?= "CentOS6" || OpSysAndVer =?= "RedHat6" || OpSysAndVer =?= "SL6") && \\
-               (GLIDEIN_ResourceName =!= "BNL-ATLAS") && \\
-               (GLIDEIN_ResourceName =!= "BU_ATLAS_Tier2") && \\
-               (GLIDEIN_ResourceName =!= "AGLT2")
-+WantExperimental = True
-+WANT_RCC_ciconnect = True
-
-transfer_executable = True
-transfer_output_files = output
-when_to_transfer_output = ON_EXIT
-arguments = $(id) $(flavor) $(config) $(events) $(mc_version) $(pax_version)
-queue 1
-
-'''
-
 MC_PATH = '/cvmfs/xenon.opensciencegrid.org/releases/mc/'
 PAX_PATH = "/cvmfs/xenon.opensciencegrid.org/releases/anaconda/2.4/envs/"
 MC_FLAVORS = ('G4', 'NEST', 'G4p10')
@@ -63,11 +39,6 @@ CONFIGS = (
     'WholeLXe_Rn220',
     'WholeLXe_Rn222'
 )
-
-# condor / osg specific constants
-HTCONDOR_SUBMIT_FILENAME = 'mc.submit'
-DAG_FILE = 'mc.dag'
-DAG_RETRIES = 10
 
 # pegasus constants
 PEGASUSRC_PATH = './pegasusrc'
@@ -218,6 +189,7 @@ def get_num_jobs(total_events, batch_size):
     """
     num_jobs = int(math.ceil(total_events / float(batch_size)))
     return num_jobs
+
 
 def run_main():
     """
