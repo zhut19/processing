@@ -1,4 +1,23 @@
 #!/usr/bin/env bash
+
+function terminate {
+
+    # tar all files                                                                         
+    cd ${OUTDIR}
+    tar cvjf ${start_dir}/${JOBID}_output.tar.bz2 *
+    
+    # copy files on stash                                                                    
+    #gfal-copy -p file://${G4_FILENAME}.tgz gsiftp://gridftp.grid.uchicago.edu:2811/cephfs/srm/xenon/xenon1t/simulations/mc_$MCVERSION/pax_$PAXVERSION/$MCFLAVOR/$CONFIG/${JOBID}_output.tar.bz2
+    
+    # Cleanup
+    rm -fr $work_dir
+    
+    cd $start_dir
+
+    exit 0
+}
+
+
 echo "Start time: " `/bin/date`
 echo "Job is running on node: " `/bin/hostname`
 echo "Job running as user: " `/usr/bin/id`
@@ -123,6 +142,11 @@ then
   exit 10
 fi
 
+# Skip the rest for optical photons
+if [[ ${CONFIG} == *"optPhot"* ]]; then
+    terminate
+fi
+
 source ${CVMFSDIR}/software/mc_old_setup.sh
 
 if [[ ${MCFLAVOR} == NEST ]]; then
@@ -201,27 +225,20 @@ fi
 HAX_TREEMAKERS="Basics Fundamentals DoubleScatter LargestPeakProperties TotalProperties"
 
 # ROOT output
-(time haxer --input ${PAX_FILENAME##*/} --pax_version_policy loose --treemakers ${HAX_TREEMAKERS} --force_reload;) 2>&1 | tee ${HAX_FILENAME}.log
+(time haxer --main_data_paths ${OUTDIR} --input ${PAX_FILENAME##*/} --pax_version_policy loose --treemakers ${HAX_TREEMAKERS} --force_reload;) 2>&1 | tee ${HAX_FILENAME}.log
 if [ $? -ne 0 ];
 then
   exit 17
 fi
 
 # Pickle output
-(time haxer --input ${PAX_FILENAME##*/} --pax_version_policy loose --treemakers ${HAX_TREEMAKERS} --force_reload --preferred_minitree_format pklz;) 2>&1 | tee -a ${HAX_FILENAME}.log
+(time haxer --main_data_paths ${OUTDIR} --input ${PAX_FILENAME##*/} --pax_version_policy loose --treemakers ${HAX_TREEMAKERS} --force_reload --preferred_minitree_format pklz;) 2>&1 | tee -a ${HAX_FILENAME}.log
 if [ $? -ne 0 ];
 then
   exit 18
 fi
 
-# tar all files                                                                         
-cd ${OUTDIR}
-tar cvjf ${start_dir}/${JOBID}_output.tar.bz2 *
+# Move hax output
+mv *.root *.pklz ${OUTDIR} 
 
-# copy files on stash                                                                    
-#gfal-copy -p file://${G4_FILENAME}.tgz gsiftp://gridftp.grid.uchicago.edu:2811/cephfs/srm/xenon/xenon1t/simulations/mc_$MCVERSION/pax_$PAXVERSION/$MCFLAVOR/$CONFIG/${JOBID}_output.tar.bz2
-
-# Cleanup
-rm -fr $work_dir
-
-cd $start_dir
+terminate
