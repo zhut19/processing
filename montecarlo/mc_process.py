@@ -9,6 +9,7 @@ import subprocess
 import sys
 
 import Pegasus.DAX3
+import cStringIO
 
 MC_PATH = '/cvmfs/xenon.opensciencegrid.org/releases/mc/'
 PAX_PATH = "/cvmfs/xenon.opensciencegrid.org/releases/anaconda/2.4/envs/"
@@ -44,6 +45,51 @@ CONFIGS = (
 PEGASUSRC_PATH = './pegasusrc'
 
 
+def update_site_catalogs(site):
+    """
+    Update the pegasus site catalog to set the local scratch and output
+    directories to subdirectories
+
+    :param site: condorpool for osg sites, egi for egi sites
+    :return: None
+    """
+
+    scratch_re = re.compile('type="shared-scratch" path="(.*?)"')
+    output_re = re.compile('type="local-storage" path="(.*?)"')
+    url_re = re.compile('operation="all" url="file://(.*?)"')
+    if site == 'condorpool':
+        catalog_file = 'osg-sites.xml'
+    elif site == 'egi':
+        catalog_file = 'egi-sites.xml'
+    buf = ""
+    catalog = open(catalog_file, 'r')
+    while True:
+        line = catalog.readline()
+        if not line:
+            break
+        match = scratch_re.search(line)
+        if match:
+            new_path = os.path.join(os.getcwd(), 'scratch')
+            buf += scratch_re.sub('type="shared-scratch" path="{0}"'.format(new_path),
+                                  line)
+            line = catalog.readline()
+            buf += url_re.sub('operation="all" url="file://{0}"'.format(new_path),
+                              line)
+            continue
+        match = output_re.search(line)
+        if match:
+            new_path = os.path.join(os.getcwd(), 'output')
+            buf += output_re.sub('type="local-storage" path="{0}"'.format(new_path),
+                                  line)
+            line = catalog.readline()
+            buf += url_re.sub('operation="all" url="file://{0}"'.format(new_path),
+                              line)
+            continue
+        buf += line
+    catalog.close()
+    open(catalog_file, 'w').write(buf)
+
+
 def pegasus_submit(dax, site, output_directory):
     """
     Submit a workflow to pegasus
@@ -61,6 +107,7 @@ def pegasus_submit(dax, site, output_directory):
         else:
             sys.stderr.write("Invalid grid type: {0}\n".format(site))
             sys.exit(1)
+        update_site_catalogs(site)
         output = subprocess.check_output(['/usr/bin/pegasus-plan',
                                           '--sites',
                                           site,
