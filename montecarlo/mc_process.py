@@ -25,7 +25,7 @@ CONFIGS = (
     #'Disk15m_muon', # Not yet tested
     'ib1sp1_Cs137',
     'ib1sp2_Cs137',
-    #'optPhot', # Not yet tested
+    'optPhot',
     'Pmt_Co60',
     'Pmt_K40',
     'Pmt_neutron',
