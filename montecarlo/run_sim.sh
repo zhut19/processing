@@ -221,7 +221,7 @@ fi
 FAXSORT_FILENAME=${FAX_FILENAME}_sort
 MEAN_TOP_FRACTION=0.68 # To be improved: https://github.com/XENON1T/mc/issues/20
 FAXSORT_OUTPUT_FORMAT=2 # Pickle + ROOT
-(time python ${CVMFSDIR}/releases/processing/montecarlo/fax_waveform/TruthSorting.py ${FAX_FILENAME}.root ${FAXSORT_FILENAME} ${MEAN_TOP_FRACTION} ${FAXSORT_OUTPUT_FORMAT};) 2>&1 | tee ${FAXSORT_FILENAME}.log
+(time python ${CVMFSDIR}/releases/processing/montecarlo/fax_waveform/TruthSorting_arrays.py ${FAX_FILENAME}.root ${FAXSORT_FILENAME} ${MEAN_TOP_FRACTION} ${FAXSORT_OUTPUT_FORMAT};) 2>&1 | tee ${FAXSORT_FILENAME}.log
 if [ $? -ne 0 ];
 then
     exit 16
