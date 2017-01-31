@@ -14,7 +14,7 @@ from subprocess import Popen, PIPE
 
 if len(sys.argv)<=1:
     print("======== Usage =========")
-    print("python BatchMergeTruthAndProcessed.py <config file> <truth root path> <processed root path> <output path> <(opt)top-to-total fraction in truth(default 0.68)> <(opt)relative path for submission> <(opt) if use public node (1) optional (2 for use kicp nodes)> <(opt)Submit ID>")
+    print("python BatchMergeTruthAndProcessed.py <config file> <truth root path> <processed root path> <output path> <(opt)top-to-total fraction in truth(default 0.68)> <(opt)relative path for submission> <(opt) if use public node (1) optional (2 for use kicp nodes)> <(opt)Submit ID> <(opt) if use arrays in output (1) (default 0)>")
     exit()
 
 CurrentEXE = sys.argv[0]
@@ -34,6 +34,9 @@ if len(sys.argv)>7:
 SubmitID = 0
 if len(sys.argv)>8:
     SubmitID = int(sys.argv[8])
+ArrayOutput = 0
+if len(sys.argv)>9:
+    ArrayOutput = int(sys.argv[9])
 
 
 #######################
@@ -45,7 +48,10 @@ if not IfPublicNode:
 CurrentPath = os.getcwd()
 CurrentUser = getpass.getuser()
 EXE_Path = CurrentEXE.split("BatchMergeTruthAndProcessed.py")[0]
-EXE1 = CurrentPath+"/"+EXE_Path+"TruthSorting.py"
+if ArrayOutput==1:
+    EXE1 = CurrentPath+"/"+EXE_Path+"TruthSorting_arrays.py"
+else:
+    EXE1 = CurrentPath+"/"+EXE_Path+"TruthSorting.py"
 EXE2 = CurrentPath+"/"+EXE_Path+"MergeTruthAndProcessed.py"
 
 

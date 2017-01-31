@@ -29,6 +29,7 @@ if len(sys.argv)<2:
 
 TruthFile = sys.argv[1]
 OutputFile = sys.argv[2]
+OutputFile = OutputFile.split('.')[0]
 mean_top_fraction = 0.68
 if len(sys.argv)>3:
     mean_top_fraction = float(sys.argv[3])
