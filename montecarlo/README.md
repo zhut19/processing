@@ -41,7 +41,7 @@ cd processing/montecarlo
 ~~~~
 python mc_process.py --flavor <MC_FLAVOR> --config <MC_CONFIG> --batch-size <JOB_BATCH_SIZE=2000> --events <NUM_EVENTS> --mc-version <MC_VERSION> --pax-version <PAX_VERSION> --grid-type osg
 ~~~~
-where ```MACRO_NAME``` is the string between ```run_``` and ```.mac``` of any of the macros here: https://github.com/XENON1T/mc/tree/master/macros
+where 
 ~~~~
     MC_FLAVOR: NEST, G4 (without NEST), G4p10 (latest Geant4.10 without NEST)
     MC_CONFIG: the string between ```run_``` and ```.mac``` of any of the macros here: https://github.com/XENON1T/mc/tree/master/macros
@@ -133,7 +133,7 @@ where
 ~~~~
     Job_Number: Unique job identifier that goes into filename
     MC_FLAVOR: NEST, G4 (without NEST), G4p10 (latest Geant4.10 without NEST)
-    MC_CONFIG: TPC_Kr83m, TPC_Kr85, WholeLXe_Rn220, WholeLXe_Rn222 (more configurations to come soon)
+    MC_CONFIG: the string between ```run_``` and ```.mac``` of any of the macros here: https://github.com/XENON1T/mc/tree/master/macros
     NUM_EVENTS: Number of events 
     MC_VERSION: MC GitHub release number (https://github.com/XENON1T/mc/releases)
     PAX_VERSION: pax (also fax) GitHub release number (https://github.com/XENON1T/pax/releases)
