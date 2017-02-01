@@ -15,6 +15,7 @@ https://xecluster.lngs.infn.it/dokuwiki/doku.php?id=xenon:xenon1t:cmp:computing:
 ~~~~
 login.xenon.ci-connect.net
 ~~~~
+or ```login.ci-connect.uchicago.edu``` to add your SSH key first, if above fails.
 
 3) Create your scratch space:
 ~~~~
