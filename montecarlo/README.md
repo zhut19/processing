@@ -39,12 +39,17 @@ cd processing/montecarlo
 
 7) Submit jobs (this creates one master job (DAG) which then submits the rest):
 ~~~~
-python mc_process.py --flavor <G4, NEST, G4p10> --config <MACRO_NAME> --batch-size <JOB_BATCH_SIZE=2000> --events <TOTAL_NUM_EVENTS> --mc-version <MC_VERSION> --pax-version <PAX_VERSION> --grid-type osg
+python mc_process.py --flavor <MC_FLAVOR> --config <MC_CONFIG> --batch-size <JOB_BATCH_SIZE=2000> --events <NUM_EVENTS> --mc-version <MC_VERSION> --pax-version <PAX_VERSION> --grid-type osg
 ~~~~
 where ```MACRO_NAME``` is the string between ```run_``` and ```.mac``` of any of the macros here: https://github.com/XENON1T/mc/tree/master/macros
-
-and ```JOB_BATCH_SIZE``` default is 2000 events per job, which should be fine for most users running the full chain.
-
+~~~~
+    MC_FLAVOR: NEST, G4 (without NEST), G4p10 (latest Geant4.10 without NEST)
+    MC_CONFIG: the string between ```run_``` and ```.mac``` of any of the macros here: https://github.com/XENON1T/mc/tree/master/macros
+    JOB_BATCH_SIZE: Number of events per job (default=2000 should be fine for most users running the full chain)
+    NUM_EVENTS: Total number of events (summed over all jobs)
+    MC_VERSION: MC GitHub release number (https://github.com/XENON1T/mc/releases)
+    PAX_VERSION: pax (also fax) GitHub release number (https://github.com/XENON1T/pax/releases)
+~~~~
 For example:
 ~~~~
 python mc_process.py --flavor G4 --config AmBe_neutronISO --batch-size 2000 --events 1000000 --mc-version v0.1.3 --pax-version v6.2.1 --grid-type osg
