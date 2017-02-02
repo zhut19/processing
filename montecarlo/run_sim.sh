@@ -89,8 +89,7 @@ then
     OPTICAL_SETUP=setup_optical_S1.mac
 fi
 
-shift
-SOURCE_MACRO=${9}
+SOURCE_MACRO=${10}
 if [[ -z $SOURCE_MACRO ]];
 then
     SOURCE_MACRO=run_${CONFIG}.mac
