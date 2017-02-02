@@ -25,7 +25,7 @@ CONFIGS = (
     #'Disk15m_muon', # Not yet tested
     'ib1sp1_Cs137',
     'ib1sp2_Cs137',
-    #'optPhot', # Not yet tested
+    'optPhot',
     'Pmt_Co60',
     'Pmt_K40',
     'Pmt_neutron',
@@ -364,7 +364,7 @@ def run_main():
     parser.add_argument('--preinit-macro', dest='preinit_macro',
                         action='store', default=None,
                         help='preinit macro to use')
-    parser.add_argument('--opticial-setup', dest='optical_setup',
+    parser.add_argument('--optical-setup', dest='optical_setup',
                         action='store', default=None,
                         help='macro to use to setup optical properties')
     parser.add_argument('--source-macro', dest='source_macro',
