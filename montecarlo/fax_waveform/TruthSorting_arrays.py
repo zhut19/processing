@@ -162,7 +162,8 @@ def dataframe_to_root(dataframe, root_filename, treename='tree', mode='recreate'
                 branches[length_branch_name] = np.array([0])
                 branch_types[length_branch_name] = 'L'
             max_length = dataframe[length_branch_name].max()
-            first_element = dataframe[branch_name][0][0]
+            first_element_index = next((index for index, branch_length in enumerate(dataframe[length_branch_name]) if branch_length), None)
+            first_element = dataframe[branch_name][first_element_index][0]
             array_keys.append(branch_name)
 
         else:
