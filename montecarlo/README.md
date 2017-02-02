@@ -75,6 +75,15 @@ Destination Endpoint: UChicago RCC Midway
 ~~~~
 More details about using Globus online can be found here: https://rcc.uchicago.edu/docs/data-transfer/index.html#globus-online
 
+The official location will be ```/project/lgrandi/xenon1t/simulations```; please follow the existing directory structure within, e.g.:
+~~~~
+/project/lgrandi/xenon1t/simulations/mc_v<MC_VERSION>/pax_v<PAX_VERSION>/<MC_FLAVOR>/<MC_CONFIG>
+~~~~
+and ensure you set the group appropriately
+~~~~
+chgrp -R pi-lgrandi /project/lgrandi/xenon1t/simulations
+~~~~
+
 11) Untar all the files after transferred: 
 ~~~~
 for f in *; do tar xf $f; done
