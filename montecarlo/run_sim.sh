@@ -14,7 +14,7 @@ function terminate {
     
     cd $start_dir
 
-    exit 0
+    exit $1
 }
 
 
@@ -145,12 +145,12 @@ SOURCE_MACRO=${MACROSDIR}/run_${CONFIG}.mac
 (time ${G4EXEC} -p ${PREINIT_MACRO} -s ${OPTICAL_SETUP} -f ${SOURCE_MACRO} -n ${NEVENTS} -o ${G4_FILENAME}.root;) 2>&1 | tee ${G4_FILENAME}.log
 if [ $? -ne 0 ];
 then
-  exit 10
+  terminate 10
 fi
 
 # Skip the rest for optical photons
 if [[ ${CONFIG} == *"optPhot"* ]]; then
-    terminate
+    terminate 0
 fi
 
 source ${CVMFSDIR}/software/mc_old_setup.sh
@@ -162,7 +162,7 @@ if [[ ${MCFLAVOR} == NEST ]]; then
         (time ${PATCHEXEC} -i ${G4_FILENAME}.root -o ${G4PATCH_FILENAME}.root -t ${PATCHTYPE};) 2>&1 | tee ${G4PATCH_FILENAME}.log
         if [ $? -ne 0 ];
         then
-          exit 11
+          terminate 11
         fi
         PAX_INPUT_FILENAME=${G4PATCH_FILENAME}
 
@@ -177,7 +177,7 @@ else
     (time ${NSORTEXEC} -s 2 -i ${G4_FILENAME};) 2>&1 | tee ${G4NSORT_FILENAME}.log
     if [ $? -ne 0 ];
     then
-      exit 12
+      terminate 12
     fi
     PAX_INPUT_FILENAME=${G4NSORT_FILENAME}
 fi
@@ -197,7 +197,7 @@ if [[ ${SAVE_RAW} == 0 ]]; then
 
     if [ $? -ne 0 ];
     then
-	exit 13
+	terminate 13
     fi
 
 # Save raw waveforms
@@ -206,14 +206,14 @@ else
 
     if [ $? -ne 0 ];
     then
-	exit 14
+	terminate 14
     fi
 
     (time paxer --ignore_rundb --input ${RAW_FILENAME} --config XENON1T --output ${PAX_FILENAME};) 2>&1 | tee ${PAX_FILENAME}.log
     
     if [ $? -ne 0 ];
     then
-	exit 15
+	terminate 15
     fi
 fi
 
@@ -224,7 +224,7 @@ FAXSORT_OUTPUT_FORMAT=2 # Pickle + ROOT
 (time python ${CVMFSDIR}/releases/processing/montecarlo/fax_waveform/TruthSorting_arrays.py ${FAX_FILENAME}.root ${FAXSORT_FILENAME} ${MEAN_TOP_FRACTION} ${FAXSORT_OUTPUT_FORMAT};) 2>&1 | tee ${FAXSORT_FILENAME}.log
 if [ $? -ne 0 ];
 then
-    exit 16
+    terminate 16
 fi
 
 # hax stage
@@ -234,17 +234,17 @@ HAX_TREEMAKERS="Basics Fundamentals DoubleScatter LargestPeakProperties TotalPro
 (time haxer --main_data_paths ${OUTDIR} --input ${PAX_FILENAME##*/} --pax_version_policy loose --treemakers ${HAX_TREEMAKERS} --force_reload;) 2>&1 | tee ${HAX_FILENAME}.log
 if [ $? -ne 0 ];
 then
-  exit 17
+  terminate 17
 fi
 
 # Pickle output
 (time haxer --main_data_paths ${OUTDIR} --input ${PAX_FILENAME##*/} --pax_version_policy loose --treemakers ${HAX_TREEMAKERS} --force_reload --preferred_minitree_format pklz;) 2>&1 | tee -a ${HAX_FILENAME}.log
 if [ $? -ne 0 ];
 then
-  exit 18
+  terminate 18
 fi
 
 # Move hax output
 mv *.root *.pklz ${OUTDIR} 
 
-terminate
+terminate 0
