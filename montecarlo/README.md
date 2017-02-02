@@ -122,7 +122,7 @@ glite-wms-job-output --dir output -i job_id/job_ids.txt --noint
 You may run locally on Midway with e.g.:
 ~~~~
     cd processing/montecarlo/
-    ./run_sim.sh <Job_Number> <MC_FLAVOR> <MC_CONFIG> <NUM_EVENTS> <MC_VERSION> <PAX_VERSION> <SAVE_WAVEFORMS>
+    ./run_sim.sh <Job_Number> <MC_FLAVOR> <MC_CONFIG> <NUM_EVENTS> <MC_VERSION> <PAX_VERSION> <SAVE_WAVEFORMS> <PREINIT_MACRO> <OPTICAL_SETUP> <SOURCE_MACRO>
 ~~~~
 where
 ~~~~
@@ -133,6 +133,9 @@ where
     MC_VERSION: MC GitHub release number (https://github.com/XENON1T/mc/releases)
     PAX_VERSION: pax (also fax) GitHub release number (https://github.com/XENON1T/pax/releases)
     SAVE_WAVEFORMS: Flag to save raw waveforms (disk space intensive); 0 - off (default), 1 - on
+    PREINIT_MACRO: name of macro to use for Geant4 preinit (defaults to
+    OPTICAL_SETUP: name of macro to use for Geant4 optical setup (defaults to setup_optical_S1.mac)
+    SOURCE_MACRO: name of macro to run in Geant4 (defaults to run_<MC_CONFIG>.mac)
 ~~~~
 
 This will create output files in "output" directory.
