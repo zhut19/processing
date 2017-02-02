@@ -80,7 +80,7 @@ def update_site_catalogs(site):
         if match:
             new_path = os.path.join(os.getcwd(), 'output')
             buf += output_re.sub('type="local-storage" path="{0}"'.format(new_path),
-                                  line)
+                                 line)
             line = catalog.readline()
             buf += url_re.sub('operation="all" url="file://{0}"'.format(new_path),
                               line)
@@ -88,6 +88,21 @@ def update_site_catalogs(site):
         buf += line
     catalog.close()
     open(catalog_file, 'w').write(buf)
+
+
+def check_macro(macro_name, mc_version):
+    """
+    Check to see if given macro is present in OASIS
+
+    :param macro_name: name of macro file
+    :param mc_version: version of mc code to use
+    :return: True if macro is available in OASIS for specified mc version
+    """
+    macro_location = os.path.join(MC_PATH, mc_version, 'macros', macro_name)
+    if os.path.isfile(macro_location):
+        return True
+
+    return False
 
 
 def pegasus_submit(dax, site, output_directory):
@@ -176,7 +191,10 @@ def generate_mc_workflow(mc_config,
                          mc_version,
                          pax_version,
                          num_events,
-                         batch_size):
+                         batch_size,
+                         preinit_macro,
+                         optical_setup,
+                         source_macro):
     """
     Generate a Pegasus workflow to do X1T MC processing
 
@@ -186,6 +204,9 @@ def generate_mc_workflow(mc_config,
     :param pax_version: version of PAX code to use
     :param num_events: total number of events to generate
     :param batch_size: number of events to generate per job
+    :param preinit_macro: macro to use to preinitialize MC
+    :param optical_setup: macro to setup optics
+    :param source_macro: macro to use for MC generation
     :return: number of jobs in the workflow
     """
     dax = Pegasus.DAX3.ADAG('montecarlo')
@@ -196,6 +217,57 @@ def generate_mc_workflow(mc_config,
     num_jobs = get_num_jobs(num_events, batch_size)
     sys.stdout.write("Generating {0} events ".format(num_events) +
                      "using {0} jobs\n".format(num_jobs))
+    if preinit_macro is None:
+        if "Cs137" in mc_config:
+            preinit_macro = 'preinit_{0}.mac'.format(mc_config)
+        elif "muon" in mc_config or "MV" in mc_config:
+            preinit_macro = 'preinit_MV.mac'
+        else:
+            preinit_macro = 'preinit.mac'
+    if optical_setup is None:
+        optical_setup = 'setup_optical_S1.mac'
+    if source_macro is None:
+        source_macro = "run_{0}.mac".format(mc_config)
+
+    source_macro_input = None
+    if not check_macro(source_macro, mc_version):
+        if not os.path.exists(source_macro):
+            sys.stderr.write("Source macro not in OASIS or current "
+                             "directory, exiting.\n")
+            sys.exit(1)
+        source_macro_input = Pegasus.DAX3.File(source_macro)
+        macro_path = os.path.join(os.getcwd(), source_macro)
+        file_pfn = Pegasus.DAX3.PFN("file://{0}".format(macro_path),
+                                    "local")
+        source_macro_input.addPFN(file_pfn)
+        dax.addFile(source_macro_input)
+
+    optical_macro_input = None
+    if not check_macro(optical_setup, mc_version):
+        if not os.path.exists(optical_setup):
+            sys.stderr.write("Optical setup macro not in OASIS or current "
+                             "directory, exiting.\n")
+            sys.exit(1)
+        optical_macro_input = Pegasus.DAX3.File(optical_setup)
+        macro_path = os.path.join(os.getcwd(), optical_setup)
+        file_pfn = Pegasus.DAX3.PFN("file://{0}".format(macro_path),
+                                    "local")
+        optical_macro_input.addPFN(file_pfn)
+        dax.addFile(optical_macro_input)
+
+    preinit_macro_input = None
+    if not check_macro(preinit_macro, mc_version):
+        if not os.path.exists(preinit_macro):
+            sys.stderr.write("Preinit macro not in OASIS or current "
+                             "directory, exiting.\n")
+            sys.exit(1)
+        preinit_macro_input = Pegasus.DAX3.File(preinit_macro)
+        macro_path = os.path.join(os.getcwd(), preinit_macro)
+        file_pfn = Pegasus.DAX3.PFN("file://{0}".format(macro_path),
+                                    "local")
+        preinit_macro_input.addPFN(file_pfn)
+        dax.addFile(preinit_macro_input)
+
     try:
         for job in range(0, num_jobs):
             run_sim_job = Pegasus.DAX3.Job(id="run_sim_{0}".format(job), name="run_sim.sh")
@@ -208,14 +280,28 @@ def generate_mc_workflow(mc_config,
                                          mc_config,
                                          str(left_events),
                                          mc_version,
-                                         pax_version)
+                                         pax_version,
+                                         '0',  # don't save raw data
+                                         preinit_macro,
+                                         optical_setup,
+                                         source_macro)
             else:
                 run_sim_job.addArguments(str(job),
                                          mc_flavor,
                                          mc_config,
                                          str(batch_size),
                                          mc_version,
-                                         pax_version)
+                                         pax_version,
+                                         '0',  # don't save raw data
+                                         preinit_macro,
+                                         optical_setup,
+                                         source_macro)
+            if preinit_macro_input:
+                run_sim_job.uses(preinit_macro_input, link=Pegasus.DAX3.Link.INPUT)
+            if optical_macro_input:
+                run_sim_job.uses(optical_macro_input, link=Pegasus.DAX3.Link.INPUT)
+            if source_macro_input:
+                run_sim_job.uses(source_macro_input, link=Pegasus.DAX3.Link.INPUT)
             output = Pegasus.DAX3.File("{0}_output.tar.bz2".format(job))
             run_sim_job.uses(output, link=Pegasus.DAX3.Link.OUTPUT, transfer=True)
             dax.addJob(run_sim_job)
@@ -275,6 +361,15 @@ def run_main():
                         choices=['osg', 'egi'],
                         action='store', required=True,
                         help='Grid to submit to')
+    parser.add_argument('--preinit-macro', dest='preinit_macro',
+                        action='store', default=None,
+                        help='preinit macro to use')
+    parser.add_argument('--optical-setup', dest='optical_setup',
+                        action='store', default=None,
+                        help='macro to use to setup optical properties')
+    parser.add_argument('--source-macro', dest='source_macro',
+                        action='store', default=None,
+                        help='macro to use for MC')
 
     args = parser.parse_args(sys.argv[1:])
     if args.num_events == 0:
@@ -288,16 +383,26 @@ def run_main():
                      args.mc_config,
                      args.batch_size,
                      args.mc_version,
-                     args.pax_version]
+                     args.pax_version,
+                     args.preinit_macro,
+                     args.optical_setup,
+                     args.source_macro]
 
     workflow_info[0] = generate_mc_workflow(args.mc_config,
                                             args.mc_flavor,
                                             args.mc_version,
                                             args.pax_version,
                                             args.num_events,
-                                            args.batch_size)
+                                            args.batch_size,
+                                            args.preinit_macro,
+                                            args.optical_setup,
+                                            args.source_macro)
     if workflow_info[0] == 0:
-        sys.stderr.write("Can't generate workflow, exiting")
+        sys.stderr.write("Can't generate workflow, exiting\n")
+        try:
+            os.unlink('mc_process.xml')
+        except OSError:
+            sys.stderr.write("Can't remove mc_process.xml\n")
         return 1
     if args.grid_type == 'osg':
         pegasus_id = pegasus_submit('mc_process.xml',
@@ -308,6 +413,10 @@ def run_main():
         pegasus_id = pegasus_submit('mc_process.xml',
                                     'egi',
                                     output_directory)
+    try:
+        os.unlink('mc_process.xml')
+    except OSError:
+        sys.stderr.write("Can't remove mc_process.xml\n")
     if pegasus_id is None:
         sys.stderr.write("Couldn't start pegasus workflow")
         return 1

@@ -1,4 +1,15 @@
 #!/usr/bin/env bash
+# Arguments
+# $1 - job id
+# $2 - mc_flavor
+# $3 - mc_config
+# $4 - events to simulate
+# $5 - mc_version
+# $6 - pax_version
+# $7 - save_raw setting
+# $8 - preinit_macro
+# $9 - optical_setup
+# $10 - source_macro
 
 function terminate {
 
@@ -61,11 +72,27 @@ elif [[ ${CONFIG} == *"Rn222"* ]]; then
 fi
  
 # preinit file for Geant4
-PREINIT=preinit.mac
-if [[ ${CONFIG} == *"Cs137"* ]]; then
-    PREINIT=preinit_${CONFIG}.mac
-elif [[ ${CONFIG} == *"muon"* || ${CONFIG} == *"MV"* ]]; then
-    PREINIT=preinit_MV.mac
+PREINIT_MACRO=$8
+if [[ -z $PREINIT_MACRO ]];
+then
+    PREINIT_MACRO=preinit.mac
+    if [[ ${CONFIG} == *"Cs137"* ]]; then
+        PREINIT_MACRO=preinit_${CONFIG}.mac
+    elif [[ ${CONFIG} == *"muon"* || ${CONFIG} == *"MV"* ]]; then
+        PREINIT_MACRO=preinit_MV.mac
+    fi
+fi
+
+OPTICAL_SETUP=$9
+if [[ -z $OPTICAL_SETUP ]];
+then
+    OPTICAL_SETUP=setup_optical_S1.mac
+fi
+
+SOURCE_MACRO=${10}
+if [[ -z $SOURCE_MACRO ]];
+then
+    SOURCE_MACRO=run_${CONFIG}.mac
 fi
 
 # set HOME directory if it's not set
@@ -122,6 +149,21 @@ fi
 cd $OSG_WN_TMP
 
 work_dir=`mktemp -d --tmpdir=$OSG_WN_TMP`
+
+# copy macros over if present
+if [[ ! -z $PREINIT_MACRO && -f $PREINIT_MACRO ]];
+then
+  cp $PREINIT_MACRO $work_dir
+fi
+if [[ ! -z $OPTICAL_SETUP && -f $OPTICAL_SETUP ]];
+then
+  cp $OPTICAL_SETUP $work_dir
+fi
+if [[ ! -z $SOURCE_MACRO && -f $SOURCE_MACRO ]];
+then
+  cp $SOURCE_MACRO $work_dir
+fi
+
 cd $work_dir
 
 # Filenaming
@@ -139,9 +181,21 @@ G4NSORT_FILENAME=${G4_FILENAME}_Sort
 G4EXEC=${RELEASEDIR}/xenon1t_${MCFLAVOR}
 MACROSDIR=${RELEASEDIR}/macros
 ln -sf ${MACROSDIR} # For reading e.g. input spectra from CWD
-PREINIT_MACRO=${MACROSDIR}/${PREINIT}
-OPTICAL_SETUP=${MACROSDIR}/setup_optical_S1.mac
-SOURCE_MACRO=${MACROSDIR}/run_${CONFIG}.mac
+
+if [[ ! -f $PREINIT_MACRO ]];
+then
+    PREINIT_MACRO=${MACROSDIR}/${PREINIT_MACRO}
+fi
+if [[ ! -f $OPTICAL_SETUP ]];
+then
+    OPTICAL_SETUP=${MACROSDIR}/${OPTICAL_SETUP}
+fi
+if [[ ! -f $SOURCE_MACRO ]];
+then
+    SOURCE_MACRO=${MACROSDIR}/${SOURCE_MACRO}
+fi
+
+echo "preinit: $PREINIT_MACRO setup: $OPTICAL_SETUP source: $SOURCE_MACRO"
 (time ${G4EXEC} -p ${PREINIT_MACRO} -s ${OPTICAL_SETUP} -f ${SOURCE_MACRO} -n ${NEVENTS} -o ${G4_FILENAME}.root;) 2>&1 | tee ${G4_FILENAME}.log
 if [ $? -ne 0 ];
 then
