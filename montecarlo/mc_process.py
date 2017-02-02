@@ -398,7 +398,11 @@ def run_main():
                                             args.optical_setup,
                                             args.source_macro)
     if workflow_info[0] == 0:
-        sys.stderr.write("Can't generate workflow, exiting")
+        sys.stderr.write("Can't generate workflow, exiting\n")
+        try:
+            os.unlink('mc_process.xml')
+        except OSError:
+            sys.stderr.write("Can't remove mc_process.xml\n")
         return 1
     if args.grid_type == 'osg':
         pegasus_id = pegasus_submit('mc_process.xml',
@@ -409,6 +413,10 @@ def run_main():
         pegasus_id = pegasus_submit('mc_process.xml',
                                     'egi',
                                     output_directory)
+    try:
+        os.unlink('mc_process.xml')
+    except OSError:
+        sys.stderr.write("Can't remove mc_process.xml\n")
     if pegasus_id is None:
         sys.stderr.write("Couldn't start pegasus workflow")
         return 1
