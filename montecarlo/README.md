@@ -63,9 +63,13 @@ condor_q
 pegasus-status -l /scratch/${USER}/<production_name>/processing/montecarlo/${USER}/pegasus/montecarlo
 ~~~~
 
-9) Output should appear in:
+9) Output should eventually appear in:
 ~~~~
-/scratch/${USER}/<production_name>/processing/montecarlo/output/${USER}/pegasus/montecarlo/*/
+/scratch/${USER}/<production_name>/processing/montecarlo/output/${USER}/pegasus/montecarlo/*
+~~~~
+and ongoing job logs in:
+~~~~
+/scratch/${USER}/<production_name>/processing/montecarlo/${USER}/pegasus/montecarlo/*
 ~~~~
 
 10) Once everything's complete, copy tarballs to Midway using ```rsync``` or https://globus.rcc.uchicago.edu/globus-app/
