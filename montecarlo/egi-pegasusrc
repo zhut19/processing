@@ -14,3 +14,4 @@ pegasus.dir.storage.deep = True
 pegasus.data.configuration = condorio
 
 dagman.maxidle = 1000
+dagman.retry = 9
