@@ -190,6 +190,7 @@ def generate_mc_workflow(mc_config,
                          mc_flavor,
                          mc_version,
                          pax_version,
+                         start_job,
                          num_events,
                          batch_size,
                          preinit_macro,
@@ -202,6 +203,7 @@ def generate_mc_workflow(mc_config,
     :param mc_flavor: MC flavor to use
     :param mc_version: version of MC code to use
     :param pax_version: version of PAX code to use
+    :param start_job: starting job id number
     :param num_events: total number of events to generate
     :param batch_size: number of events to generate per job
     :param preinit_macro: macro to use to preinitialize MC
@@ -269,8 +271,8 @@ def generate_mc_workflow(mc_config,
         dax.addFile(preinit_macro_input)
 
     try:
-        for job in range(0, num_jobs):
-            run_sim_job = Pegasus.DAX3.Job(id="run_sim_{0}".format(job), name="run_sim.sh")
+        for job in range(start_job, start_job+num_jobs):
+            run_sim_job = Pegasus.DAX3.Job(id="{0}".format(job), name="run_sim.sh")
             if job == (num_jobs - 1):
                 left_events = num_events % batch_size
                 if left_events == 0:
@@ -341,6 +343,9 @@ def run_main():
                         action='store', required=True,
                         choices=CONFIGS,
                         help='configuration to use')
+    parser.add_argument('--start_job', dest='start_job',
+                        action='store', default=0, type=int,
+                        help='starting number for job')
     parser.add_argument('--events', dest='num_events',
                         action='store', required=True,
                         type=int,
@@ -392,6 +397,7 @@ def run_main():
                                             args.mc_flavor,
                                             args.mc_version,
                                             args.pax_version,
+                                            args.start_job,
                                             args.num_events,
                                             args.batch_size,
                                             args.preinit_macro,
