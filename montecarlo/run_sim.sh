@@ -71,7 +71,15 @@ elif [[ ${CONFIG} == *"Rn222"* ]]; then
     PATCHTYPE=31
 fi
  
-# preinit file for Geant4
+start_dir=$PWD
+
+# Setup CVMFS directories
+CVMFSDIR=/cvmfs/xenon.opensciencegrid.org
+RELEASEDIR=${CVMFSDIR}/releases/mc/${MCVERSION}
+
+# Setup Geant4 macros
+MACROSDIR=${RELEASEDIR}/macros
+
 PREINIT_MACRO=$8
 if [[ -z $PREINIT_MACRO ]];
 then
@@ -81,18 +89,37 @@ then
     elif [[ ${CONFIG} == *"muon"* || ${CONFIG} == *"MV"* ]]; then
         PREINIT_MACRO=preinit_MV.mac
     fi
+    PREINIT_MACRO=${MACROSDIR}/${PREINIT_MACRO}
+else
+    if [[ -f ${start_dir}/${PREINIT_MACRO} ]]; then
+        PREINIT_MACRO=${start_dir}/${PREINIT_MACRO}
+    else
+        PREINIT_MACRO=${MACROSDIR}/${PREINIT_MACRO}
+    fi
 fi
 
 OPTICAL_SETUP=$9
 if [[ -z $OPTICAL_SETUP ]];
 then
-    OPTICAL_SETUP=setup_optical_S1.mac
+    OPTICAL_SETUP=${MACROSDIR}/setup_optical_S1.mac
+else
+    if [[ -f ${start_dir}/${OPTICAL_SETUP} ]]; then
+        OPTICAL_SETUP=${start_dir}/${OPTICAL_SETUP}
+    else        
+        OPTICAL_SETUP=${MACROSDIR}/${OPTICAL_SETUP}
+    fi
 fi
 
 SOURCE_MACRO=${10}
 if [[ -z $SOURCE_MACRO ]];
 then
-    SOURCE_MACRO=run_${CONFIG}.mac
+    SOURCE_MACRO=${MACROSDIR}/run_${CONFIG}.mac
+else
+    if [[ -f ${start_dir}/${SOURCE_MACRO} ]]; then
+        SOURCE_MACRO=${start_dir}/${SOURCE_MACRO}
+    else
+        SOURCE_MACRO=${MACROSDIR}/${SOURCE_MACRO}
+    fi
 fi
 
 # set HOME directory if it's not set
@@ -107,7 +134,6 @@ fi
 set -o pipefail
 
 # Setup the software
-CVMFSDIR=/cvmfs/xenon.opensciencegrid.org
 export PATH="${CVMFSDIR}/releases/anaconda/2.4/bin:$PATH"
 source activate mc
 if [ $? -ne 0 ];
@@ -125,7 +151,6 @@ then
   exit 2
 fi
 
-RELEASEDIR=${CVMFSDIR}/releases/mc/${MCVERSION}
 source ${RELEASEDIR}/setup.sh
 if [ $? -ne 0 ];
 then
@@ -133,7 +158,6 @@ then
 fi
 
 # Setting up directories
-start_dir=$PWD
 
 OUTDIR=$start_dir/output
 mkdir -p  ${OUTDIR}
@@ -146,24 +170,8 @@ if [ "$OSG_WN_TMP" == "" ];
 then
     OSG_WN_TMP=$PWD
 fi
-cd $OSG_WN_TMP
 
 work_dir=`mktemp -d --tmpdir=$OSG_WN_TMP`
-
-# copy macros over if present
-if [[ ! -z $PREINIT_MACRO && -f $PREINIT_MACRO ]];
-then
-  cp $PREINIT_MACRO $work_dir
-fi
-if [[ ! -z $OPTICAL_SETUP && -f $OPTICAL_SETUP ]];
-then
-  cp $OPTICAL_SETUP $work_dir
-fi
-if [[ ! -z $SOURCE_MACRO && -f $SOURCE_MACRO ]];
-then
-  cp $SOURCE_MACRO $work_dir
-fi
-
 cd $work_dir
 
 # Filenaming
@@ -179,27 +187,13 @@ G4NSORT_FILENAME=${G4_FILENAME}_Sort
 
 # Geant4 stage
 G4EXEC=${RELEASEDIR}/xenon1t_${MCFLAVOR}
-MACROSDIR=${RELEASEDIR}/macros
 ln -sf ${MACROSDIR} # For reading e.g. input spectra from CWD
-
-if [[ ! -f $PREINIT_MACRO ]];
-then
-    PREINIT_MACRO=${MACROSDIR}/${PREINIT_MACRO}
-fi
-if [[ ! -f $OPTICAL_SETUP ]];
-then
-    OPTICAL_SETUP=${MACROSDIR}/${OPTICAL_SETUP}
-fi
-if [[ ! -f $SOURCE_MACRO ]];
-then
-    SOURCE_MACRO=${MACROSDIR}/${SOURCE_MACRO}
-fi
 
 echo "preinit: $PREINIT_MACRO setup: $OPTICAL_SETUP source: $SOURCE_MACRO"
 (time ${G4EXEC} -p ${PREINIT_MACRO} -s ${OPTICAL_SETUP} -f ${SOURCE_MACRO} -n ${NEVENTS} -o ${G4_FILENAME}.root;) 2>&1 | tee ${G4_FILENAME}.log
 if [ $? -ne 0 ];
 then
-  terminate 10
+    terminate 10
 fi
 
 # Skip the rest for optical photons
