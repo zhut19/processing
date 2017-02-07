@@ -91,7 +91,11 @@ then
     fi
     PREINIT_MACRO=${MACROSDIR}/${PREINIT_MACRO}
 else
-    PREINIT_MACRO=${start_dir}/${PREINIT_MACRO}
+    if [[ -f ${MACROSDIR}/${PREINIT_MACRO} ]]; then
+        PREINIT_MACRO=${MACROSDIR}/${PREINIT_MACRO}
+    else
+        PREINIT_MACRO=${start_dir}/${PREINIT_MACRO}
+    fi
 fi
 
 OPTICAL_SETUP=$9
@@ -99,7 +103,11 @@ if [[ -z $OPTICAL_SETUP ]];
 then
     OPTICAL_SETUP=${MACROSDIR}/setup_optical_S1.mac
 else
-    OPTICAL_SETUP=${start_dir}/${OPTICAL_SETUP}
+    if [[ -f ${MACROSDIR}/${OPTICAL_SETUP} ]]; then
+        OPTICAL_SETUP=${MACROSDIR}/${OPTICAL_SETUP}
+    else        
+        OPTICAL_SETUP=${start_dir}/${OPTICAL_SETUP}
+    fi
 fi
 
 SOURCE_MACRO=${10}
@@ -107,7 +115,11 @@ if [[ -z $SOURCE_MACRO ]];
 then
     SOURCE_MACRO=${MACROSDIR}/run_${CONFIG}.mac
 else
-    SOURCE_MACRO=${start_dir}/${SOURCE_MACRO}
+    if [[ -f ${MACROSDIR}/${SOURCE_MACRO} ]]; then
+        SOURCE_MACRO=${MACROSDIR}/${SOURCE_MACRO}
+    else
+        SOURCE_MACRO=${start_dir}/${SOURCE_MACRO}
+    fi
 fi
 
 # set HOME directory if it's not set
@@ -160,21 +172,6 @@ then
 fi
 
 work_dir=`mktemp -d --tmpdir=$OSG_WN_TMP`
-
-# Copy over custom macros if necessary
-if [[ ! -z $PREINIT_MACRO && -f $PREINIT_MACRO ]];
-then
-  cp -v $PREINIT_MACRO $work_dir
-fi
-if [[ ! -z $OPTICAL_SETUP && -f $OPTICAL_SETUP ]];
-then
-  cp -v $OPTICAL_SETUP $work_dir
-fi
-if [[ ! -z $SOURCE_MACRO && -f $SOURCE_MACRO ]];
-then
-  cp -v $SOURCE_MACRO $work_dir
-fi
-
 cd $work_dir
 
 # Filenaming
