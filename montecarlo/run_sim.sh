@@ -91,10 +91,10 @@ then
     fi
     PREINIT_MACRO=${MACROSDIR}/${PREINIT_MACRO}
 else
-    if [[ -f ${MACROSDIR}/${PREINIT_MACRO} ]]; then
-        PREINIT_MACRO=${MACROSDIR}/${PREINIT_MACRO}
-    else
+    if [[ -f ${start_dir}/${PREINIT_MACRO} ]]; then
         PREINIT_MACRO=${start_dir}/${PREINIT_MACRO}
+    else
+        PREINIT_MACRO=${MACROSDIR}/${PREINIT_MACRO}
     fi
 fi
 
@@ -103,10 +103,10 @@ if [[ -z $OPTICAL_SETUP ]];
 then
     OPTICAL_SETUP=${MACROSDIR}/setup_optical_S1.mac
 else
-    if [[ -f ${MACROSDIR}/${OPTICAL_SETUP} ]]; then
-        OPTICAL_SETUP=${MACROSDIR}/${OPTICAL_SETUP}
-    else        
+    if [[ -f ${start_dir}/${OPTICAL_SETUP} ]]; then
         OPTICAL_SETUP=${start_dir}/${OPTICAL_SETUP}
+    else        
+        OPTICAL_SETUP=${MACROSDIR}/${OPTICAL_SETUP}
     fi
 fi
 
@@ -115,10 +115,10 @@ if [[ -z $SOURCE_MACRO ]];
 then
     SOURCE_MACRO=${MACROSDIR}/run_${CONFIG}.mac
 else
-    if [[ -f ${MACROSDIR}/${SOURCE_MACRO} ]]; then
-        SOURCE_MACRO=${MACROSDIR}/${SOURCE_MACRO}
-    else
+    if [[ -f ${start_dir}/${SOURCE_MACRO} ]]; then
         SOURCE_MACRO=${start_dir}/${SOURCE_MACRO}
+    else
+        SOURCE_MACRO=${MACROSDIR}/${SOURCE_MACRO}
     fi
 fi
 
