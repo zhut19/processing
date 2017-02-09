@@ -1,7 +1,7 @@
 import sys
 head_dirname = '/project/lgrandi/jhowlett/'
 username = 'jh3226'
-interactive = 0
+interactive = 1
 
 process_list = []
 
