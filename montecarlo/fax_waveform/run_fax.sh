@@ -30,7 +30,7 @@ PMTAfterpulseEnableFlag=$5
 S2AfterpulseEnableFlag=$6
 
 # Select fax+pax version
-PAXVERSION=head
+PAXVERSION=v6.3.1
 
 # Specify number of events
 NumEvents=$7
@@ -43,6 +43,7 @@ SUBRUN=$9
 # Setup the software
 CVMFSDIR=/cvmfs/xenon.opensciencegrid.org
 export PATH="${CVMFSDIR}/releases/anaconda/2.4/bin:$PATH"
+#export PATH="/project/lgrandi/anaconda3/bin/:$PATH"
 source activate pax_${PAXVERSION} &> /dev/null
 
 # Use path of this script for Python scripts below
@@ -92,22 +93,22 @@ python ${RELEASEDIR}/CreateFakeCSV.py ${Detector} ${NumEvents} ${PhotonNumLower}
 if (($S2AfterpulseEnableFlag==0)); then
 	if (($PMTAfterpulseEnableFlag==0)); then
 		echo 'Both S2 and PMT afterpulse disabled'
-		(time paxer --input ${CSV_FILENAME} --config ${Detector} reduce_raw_data Simulation --config_path ${NoPMTAfterpulseIniFilename} ${CustomIniFilename} --config_string "[WaveformSimulator]truth_file_name=\"${FAX_FILENAME}\"" --output ${RAW_FILENAME};) &> ${RAW_FILENAME}.log
+		(time paxer --input ${CSV_FILENAME} --config ${Detector} reduce_raw_data Simulation --config_path ${NoPMTAfterpulseIniFilename} ${CustomIniFilename} --config_string "[WaveformSimulator]truth_file_name=\"${FAX_FILENAME}\";elr_gas_gap_length=2.660*mm;anode_field_domination_distance=0.372*mm" --output ${RAW_FILENAME};) &> ${RAW_FILENAME}.log
 	else
 		echo 'Only S2 afterpulse disabled'
-		(time paxer --input ${CSV_FILENAME} --config ${Detector} reduce_raw_data Simulation --config_path ${CustomIniFilename} --config_string "[WaveformSimulator]truth_file_name=\"${FAX_FILENAME}\"" --output ${RAW_FILENAME};) &> ${RAW_FILENAME}.log
+		(time paxer --input ${CSV_FILENAME} --config ${Detector} reduce_raw_data Simulation --config_path ${CustomIniFilename} --config_string "[WaveformSimulator]truth_file_name=\"${FAX_FILENAME}\";elr_gas_gap_length=2.660*mm;anode_field_domination_distance=0.372*mm" --output ${RAW_FILENAME};) &> ${RAW_FILENAME}.log
 	fi
 else
 	if (($PMTAfterpulseEnableFlag==0)); then
 		echo 'Only PMT afterpulse disabled'
-		(time paxer --input ${CSV_FILENAME} --config ${Detector} reduce_raw_data Simulation --config_path ${NoPMTAfterpulseIniFilename} --config_string "[WaveformSimulator]truth_file_name=\"${FAX_FILENAME}\"" --output ${RAW_FILENAME};) &> ${RAW_FILENAME}.log
+		(time paxer --input ${CSV_FILENAME} --config ${Detector} reduce_raw_data Simulation --config_path ${NoPMTAfterpulseIniFilename} --config_string "[WaveformSimulator]truth_file_name=\"${FAX_FILENAME}\";elr_gas_gap_length=2.660*mm;anode_field_domination_distance=0.372*mm" --output ${RAW_FILENAME};) &> ${RAW_FILENAME}.log
 	else
 		echo 'Both S2 and PMT afterpulse enabled'
-		(time paxer --input ${CSV_FILENAME} --config ${Detector} reduce_raw_data Simulation  --config_string "[WaveformSimulator]truth_file_name=\"${FAX_FILENAME}\"" --output ${RAW_FILENAME};) &> ${RAW_FILENAME}.log
+		(time paxer --input ${CSV_FILENAME} --config ${Detector} reduce_raw_data Simulation  --config_string "[WaveformSimulator]truth_file_name=\"${FAX_FILENAME}\";elr_gas_gap_length=2.660*mm;anode_field_domination_distance=0.372*mm" --output ${RAW_FILENAME};) &> ${RAW_FILENAME}.log
 	fi
 fi
 
-#	(time paxer --input ${CSV_FILENAME} --config ${Detector} reduce_raw_data Simulation --config_string "[WaveformSimulator]truth_file_name=\"${FAX_FILENAME}\"" --output ${RAW_FILENAME};) &> ${RAW_FILENAME}.log
+#	(time paxer --input ${CSV_FILENAME} --config ${Detector} reduce_raw_data Simulation --config_string "[WaveformSimulator]truth_file_name=\"${FAX_FILENAME}\";elr_gas_gap_length=2.660*mm;anode_field_domination_distance=0.372*mm" --output ${RAW_FILENAME};) &> ${RAW_FILENAME}.log
 
 
 # convert fax truth to pickle

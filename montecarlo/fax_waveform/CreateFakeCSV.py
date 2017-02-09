@@ -65,7 +65,8 @@ def IfPassFV(x,y,z):
         if I<1:
             return True
     elif Detector == "XENON1T": # NEED TO UPDATE THIS
-        Zlower, Zupper = -90*scalecmtomm, -15*scalecmtomm
+        #Zlower, Zupper = -90*scalecmtomm, -15*scalecmtomm
+        Zlower, Zupper = -90*scalecmtomm, -1*scalecmtomm
         Zcut = ((z>=Zlower) & (z<=Zupper))
         R2upper=radius2_cut(z)
         Rcut = (x**2+y**2<R2upper)
@@ -83,7 +84,8 @@ def RandomizeFV():
         Rlower, Rupper = -np.sqrt(200.), np.sqrt(200.)
 
     elif Detector == "XENON1T": # NEED TO UPDATE THIS
-        Zlower, Zupper = -90*scalecmtomm, -15*scalecmtomm
+        #Zlower, Zupper = -90*scalecmtomm, -15*scalecmtomm
+        Zlower, Zupper = -90*scalecmtomm, -1*scalecmtomm
         Rlower, Rupper = -46*scalecmtomm, 46*scalecmtomm
 
     for i in range(100000):
