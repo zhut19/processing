@@ -1,7 +1,8 @@
 import sys
-head_dirname = '/project/lgrandi/jhowlett/'
-username = 'jh3226'
-interactive = 1
+### Edit these three lines ###
+head_dirname = '/project/lgrandi/jhowlett/' # all data will go under here (under subdir)
+username = 'jh3226' # midway username
+interactive = 1 # 1 for terminal prompt options, 0 for hardcoded options below
 
 process_list = []
 
@@ -13,19 +14,19 @@ fields = [
          ]
 
 process = {}
-process['process_name'] = '170209_1455'
-process['process_description'] = 'testing some stuff, cvmfs on pax v6.2.1'
+process['process_name'] = '170213_1347_0'
+process['process_description'] = 'testing effect of PMT afterpulse'
 process['log_file'] = 'log.log'
-process['nb_jobs'] = '5'
-process['events_per_job'] = '10'
+process['nb_jobs'] = '100'
+process['events_per_job'] = '100'
 process['pmt_afterpulse'] = '0'
-process['s2_afterpulse'] = '0'
-process['photon_nb_low'] = '0'
-process['photon_nb_high'] = '1000'
+process['s2_afterpulse'] = '1'
+process['photon_nb_low'] = '50'
+process['photon_nb_high'] = '50'
 process['electron_nb_low'] = '0'
-process['electron_nb_high'] = '0'
+process['electron_nb_high'] = '200'
 process['correlated'] = '1'
-process['nodetype'] = '0'
+process['nodetype'] = '2'
 if interactive == 0:
     process_list.append(process)
 

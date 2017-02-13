@@ -2,6 +2,13 @@ import subprocess as subp
 import sys, os
 import time
 
+squeue_dict = {'0': 'xenon1t', '1': 'sandyb', '2': 'kicp'}
+
+def wait_for_squeue(username, nodetype):
+    while len(subp.check_output(['squeue', '-u', username, '--partition', squeue_dict[nodetype]]).splitlines())>1:
+        print('waiting for squeue to free up, time = %i' % int(time.time()))
+        time.sleep(60)
+
 def fax_produce(process, head_dirname, username):
     print('beginning process %s' % process['process_name'])
     dir_header = os.path.join(head_dirname, process['process_name'])
@@ -20,18 +27,15 @@ def fax_produce(process, head_dirname, username):
                                 process['electron_nb_high'], process['correlated'], process['nodetype'])
     production_commands.append('python MidwayBatch.py %s >> %s' % (midway_batch_options, process['log_file']))
     production_commands.append('./copy_things_around.sh %s >> %s' % (process['process_name'], process['log_file']))
-    production_commands.append('python BatchMergeTruthAndProcessed.py Configs/branch_list_config %s %s %s 0.68 submission_merge/ %s' % (truth_dirname, basics_dirname, merged_dirname, process['nodetype']))
+    production_commands.append('python BatchMergeTruthAndProcessed.py Configs/basics_config %s %s %s 0.68 submission_merge/ %s' % (truth_dirname, basics_dirname, merged_dirname, process['nodetype']))
     production_commands.append('python MergePickles.py %s' % (merged_dirname))
     for command in production_commands:
-        while len(subp.check_output(['squeue', '-u', username]).splitlines())>1:
-            print('waiting for squeue to free up, time = %i' % int(time.time()))
-            time.sleep(60)
-        #time.sleep(30)
+        wait_for_squeue(username, process['nodetype'])
         print('submitting command')
         subp.call(command, shell=True)
 
 import setup_production
 process_list = setup_production.process_list
 for process in process_list:
+    process['log_file'] = os.path.join('logs', process['log_file'])
     fax_produce(process, setup_production.head_dirname, setup_production.username)
-
