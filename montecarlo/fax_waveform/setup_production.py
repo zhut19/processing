@@ -10,23 +10,95 @@ fields = [
             'process_name', 'process_description', 'log_file', 'nb_jobs',
             'events_per_job', 'pmt_afterpulse', 's2_afterpulse',
             'photon_nb_low', 'photon_nb_high', 'electron_nb_low', 
-            'electron_nb_high', 'correlated', 'nodetype'
+            'electron_nb_high', 'correlated', 'nodetype', 'make_peak_trees'
          ]
-
+'''
 process = {}
-process['process_name'] = '170213_1347_0'
-process['process_description'] = 'testing effect of PMT afterpulse'
+process['process_name'] = '170214_2206_0'
+process['process_description'] = 'checking data matching'
 process['log_file'] = 'log.log'
 process['nb_jobs'] = '100'
-process['events_per_job'] = '100'
+process['events_per_job'] = '1000'
+process['pmt_afterpulse'] = '1'
+process['s2_afterpulse'] = '1'
+process['photon_nb_low'] = '0'
+process['photon_nb_high'] = '1000'
+process['electron_nb_low'] = '0'
+process['electron_nb_high'] = '100'
+process['correlated'] = '1'
+process['nodetype'] = '0'
+if interactive == 0:
+    process_list.append(process)
+
+process = {}
+process['process_name'] = '170214_2206_1'
+process['process_description'] = 'checking data matching pmt off'
+process['log_file'] = 'log.log'
+process['nb_jobs'] = '100'
+process['events_per_job'] = '1000'
 process['pmt_afterpulse'] = '0'
 process['s2_afterpulse'] = '1'
-process['photon_nb_low'] = '50'
-process['photon_nb_high'] = '50'
+process['photon_nb_low'] = '0'
+process['photon_nb_high'] = '1000'
+process['electron_nb_low'] = '0'
+process['electron_nb_high'] = '100'
+process['correlated'] = '1'
+process['nodetype'] = '0'
+if interactive == 0:
+    process_list.append(process)
+
+process = {}
+process['process_name'] = '170215_1830_s1'
+process['process_description'] = 's1 only for efficiency'
+process['log_file'] = 'log.log'
+process['nb_jobs'] = '100'
+process['events_per_job'] = '1000'
+process['pmt_afterpulse'] = '1'
+process['s2_afterpulse'] = '1'
+process['photon_nb_low'] = '0'
+process['photon_nb_high'] = '2000'
+process['electron_nb_low'] = '0'
+process['electron_nb_high'] = '0'
+process['correlated'] = '1'
+process['nodetype'] = '0'
+process['make_peak_trees'] = '1'
+if interactive == 0:
+    process_list.append(process)
+
+process = {}
+process['process_name'] = '170215_1830_s2'
+process['process_description'] = 's2 only for efficiency'
+process['log_file'] = 'log.log'
+process['nb_jobs'] = '100'
+process['events_per_job'] = '1000'
+process['pmt_afterpulse'] = '1'
+process['s2_afterpulse'] = '1'
+process['photon_nb_low'] = '0'
+process['photon_nb_high'] = '0'
 process['electron_nb_low'] = '0'
 process['electron_nb_high'] = '200'
 process['correlated'] = '1'
-process['nodetype'] = '2'
+process['nodetype'] = '0'
+process['make_peak_trees'] = '1'
+if interactive == 0:
+    process_list.append(process)
+'''
+
+process = {}
+process['process_name'] = '170216_testing_peak'
+process['process_description'] = 's2 only for efficiency'
+process['log_file'] = 'log.log'
+process['nb_jobs'] = '5'
+process['events_per_job'] = '10'
+process['pmt_afterpulse'] = '1'
+process['s2_afterpulse'] = '1'
+process['photon_nb_low'] = '0'
+process['photon_nb_high'] = '0'
+process['electron_nb_low'] = '0'
+process['electron_nb_high'] = '20'
+process['correlated'] = '1'
+process['nodetype'] = '0'
+process['make_peak_trees'] = '1'
 if interactive == 0:
     process_list.append(process)
 

@@ -41,7 +41,8 @@ if len(sys.argv)>6:
 ##########################
 CurrentPath = os.getcwd()
 CurrentUser = getpass.getuser()
-EXE = CurrentPath+"/"+EXE_Path+"/ReduceDataNormal.py"
+#EXE = CurrentPath+"/"+EXE_Path+"/ReduceDataNormal.py"
+EXE = CurrentPath + EXE_Path+"/reduce_peak_level_more_info.py"
 MaxNumJob = 64
 if not IfPublicNode:
     MaxNumJob = 200
@@ -85,9 +86,14 @@ for j, line in enumerate(lines):
         subp.call("echo '#SBATCH --account=pi-lgrandi\n' >> "+SubmitFile, shell=True)
         subp.call("echo '#SBATCH --qos=xenon1t-kicp\n' >> "+SubmitFile, shell=True)
         subp.call("echo '#SBATCH --partition=kicp\n' >> "+SubmitFile, shell=True)
-    subp.call("echo '. /home/mcfate/Env/GlobalPAXEnv.sh\n\n' >> "+SubmitFile, shell=True)
+    #subp.call("echo '. /home/mcfate/Env/GlobalPAXEnv.sh\n\n' >> "+SubmitFile, shell=True)
+    subp.call("echo 'export PATH=/project/lgrandi/anaconda3/bin:$PATH' >> "+SubmitFile, shell=True)
+    subp.call("echo 'source activate pax_head' >> "+SubmitFile, shell=True)
+    print("python "+EXE+" "+filename+" "+DataPath)
     subp.call("echo 'python "+EXE+" "+filename+" "+DataPath+"' >> "+SubmitFile, shell=True)
-    subp.call("echo 'mv "+SubmitPath+"/"+filename+"_S1S2Properties.root  "+OutputPath+"' >> "+SubmitFile, shell=True)
+    #subp.call("echo 'cp "+SubmitFile+" /home/jh3226/
+    #subp.call("echo 'mv "+SubmitPath+"/"+filename+"_S1S2Properties.root  "+OutputPath+"' >> "+SubmitFile, shell=True)
+    subp.call("echo 'mv "+SubmitPath+"/"+filename+"_PeakEfficiency.root  "+OutputPath+"' >> "+SubmitFile, shell=True)
     
     #submit
     IfSubmitted=0
