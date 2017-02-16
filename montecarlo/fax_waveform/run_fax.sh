@@ -30,7 +30,7 @@ PMTAfterpulseEnableFlag=$5
 S2AfterpulseEnableFlag=$6
 
 # Select fax+pax version
-PAXVERSION=v6.3.1
+PAXVERSION=v6.3.3
 
 # Specify number of events
 NumEvents=$7
