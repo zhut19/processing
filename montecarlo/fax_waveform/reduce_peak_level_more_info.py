@@ -39,7 +39,7 @@ class PeakEfficiency(hax.minitrees.TreeMaker):
             result[peak_field] = np.array([getattr(peaks[i], peak_field) for i in range(len(peaks))])
         result['type'] = np.array([type_ints[getattr(peak, 'type')] for peak in peaks])
         for dec in decile:
-            result['range_%i0_p_area' % dec] = np.array([getattr(peaks[i], 'range_area_decile')[dec] for i in range(len(peaks))])
+            result['range_%i0p_area' % dec] = np.array([getattr(peaks[i], 'range_area_decile')[dec] for i in range(len(peaks))])
         return result
 
 dataset = sys.argv[1]
@@ -48,6 +48,6 @@ print("======= To be reduced: "+dataset)
 print(datapath)
 hax.init(experiment='XENON1T', main_data_paths=[datapath], use_rundb_locations=False, pax_version_policy='loose')# changed @2016-07-06, for the data after 07-03
 #hax.init(main_data_paths=[datapath])# changed @2016-07-06, for the data after 07-03
-print(hax.config['main_data_paths'])
+#print(hax.config['main_data_paths'])
 
 data2 = hax.minitrees.load(dataset, treemakers=[PeakEfficiency], force_reload=True)
