@@ -178,10 +178,16 @@ class S1S2Properties(hax.minitrees.TreeMaker):
             for s1_field in s1_fields:
                 values[s1_field] = getattr(s1peak,
                                         s1_fields[s1_field])
+        else:
+            for s1_field in s1_fields:
+                values[s1_field] = float('nan')
         if not largest_s2_id==-1:
             for s2_field in s2_fields:
                 values[s2_field] = getattr(s2peak,
                                         s2_fields[s2_field])
+        else:
+            for s2_field in s2_fields:
+                values[s2_field] = float('nan')
         # Grab the second biggest S1 if it exists
         values['S1sTotSecond']=0
         if not second_s1_id==-1:

@@ -44,9 +44,10 @@ def fax_produce(process, head_dirname, username):
     if process['make_peak_trees'] == '1':
         batchlist = 'processed_dataset_list.dat'
         production_commands.append('python BatchReduceDataSubmission.py %s %s %s %s %s >> %s' % (batchlist, pax_dirname, peaks_dirname, os.path.join(os.getcwd(), 'submit_peaks/'), process['nodetype'], process['log_file']))
-        production_commands.append('python BatchMergeTruthAndProcessed_peaks.py Configs/PeakEfficiency %s %s %s 0.68 submission_merge/ %s' % (truth_dirname, basics_dirname, merged_dirname, process['nodetype']))
+        #production_commands.append('python BatchMergeTruthAndProcessed_peaks.py Configs/PeakEfficiency %s %s %s 0.68 submission_merge/ %s' % (truth_dirname, peaks_dirname, merged_dirname, process['nodetype']))
+        production_commands.append('python BatchMergeTruthAndProcessed_peaks.py Configs/s1s2_preserve_all %s %s %s 0.68 submission_merge/ %s' % (truth_dirname, peaks_dirname, merged_dirname, process['nodetype']))
     else:
-        production_commands.append('python BatchMergeTruthAndProcessed.py Configs/basics_config %s %s %s 0.68 submission_merge/ %s' % (truth_dirname, peaks_dirname, merged_dirname, process['nodetype']))
+        production_commands.append('python BatchMergeTruthAndProcessed.py Configs/basics_config %s %s %s 0.68 submission_merge/ %s' % (truth_dirname, basics_dirname, merged_dirname, process['nodetype']))
     production_commands.append('python MergePickles.py %s' % (merged_dirname))
     for command in production_commands:
         wait_for_squeue(username, process['nodetype'])
