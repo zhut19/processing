@@ -41,8 +41,8 @@ if len(sys.argv)>6:
 ##########################
 CurrentPath = os.getcwd()
 CurrentUser = getpass.getuser()
-#EXE = CurrentPath+"/"+EXE_Path+"/ReduceDataNormal.py"
-EXE = CurrentPath + EXE_Path+"/reduce_peak_level_more_info.py"
+EXE = CurrentPath+"/"+EXE_Path+"/ReduceDataNormal.py"
+#EXE = CurrentPath + EXE_Path+"/reduce_peak_level_more_info.py"
 MaxNumJob = 64
 if not IfPublicNode:
     MaxNumJob = 200
@@ -92,8 +92,8 @@ for j, line in enumerate(lines):
     print("python "+EXE+" "+filename+" "+DataPath)
     subp.call("echo 'python "+EXE+" "+filename+" "+DataPath+"' >> "+SubmitFile, shell=True)
     #subp.call("echo 'cp "+SubmitFile+" /home/jh3226/
-    #subp.call("echo 'mv "+SubmitPath+"/"+filename+"_S1S2Properties.root  "+OutputPath+"' >> "+SubmitFile, shell=True)
-    subp.call("echo 'mv "+SubmitPath+"/"+filename+"_PeakEfficiency.root  "+OutputPath+"' >> "+SubmitFile, shell=True)
+    subp.call("echo 'mv "+SubmitPath+"/"+filename+"_S1S2Properties.root  "+OutputPath+"' >> "+SubmitFile, shell=True)
+    #subp.call("echo 'mv "+SubmitPath+"/"+filename+"_PeakEfficiency.root  "+OutputPath+"' >> "+SubmitFile, shell=True)
     
     #submit
     IfSubmitted=0
