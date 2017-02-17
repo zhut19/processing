@@ -1,0 +1,678 @@
+minitree dirs already exist for 170216_testing_peak; exiting...
+minitree dirs already exist for 170216_testing_peak; exiting...
+1
+Submitted batch job 24038618
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+2
+Submitted batch job 24038619
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+3
+Submitted batch job 24038621
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+4
+Submitted batch job 24038623
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+5
+Submitted batch job 24038625
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+To process -> FakeWaveform_XENON1T_000000_pax
+python /home/jh3226/processing_distances/montecarlo/fax_waveform/reduce_peak_level_more_info.py FakeWaveform_XENON1T_000000_pax /project/lgrandi/jhowlett/170216_testing_peak/pax_170216_testing_peak
+Current job running number 1
+To process -> FakeWaveform_XENON1T_000003_pax
+python /home/jh3226/processing_distances/montecarlo/fax_waveform/reduce_peak_level_more_info.py FakeWaveform_XENON1T_000003_pax /project/lgrandi/jhowlett/170216_testing_peak/pax_170216_testing_peak
+Current job running number 2
+To process -> FakeWaveform_XENON1T_000004_pax
+python /home/jh3226/processing_distances/montecarlo/fax_waveform/reduce_peak_level_more_info.py FakeWaveform_XENON1T_000004_pax /project/lgrandi/jhowlett/170216_testing_peak/pax_170216_testing_peak
+Current job running number 3
+To process -> FakeWaveform_XENON1T_000001_pax
+python /home/jh3226/processing_distances/montecarlo/fax_waveform/reduce_peak_level_more_info.py FakeWaveform_XENON1T_000001_pax /project/lgrandi/jhowlett/170216_testing_peak/pax_170216_testing_peak
+Current job running number 4
+To process -> FakeWaveform_XENON1T_000002_pax
+python /home/jh3226/processing_distances/montecarlo/fax_waveform/reduce_peak_level_more_info.py FakeWaveform_XENON1T_000002_pax /project/lgrandi/jhowlett/170216_testing_peak/pax_170216_testing_peak
+Current job running number 5
+minitree dirs already exist for 170216_testing_peak; exiting...
+1
+Submitted batch job 24038885
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+2
+Submitted batch job 24038887
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+3
+Submitted batch job 24038889
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+4
+Submitted batch job 24038891
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+5
+Submitted batch job 24038892
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+To process -> FakeWaveform_XENON1T_000000_pax
+python /home/jh3226/processing_distances/montecarlo/fax_waveform/reduce_peak_level_more_info.py FakeWaveform_XENON1T_000000_pax /project/lgrandi/jhowlett/170216_testing_peak/pax_170216_testing_peak
+Current job running number 1
+To process -> FakeWaveform_XENON1T_000003_pax
+python /home/jh3226/processing_distances/montecarlo/fax_waveform/reduce_peak_level_more_info.py FakeWaveform_XENON1T_000003_pax /project/lgrandi/jhowlett/170216_testing_peak/pax_170216_testing_peak
+Current job running number 2
+To process -> FakeWaveform_XENON1T_000004_pax
+python /home/jh3226/processing_distances/montecarlo/fax_waveform/reduce_peak_level_more_info.py FakeWaveform_XENON1T_000004_pax /project/lgrandi/jhowlett/170216_testing_peak/pax_170216_testing_peak
+Current job running number 3
+To process -> FakeWaveform_XENON1T_000001_pax
+python /home/jh3226/processing_distances/montecarlo/fax_waveform/reduce_peak_level_more_info.py FakeWaveform_XENON1T_000001_pax /project/lgrandi/jhowlett/170216_testing_peak/pax_170216_testing_peak
+Current job running number 4
+To process -> FakeWaveform_XENON1T_000002_pax
+python /home/jh3226/processing_distances/montecarlo/fax_waveform/reduce_peak_level_more_info.py FakeWaveform_XENON1T_000002_pax /project/lgrandi/jhowlett/170216_testing_peak/pax_170216_testing_peak
+Current job running number 5
+minitree dirs already exist for 170216_testing_peak; exiting...
+1
+Submitted batch job 24038952
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+2
+Submitted batch job 24038954
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+3
+Submitted batch job 24038956
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+4
+Submitted batch job 24038958
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+5
+Submitted batch job 24038960
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+To process -> FakeWaveform_XENON1T_000000_pax
+python /home/jh3226/processing_distances/montecarlo/fax_waveform/reduce_peak_level_more_info.py FakeWaveform_XENON1T_000000_pax /project/lgrandi/jhowlett/170216_testing_peak/pax_170216_testing_peak
+Current job running number 1
+To process -> FakeWaveform_XENON1T_000003_pax
+python /home/jh3226/processing_distances/montecarlo/fax_waveform/reduce_peak_level_more_info.py FakeWaveform_XENON1T_000003_pax /project/lgrandi/jhowlett/170216_testing_peak/pax_170216_testing_peak
+Current job running number 2
+To process -> FakeWaveform_XENON1T_000004_pax
+python /home/jh3226/processing_distances/montecarlo/fax_waveform/reduce_peak_level_more_info.py FakeWaveform_XENON1T_000004_pax /project/lgrandi/jhowlett/170216_testing_peak/pax_170216_testing_peak
+Current job running number 3
+To process -> FakeWaveform_XENON1T_000001_pax
+python /home/jh3226/processing_distances/montecarlo/fax_waveform/reduce_peak_level_more_info.py FakeWaveform_XENON1T_000001_pax /project/lgrandi/jhowlett/170216_testing_peak/pax_170216_testing_peak
+Current job running number 4
+To process -> FakeWaveform_XENON1T_000002_pax
+python /home/jh3226/processing_distances/montecarlo/fax_waveform/reduce_peak_level_more_info.py FakeWaveform_XENON1T_000002_pax /project/lgrandi/jhowlett/170216_testing_peak/pax_170216_testing_peak
+Current job running number 5
+1
+Submitted batch job 24039029
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+2
+Submitted batch job 24039032
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+3
+Submitted batch job 24039035
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+4
+Submitted batch job 24039038
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+5
+Submitted batch job 24039041
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+Current job running number 1
+Current job running number 2
+Current job running number 3
+Current job running number 4
+Current job running number 5
+moving /project/lgrandi/jhowlett/170216_testing_peak/000000/FakeWaveform_XENON1T_000000_pax_Basics.root to basics minitree dir
+moving /project/lgrandi/jhowlett/170216_testing_peak/000000/FakeWaveform_XENON1T_000000_pax_Fundamentals.root to processed minitree dir
+moving /project/lgrandi/jhowlett/170216_testing_peak/000000/FakeWaveform_XENON1T_000000_pax.root to pax tree dir
+moving /project/lgrandi/jhowlett/170216_testing_peak/000000/FakeWaveform_XENON1T_000000_truth.root to truth minitree dir
+moving /project/lgrandi/jhowlett/170216_testing_peak/000001/FakeWaveform_XENON1T_000001_pax_Basics.root to basics minitree dir
+moving /project/lgrandi/jhowlett/170216_testing_peak/000001/FakeWaveform_XENON1T_000001_pax_Fundamentals.root to processed minitree dir
+moving /project/lgrandi/jhowlett/170216_testing_peak/000001/FakeWaveform_XENON1T_000001_pax.root to pax tree dir
+moving /project/lgrandi/jhowlett/170216_testing_peak/000001/FakeWaveform_XENON1T_000001_truth.root to truth minitree dir
+moving /project/lgrandi/jhowlett/170216_testing_peak/000002/FakeWaveform_XENON1T_000002_pax_Basics.root to basics minitree dir
+moving /project/lgrandi/jhowlett/170216_testing_peak/000002/FakeWaveform_XENON1T_000002_pax_Fundamentals.root to processed minitree dir
+moving /project/lgrandi/jhowlett/170216_testing_peak/000002/FakeWaveform_XENON1T_000002_pax.root to pax tree dir
+moving /project/lgrandi/jhowlett/170216_testing_peak/000002/FakeWaveform_XENON1T_000002_truth.root to truth minitree dir
+moving /project/lgrandi/jhowlett/170216_testing_peak/000003/FakeWaveform_XENON1T_000003_pax_Basics.root to basics minitree dir
+moving /project/lgrandi/jhowlett/170216_testing_peak/000003/FakeWaveform_XENON1T_000003_pax_Fundamentals.root to processed minitree dir
+moving /project/lgrandi/jhowlett/170216_testing_peak/000003/FakeWaveform_XENON1T_000003_pax.root to pax tree dir
+moving /project/lgrandi/jhowlett/170216_testing_peak/000003/FakeWaveform_XENON1T_000003_truth.root to truth minitree dir
+moving /project/lgrandi/jhowlett/170216_testing_peak/000004/FakeWaveform_XENON1T_000004_pax_Basics.root to basics minitree dir
+moving /project/lgrandi/jhowlett/170216_testing_peak/000004/FakeWaveform_XENON1T_000004_pax_Fundamentals.root to processed minitree dir
+moving /project/lgrandi/jhowlett/170216_testing_peak/000004/FakeWaveform_XENON1T_000004_pax.root to pax tree dir
+moving /project/lgrandi/jhowlett/170216_testing_peak/000004/FakeWaveform_XENON1T_000004_truth.root to truth minitree dir
+1
+Submitted batch job 24039207
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+2
+Submitted batch job 24039209
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+3
+Submitted batch job 24039211
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+4
+Submitted batch job 24039213
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+5
+Submitted batch job 24039215
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+To process -> FakeWaveform_XENON1T_000000_pax
+python /home/jh3226/processing_distances/montecarlo/fax_waveform/reduce_peak_level_more_info.py FakeWaveform_XENON1T_000000_pax /project/lgrandi/jhowlett/170216_testing_peak/pax_170216_testing_peak
+Current job running number 1
+To process -> FakeWaveform_XENON1T_000003_pax
+python /home/jh3226/processing_distances/montecarlo/fax_waveform/reduce_peak_level_more_info.py FakeWaveform_XENON1T_000003_pax /project/lgrandi/jhowlett/170216_testing_peak/pax_170216_testing_peak
+Current job running number 2
+To process -> FakeWaveform_XENON1T_000004_pax
+python /home/jh3226/processing_distances/montecarlo/fax_waveform/reduce_peak_level_more_info.py FakeWaveform_XENON1T_000004_pax /project/lgrandi/jhowlett/170216_testing_peak/pax_170216_testing_peak
+Current job running number 3
+To process -> FakeWaveform_XENON1T_000001_pax
+python /home/jh3226/processing_distances/montecarlo/fax_waveform/reduce_peak_level_more_info.py FakeWaveform_XENON1T_000001_pax /project/lgrandi/jhowlett/170216_testing_peak/pax_170216_testing_peak
+Current job running number 4
+To process -> FakeWaveform_XENON1T_000002_pax
+python /home/jh3226/processing_distances/montecarlo/fax_waveform/reduce_peak_level_more_info.py FakeWaveform_XENON1T_000002_pax /project/lgrandi/jhowlett/170216_testing_peak/pax_170216_testing_peak
+Current job running number 5
+1
+Submitted batch job 24039611
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+2
+Submitted batch job 24039615
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+3
+Submitted batch job 24039618
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+4
+Submitted batch job 24039621
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+5
+Submitted batch job 24039624
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+Current job running number 1
+Current job running number 2
+Current job running number 3
+Current job running number 4
+Current job running number 5
+moving /project/lgrandi/jhowlett/170216_testing_peak/000000/FakeWaveform_XENON1T_000000_pax_Basics.root to basics minitree dir
+moving /project/lgrandi/jhowlett/170216_testing_peak/000000/FakeWaveform_XENON1T_000000_pax_Fundamentals.root to processed minitree dir
+moving /project/lgrandi/jhowlett/170216_testing_peak/000000/FakeWaveform_XENON1T_000000_pax.root to pax tree dir
+moving /project/lgrandi/jhowlett/170216_testing_peak/000000/FakeWaveform_XENON1T_000000_truth.root to truth minitree dir
+moving /project/lgrandi/jhowlett/170216_testing_peak/000001/FakeWaveform_XENON1T_000001_pax_Basics.root to basics minitree dir
+moving /project/lgrandi/jhowlett/170216_testing_peak/000001/FakeWaveform_XENON1T_000001_pax_Fundamentals.root to processed minitree dir
+moving /project/lgrandi/jhowlett/170216_testing_peak/000001/FakeWaveform_XENON1T_000001_pax.root to pax tree dir
+moving /project/lgrandi/jhowlett/170216_testing_peak/000001/FakeWaveform_XENON1T_000001_truth.root to truth minitree dir
+moving /project/lgrandi/jhowlett/170216_testing_peak/000002/FakeWaveform_XENON1T_000002_pax_Basics.root to basics minitree dir
+moving /project/lgrandi/jhowlett/170216_testing_peak/000002/FakeWaveform_XENON1T_000002_pax_Fundamentals.root to processed minitree dir
+moving /project/lgrandi/jhowlett/170216_testing_peak/000002/FakeWaveform_XENON1T_000002_pax.root to pax tree dir
+moving /project/lgrandi/jhowlett/170216_testing_peak/000002/FakeWaveform_XENON1T_000002_truth.root to truth minitree dir
+moving /project/lgrandi/jhowlett/170216_testing_peak/000003/FakeWaveform_XENON1T_000003_pax_Basics.root to basics minitree dir
+moving /project/lgrandi/jhowlett/170216_testing_peak/000003/FakeWaveform_XENON1T_000003_pax_Fundamentals.root to processed minitree dir
+moving /project/lgrandi/jhowlett/170216_testing_peak/000003/FakeWaveform_XENON1T_000003_pax.root to pax tree dir
+moving /project/lgrandi/jhowlett/170216_testing_peak/000003/FakeWaveform_XENON1T_000003_truth.root to truth minitree dir
+moving /project/lgrandi/jhowlett/170216_testing_peak/000004/FakeWaveform_XENON1T_000004_pax_Basics.root to basics minitree dir
+moving /project/lgrandi/jhowlett/170216_testing_peak/000004/FakeWaveform_XENON1T_000004_pax_Fundamentals.root to processed minitree dir
+moving /project/lgrandi/jhowlett/170216_testing_peak/000004/FakeWaveform_XENON1T_000004_pax.root to pax tree dir
+moving /project/lgrandi/jhowlett/170216_testing_peak/000004/FakeWaveform_XENON1T_000004_truth.root to truth minitree dir
+1
+Submitted batch job 24039831
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+2
+Submitted batch job 24039833
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+3
+Submitted batch job 24039835
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+4
+Submitted batch job 24039837
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+5
+Submitted batch job 24039840
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+To process -> FakeWaveform_XENON1T_000000_pax
+python /home/jh3226/processing_distances/montecarlo/fax_waveform/reduce_peak_level_more_info.py FakeWaveform_XENON1T_000000_pax /project/lgrandi/jhowlett/170216_testing_peak/pax_170216_testing_peak
+Current job running number 1
+To process -> FakeWaveform_XENON1T_000003_pax
+python /home/jh3226/processing_distances/montecarlo/fax_waveform/reduce_peak_level_more_info.py FakeWaveform_XENON1T_000003_pax /project/lgrandi/jhowlett/170216_testing_peak/pax_170216_testing_peak
+Current job running number 2
+To process -> FakeWaveform_XENON1T_000004_pax
+python /home/jh3226/processing_distances/montecarlo/fax_waveform/reduce_peak_level_more_info.py FakeWaveform_XENON1T_000004_pax /project/lgrandi/jhowlett/170216_testing_peak/pax_170216_testing_peak
+Current job running number 3
+To process -> FakeWaveform_XENON1T_000001_pax
+python /home/jh3226/processing_distances/montecarlo/fax_waveform/reduce_peak_level_more_info.py FakeWaveform_XENON1T_000001_pax /project/lgrandi/jhowlett/170216_testing_peak/pax_170216_testing_peak
+Current job running number 4
+To process -> FakeWaveform_XENON1T_000002_pax
+python /home/jh3226/processing_distances/montecarlo/fax_waveform/reduce_peak_level_more_info.py FakeWaveform_XENON1T_000002_pax /project/lgrandi/jhowlett/170216_testing_peak/pax_170216_testing_peak
+Current job running number 5
+1
+Submitted batch job 24051237
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+Current job running number 1
+1
+Submitted batch job 24051744
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+2
+Submitted batch job 24051745
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+3
+Submitted batch job 24051746
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+4
+Submitted batch job 24051757
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+5
+Submitted batch job 24051758
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+Current job running number 1
+Current job running number 2
+Current job running number 3
+Current job running number 4
+Current job running number 5
+moving /project/lgrandi/jhowlett/170216_1700_test/000000/FakeWaveform_XENON1T_000000_pax_Basics.root to basics minitree dir
+moving /project/lgrandi/jhowlett/170216_1700_test/000000/FakeWaveform_XENON1T_000000_pax_Fundamentals.root to processed minitree dir
+moving /project/lgrandi/jhowlett/170216_1700_test/000000/FakeWaveform_XENON1T_000000_pax.root to pax tree dir
+moving /project/lgrandi/jhowlett/170216_1700_test/000000/FakeWaveform_XENON1T_000000_truth.root to truth minitree dir
+moving /project/lgrandi/jhowlett/170216_1700_test/000001/FakeWaveform_XENON1T_000001_pax_Basics.root to basics minitree dir
+moving /project/lgrandi/jhowlett/170216_1700_test/000001/FakeWaveform_XENON1T_000001_pax_Fundamentals.root to processed minitree dir
+moving /project/lgrandi/jhowlett/170216_1700_test/000001/FakeWaveform_XENON1T_000001_pax.root to pax tree dir
+moving /project/lgrandi/jhowlett/170216_1700_test/000001/FakeWaveform_XENON1T_000001_truth.root to truth minitree dir
+moving /project/lgrandi/jhowlett/170216_1700_test/000002/FakeWaveform_XENON1T_000002_pax_Basics.root to basics minitree dir
+moving /project/lgrandi/jhowlett/170216_1700_test/000002/FakeWaveform_XENON1T_000002_pax_Fundamentals.root to processed minitree dir
+moving /project/lgrandi/jhowlett/170216_1700_test/000002/FakeWaveform_XENON1T_000002_pax.root to pax tree dir
+moving /project/lgrandi/jhowlett/170216_1700_test/000002/FakeWaveform_XENON1T_000002_truth.root to truth minitree dir
+moving /project/lgrandi/jhowlett/170216_1700_test/000003/FakeWaveform_XENON1T_000003_pax_Basics.root to basics minitree dir
+moving /project/lgrandi/jhowlett/170216_1700_test/000003/FakeWaveform_XENON1T_000003_pax_Fundamentals.root to processed minitree dir
+moving /project/lgrandi/jhowlett/170216_1700_test/000003/FakeWaveform_XENON1T_000003_pax.root to pax tree dir
+moving /project/lgrandi/jhowlett/170216_1700_test/000003/FakeWaveform_XENON1T_000003_truth.root to truth minitree dir
+moving /project/lgrandi/jhowlett/170216_1700_test/000004/FakeWaveform_XENON1T_000004_pax_Basics.root to basics minitree dir
+moving /project/lgrandi/jhowlett/170216_1700_test/000004/FakeWaveform_XENON1T_000004_pax_Fundamentals.root to processed minitree dir
+moving /project/lgrandi/jhowlett/170216_1700_test/000004/FakeWaveform_XENON1T_000004_pax.root to pax tree dir
+moving /project/lgrandi/jhowlett/170216_1700_test/000004/FakeWaveform_XENON1T_000004_truth.root to truth minitree dir
+1
+Submitted batch job 24051831
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+2
+Submitted batch job 24051832
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+3
+Submitted batch job 24051833
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+4
+Submitted batch job 24051834
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+5
+Submitted batch job 24051835
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+To process -> FakeWaveform_XENON1T_000000_pax
+python /home/jh3226/processing_distances/montecarlo/fax_waveform//ReduceDataNormal.py FakeWaveform_XENON1T_000000_pax /project/lgrandi/jhowlett/170216_1700_test/pax_170216_1700_test
+Current job running number 1
+To process -> FakeWaveform_XENON1T_000003_pax
+python /home/jh3226/processing_distances/montecarlo/fax_waveform//ReduceDataNormal.py FakeWaveform_XENON1T_000003_pax /project/lgrandi/jhowlett/170216_1700_test/pax_170216_1700_test
+Current job running number 2
+To process -> FakeWaveform_XENON1T_000004_pax
+python /home/jh3226/processing_distances/montecarlo/fax_waveform//ReduceDataNormal.py FakeWaveform_XENON1T_000004_pax /project/lgrandi/jhowlett/170216_1700_test/pax_170216_1700_test
+Current job running number 3
+To process -> FakeWaveform_XENON1T_000001_pax
+python /home/jh3226/processing_distances/montecarlo/fax_waveform//ReduceDataNormal.py FakeWaveform_XENON1T_000001_pax /project/lgrandi/jhowlett/170216_1700_test/pax_170216_1700_test
+Current job running number 4
+To process -> FakeWaveform_XENON1T_000002_pax
+python /home/jh3226/processing_distances/montecarlo/fax_waveform//ReduceDataNormal.py FakeWaveform_XENON1T_000002_pax /project/lgrandi/jhowlett/170216_1700_test/pax_170216_1700_test
+Current job running number 5
+1
+Submitted batch job 24051974
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+2
+Submitted batch job 24051975
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+Current job running number 1
+Current job running number 2
+minitree dirs already exist for 170216_1700_test; exiting...
+1
+Submitted batch job 24052487
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+2
+Submitted batch job 24052488
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+3
+Submitted batch job 24052489
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+4
+Submitted batch job 24052491
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+5
+Submitted batch job 24052492
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+To process -> FakeWaveform_XENON1T_000000_pax
+python /home/jh3226/processing_distances/montecarlo/fax_waveform//ReduceDataNormal.py FakeWaveform_XENON1T_000000_pax /project/lgrandi/jhowlett/170216_1700_test/pax_170216_1700_test
+Current job running number 1
+To process -> FakeWaveform_XENON1T_000003_pax
+python /home/jh3226/processing_distances/montecarlo/fax_waveform//ReduceDataNormal.py FakeWaveform_XENON1T_000003_pax /project/lgrandi/jhowlett/170216_1700_test/pax_170216_1700_test
+Current job running number 2
+To process -> FakeWaveform_XENON1T_000004_pax
+python /home/jh3226/processing_distances/montecarlo/fax_waveform//ReduceDataNormal.py FakeWaveform_XENON1T_000004_pax /project/lgrandi/jhowlett/170216_1700_test/pax_170216_1700_test
+Current job running number 3
+To process -> FakeWaveform_XENON1T_000001_pax
+python /home/jh3226/processing_distances/montecarlo/fax_waveform//ReduceDataNormal.py FakeWaveform_XENON1T_000001_pax /project/lgrandi/jhowlett/170216_1700_test/pax_170216_1700_test
+Current job running number 4
+To process -> FakeWaveform_XENON1T_000002_pax
+python /home/jh3226/processing_distances/montecarlo/fax_waveform//ReduceDataNormal.py FakeWaveform_XENON1T_000002_pax /project/lgrandi/jhowlett/170216_1700_test/pax_170216_1700_test
+Current job running number 5
+1
+Submitted batch job 24053985
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+2
+Submitted batch job 24053986
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+3
+Submitted batch job 24053989
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+4
+Submitted batch job 24053996
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+5
+Submitted batch job 24054008
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+Current job running number 1
+Current job running number 2
+Current job running number 3
+Current job running number 4
+Current job running number 5
+1
+Submitted batch job 24054729
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+2
+Submitted batch job 24054730
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+3
+Submitted batch job 24054731
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+4
+Submitted batch job 24054732
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+5
+Submitted batch job 24054734
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+Current job running number 1
+Current job running number 2
+Current job running number 3
+Current job running number 4
+Current job running number 5
+1
+Submitted batch job 24054855
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+2
+Submitted batch job 24054856
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+3
+Submitted batch job 24054860
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+4
+Submitted batch job 24054861
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+5
+Submitted batch job 24054862
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+Current job running number 1
+Current job running number 2
+Current job running number 3
+Current job running number 4
+Current job running number 5
+moving /project/lgrandi/jhowlett/170216_1730_test/000000/FakeWaveform_XENON1T_000000_pax_Basics.root to basics minitree dir
+moving /project/lgrandi/jhowlett/170216_1730_test/000000/FakeWaveform_XENON1T_000000_pax_Fundamentals.root to processed minitree dir
+moving /project/lgrandi/jhowlett/170216_1730_test/000000/FakeWaveform_XENON1T_000000_pax.root to pax tree dir
+moving /project/lgrandi/jhowlett/170216_1730_test/000000/FakeWaveform_XENON1T_000000_truth.root to truth minitree dir
+moving /project/lgrandi/jhowlett/170216_1730_test/000001/FakeWaveform_XENON1T_000001_pax_Basics.root to basics minitree dir
+moving /project/lgrandi/jhowlett/170216_1730_test/000001/FakeWaveform_XENON1T_000001_pax_Fundamentals.root to processed minitree dir
+moving /project/lgrandi/jhowlett/170216_1730_test/000001/FakeWaveform_XENON1T_000001_pax.root to pax tree dir
+moving /project/lgrandi/jhowlett/170216_1730_test/000001/FakeWaveform_XENON1T_000001_truth.root to truth minitree dir
+moving /project/lgrandi/jhowlett/170216_1730_test/000002/FakeWaveform_XENON1T_000002_pax_Basics.root to basics minitree dir
+moving /project/lgrandi/jhowlett/170216_1730_test/000002/FakeWaveform_XENON1T_000002_pax_Fundamentals.root to processed minitree dir
+moving /project/lgrandi/jhowlett/170216_1730_test/000002/FakeWaveform_XENON1T_000002_pax.root to pax tree dir
+moving /project/lgrandi/jhowlett/170216_1730_test/000002/FakeWaveform_XENON1T_000002_truth.root to truth minitree dir
+moving /project/lgrandi/jhowlett/170216_1730_test/000003/FakeWaveform_XENON1T_000003_pax_Basics.root to basics minitree dir
+moving /project/lgrandi/jhowlett/170216_1730_test/000003/FakeWaveform_XENON1T_000003_pax_Fundamentals.root to processed minitree dir
+moving /project/lgrandi/jhowlett/170216_1730_test/000003/FakeWaveform_XENON1T_000003_pax.root to pax tree dir
+moving /project/lgrandi/jhowlett/170216_1730_test/000003/FakeWaveform_XENON1T_000003_truth.root to truth minitree dir
+moving /project/lgrandi/jhowlett/170216_1730_test/000004/FakeWaveform_XENON1T_000004_pax_Basics.root to basics minitree dir
+moving /project/lgrandi/jhowlett/170216_1730_test/000004/FakeWaveform_XENON1T_000004_pax_Fundamentals.root to processed minitree dir
+moving /project/lgrandi/jhowlett/170216_1730_test/000004/FakeWaveform_XENON1T_000004_pax.root to pax tree dir
+moving /project/lgrandi/jhowlett/170216_1730_test/000004/FakeWaveform_XENON1T_000004_truth.root to truth minitree dir
+1
+Submitted batch job 24055245
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+2
+Submitted batch job 24055246
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+3
+Submitted batch job 24055247
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+4
+Submitted batch job 24055254
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+5
+Submitted batch job 24055255
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+To process -> FakeWaveform_XENON1T_000000_pax
+python /home/jh3226/processing_distances/montecarlo/fax_waveform//ReduceDataNormal.py FakeWaveform_XENON1T_000000_pax /project/lgrandi/jhowlett/170216_1730_test/pax_170216_1730_test
+Current job running number 1
+To process -> FakeWaveform_XENON1T_000003_pax
+python /home/jh3226/processing_distances/montecarlo/fax_waveform//ReduceDataNormal.py FakeWaveform_XENON1T_000003_pax /project/lgrandi/jhowlett/170216_1730_test/pax_170216_1730_test
+Current job running number 2
+To process -> FakeWaveform_XENON1T_000004_pax
+python /home/jh3226/processing_distances/montecarlo/fax_waveform//ReduceDataNormal.py FakeWaveform_XENON1T_000004_pax /project/lgrandi/jhowlett/170216_1730_test/pax_170216_1730_test
+Current job running number 3
+To process -> FakeWaveform_XENON1T_000001_pax
+python /home/jh3226/processing_distances/montecarlo/fax_waveform//ReduceDataNormal.py FakeWaveform_XENON1T_000001_pax /project/lgrandi/jhowlett/170216_1730_test/pax_170216_1730_test
+Current job running number 4
+To process -> FakeWaveform_XENON1T_000002_pax
+python /home/jh3226/processing_distances/montecarlo/fax_waveform//ReduceDataNormal.py FakeWaveform_XENON1T_000002_pax /project/lgrandi/jhowlett/170216_1730_test/pax_170216_1730_test
+Current job running number 5
+1
+Submitted batch job 24097409
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+2
+Submitted batch job 24097412
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+3
+Submitted batch job 24097414
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+4
+Submitted batch job 24097417
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+5
+Submitted batch job 24097418
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+Current job running number 1
+Current job running number 2
+Current job running number 3
+Current job running number 4
+Current job running number 5
+moving /project/lgrandi/jhowlett/170217_1030_test/000000/FakeWaveform_XENON1T_000000_pax_Basics.root to basics minitree dir
+moving /project/lgrandi/jhowlett/170217_1030_test/000000/FakeWaveform_XENON1T_000000_pax_Fundamentals.root to processed minitree dir
+moving /project/lgrandi/jhowlett/170217_1030_test/000000/FakeWaveform_XENON1T_000000_pax.root to pax tree dir
+moving /project/lgrandi/jhowlett/170217_1030_test/000000/FakeWaveform_XENON1T_000000_truth.root to truth minitree dir
+moving /project/lgrandi/jhowlett/170217_1030_test/000001/FakeWaveform_XENON1T_000001_pax_Basics.root to basics minitree dir
+moving /project/lgrandi/jhowlett/170217_1030_test/000001/FakeWaveform_XENON1T_000001_pax_Fundamentals.root to processed minitree dir
+moving /project/lgrandi/jhowlett/170217_1030_test/000001/FakeWaveform_XENON1T_000001_pax.root to pax tree dir
+moving /project/lgrandi/jhowlett/170217_1030_test/000001/FakeWaveform_XENON1T_000001_truth.root to truth minitree dir
+moving /project/lgrandi/jhowlett/170217_1030_test/000002/FakeWaveform_XENON1T_000002_pax_Basics.root to basics minitree dir
+moving /project/lgrandi/jhowlett/170217_1030_test/000002/FakeWaveform_XENON1T_000002_pax_Fundamentals.root to processed minitree dir
+moving /project/lgrandi/jhowlett/170217_1030_test/000002/FakeWaveform_XENON1T_000002_pax.root to pax tree dir
+moving /project/lgrandi/jhowlett/170217_1030_test/000002/FakeWaveform_XENON1T_000002_truth.root to truth minitree dir
+moving /project/lgrandi/jhowlett/170217_1030_test/000003/FakeWaveform_XENON1T_000003_pax_Basics.root to basics minitree dir
+moving /project/lgrandi/jhowlett/170217_1030_test/000003/FakeWaveform_XENON1T_000003_pax_Fundamentals.root to processed minitree dir
+moving /project/lgrandi/jhowlett/170217_1030_test/000003/FakeWaveform_XENON1T_000003_pax.root to pax tree dir
+moving /project/lgrandi/jhowlett/170217_1030_test/000003/FakeWaveform_XENON1T_000003_truth.root to truth minitree dir
+moving /project/lgrandi/jhowlett/170217_1030_test/000004/FakeWaveform_XENON1T_000004_pax_Basics.root to basics minitree dir
+moving /project/lgrandi/jhowlett/170217_1030_test/000004/FakeWaveform_XENON1T_000004_pax_Fundamentals.root to processed minitree dir
+moving /project/lgrandi/jhowlett/170217_1030_test/000004/FakeWaveform_XENON1T_000004_pax.root to pax tree dir
+moving /project/lgrandi/jhowlett/170217_1030_test/000004/FakeWaveform_XENON1T_000004_truth.root to truth minitree dir
+1
+Submitted batch job 24097526
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+2
+Submitted batch job 24097528
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+3
+Submitted batch job 24097529
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+4
+Submitted batch job 24097531
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+5
+Submitted batch job 24097533
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+To process -> FakeWaveform_XENON1T_000000_pax
+python /home/jh3226/processing_distances/montecarlo/fax_waveform//ReduceDataNormal.py FakeWaveform_XENON1T_000000_pax /project/lgrandi/jhowlett/170217_1030_test/pax_170217_1030_test
+Current job running number 1
+To process -> FakeWaveform_XENON1T_000003_pax
+python /home/jh3226/processing_distances/montecarlo/fax_waveform//ReduceDataNormal.py FakeWaveform_XENON1T_000003_pax /project/lgrandi/jhowlett/170217_1030_test/pax_170217_1030_test
+Current job running number 2
+To process -> FakeWaveform_XENON1T_000004_pax
+python /home/jh3226/processing_distances/montecarlo/fax_waveform//ReduceDataNormal.py FakeWaveform_XENON1T_000004_pax /project/lgrandi/jhowlett/170217_1030_test/pax_170217_1030_test
+Current job running number 3
+To process -> FakeWaveform_XENON1T_000001_pax
+python /home/jh3226/processing_distances/montecarlo/fax_waveform//ReduceDataNormal.py FakeWaveform_XENON1T_000001_pax /project/lgrandi/jhowlett/170217_1030_test/pax_170217_1030_test
+Current job running number 4
+To process -> FakeWaveform_XENON1T_000002_pax
+python /home/jh3226/processing_distances/montecarlo/fax_waveform//ReduceDataNormal.py FakeWaveform_XENON1T_000002_pax /project/lgrandi/jhowlett/170217_1030_test/pax_170217_1030_test
+Current job running number 5
+1
+Submitted batch job 24098214
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+2
+Submitted batch job 24098217
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+3
+Submitted batch job 24098219
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+4
+Submitted batch job 24098220
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+5
+Submitted batch job 24098222
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+Current job running number 1
+Current job running number 2
+Current job running number 3
+Current job running number 4
+Current job running number 5
+moving /project/lgrandi/jhowlett/170217_1121_testing_peak/000000/FakeWaveform_XENON1T_000000_pax_Basics.root to basics minitree dir
+moving /project/lgrandi/jhowlett/170217_1121_testing_peak/000000/FakeWaveform_XENON1T_000000_pax_Fundamentals.root to processed minitree dir
+moving /project/lgrandi/jhowlett/170217_1121_testing_peak/000000/FakeWaveform_XENON1T_000000_pax.root to pax tree dir
+moving /project/lgrandi/jhowlett/170217_1121_testing_peak/000000/FakeWaveform_XENON1T_000000_truth.root to truth minitree dir
+moving /project/lgrandi/jhowlett/170217_1121_testing_peak/000001/FakeWaveform_XENON1T_000001_pax_Basics.root to basics minitree dir
+moving /project/lgrandi/jhowlett/170217_1121_testing_peak/000001/FakeWaveform_XENON1T_000001_pax_Fundamentals.root to processed minitree dir
+moving /project/lgrandi/jhowlett/170217_1121_testing_peak/000001/FakeWaveform_XENON1T_000001_pax.root to pax tree dir
+moving /project/lgrandi/jhowlett/170217_1121_testing_peak/000001/FakeWaveform_XENON1T_000001_truth.root to truth minitree dir
+moving /project/lgrandi/jhowlett/170217_1121_testing_peak/000002/FakeWaveform_XENON1T_000002_pax_Basics.root to basics minitree dir
+moving /project/lgrandi/jhowlett/170217_1121_testing_peak/000002/FakeWaveform_XENON1T_000002_pax_Fundamentals.root to processed minitree dir
+moving /project/lgrandi/jhowlett/170217_1121_testing_peak/000002/FakeWaveform_XENON1T_000002_pax.root to pax tree dir
+moving /project/lgrandi/jhowlett/170217_1121_testing_peak/000002/FakeWaveform_XENON1T_000002_truth.root to truth minitree dir
+moving /project/lgrandi/jhowlett/170217_1121_testing_peak/000003/FakeWaveform_XENON1T_000003_pax_Basics.root to basics minitree dir
+moving /project/lgrandi/jhowlett/170217_1121_testing_peak/000003/FakeWaveform_XENON1T_000003_pax_Fundamentals.root to processed minitree dir
+moving /project/lgrandi/jhowlett/170217_1121_testing_peak/000003/FakeWaveform_XENON1T_000003_pax.root to pax tree dir
+moving /project/lgrandi/jhowlett/170217_1121_testing_peak/000003/FakeWaveform_XENON1T_000003_truth.root to truth minitree dir
+moving /project/lgrandi/jhowlett/170217_1121_testing_peak/000004/FakeWaveform_XENON1T_000004_pax_Basics.root to basics minitree dir
+moving /project/lgrandi/jhowlett/170217_1121_testing_peak/000004/FakeWaveform_XENON1T_000004_pax_Fundamentals.root to processed minitree dir
+moving /project/lgrandi/jhowlett/170217_1121_testing_peak/000004/FakeWaveform_XENON1T_000004_pax.root to pax tree dir
+moving /project/lgrandi/jhowlett/170217_1121_testing_peak/000004/FakeWaveform_XENON1T_000004_truth.root to truth minitree dir
+1
+Submitted batch job 24098269
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+2
+Submitted batch job 24098271
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+3
+Submitted batch job 24098272
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+4
+Submitted batch job 24098273
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+5
+Submitted batch job 24098274
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+To process -> FakeWaveform_XENON1T_000000_pax
+python /home/jh3226/processing_distances/montecarlo/fax_waveform/reduce_peak_level_more_info.py FakeWaveform_XENON1T_000000_pax /project/lgrandi/jhowlett/170217_1121_testing_peak/pax_170217_1121_testing_peak
+Current job running number 1
+To process -> FakeWaveform_XENON1T_000003_pax
+python /home/jh3226/processing_distances/montecarlo/fax_waveform/reduce_peak_level_more_info.py FakeWaveform_XENON1T_000003_pax /project/lgrandi/jhowlett/170217_1121_testing_peak/pax_170217_1121_testing_peak
+Current job running number 2
+To process -> FakeWaveform_XENON1T_000004_pax
+python /home/jh3226/processing_distances/montecarlo/fax_waveform/reduce_peak_level_more_info.py FakeWaveform_XENON1T_000004_pax /project/lgrandi/jhowlett/170217_1121_testing_peak/pax_170217_1121_testing_peak
+Current job running number 3
+To process -> FakeWaveform_XENON1T_000001_pax
+python /home/jh3226/processing_distances/montecarlo/fax_waveform/reduce_peak_level_more_info.py FakeWaveform_XENON1T_000001_pax /project/lgrandi/jhowlett/170217_1121_testing_peak/pax_170217_1121_testing_peak
+Current job running number 4
+To process -> FakeWaveform_XENON1T_000002_pax
+python /home/jh3226/processing_distances/montecarlo/fax_waveform/reduce_peak_level_more_info.py FakeWaveform_XENON1T_000002_pax /project/lgrandi/jhowlett/170217_1121_testing_peak/pax_170217_1121_testing_peak
+Current job running number 5
+1
+Submitted batch job 24100807
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+2
+Submitted batch job 24100808
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+3
+Submitted batch job 24100810
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+4
+Submitted batch job 24100811
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+5
+Submitted batch job 24100812
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+Current job running number 1
+Current job running number 2
+Current job running number 3
+Current job running number 4
+Current job running number 5
+moving /project/lgrandi/jhowlett/170217_1241_testing_peak/000000/FakeWaveform_XENON1T_000000_pax_Basics.root to basics minitree dir
+moving /project/lgrandi/jhowlett/170217_1241_testing_peak/000000/FakeWaveform_XENON1T_000000_pax_Fundamentals.root to processed minitree dir
+moving /project/lgrandi/jhowlett/170217_1241_testing_peak/000000/FakeWaveform_XENON1T_000000_pax.root to pax tree dir
+moving /project/lgrandi/jhowlett/170217_1241_testing_peak/000000/FakeWaveform_XENON1T_000000_truth.root to truth minitree dir
+moving /project/lgrandi/jhowlett/170217_1241_testing_peak/000001/FakeWaveform_XENON1T_000001_pax_Basics.root to basics minitree dir
+moving /project/lgrandi/jhowlett/170217_1241_testing_peak/000001/FakeWaveform_XENON1T_000001_pax_Fundamentals.root to processed minitree dir
+moving /project/lgrandi/jhowlett/170217_1241_testing_peak/000001/FakeWaveform_XENON1T_000001_pax.root to pax tree dir
+moving /project/lgrandi/jhowlett/170217_1241_testing_peak/000001/FakeWaveform_XENON1T_000001_truth.root to truth minitree dir
+moving /project/lgrandi/jhowlett/170217_1241_testing_peak/000002/FakeWaveform_XENON1T_000002_pax_Basics.root to basics minitree dir
+moving /project/lgrandi/jhowlett/170217_1241_testing_peak/000002/FakeWaveform_XENON1T_000002_pax_Fundamentals.root to processed minitree dir
+moving /project/lgrandi/jhowlett/170217_1241_testing_peak/000002/FakeWaveform_XENON1T_000002_pax.root to pax tree dir
+moving /project/lgrandi/jhowlett/170217_1241_testing_peak/000002/FakeWaveform_XENON1T_000002_truth.root to truth minitree dir
+moving /project/lgrandi/jhowlett/170217_1241_testing_peak/000003/FakeWaveform_XENON1T_000003_pax_Basics.root to basics minitree dir
+moving /project/lgrandi/jhowlett/170217_1241_testing_peak/000003/FakeWaveform_XENON1T_000003_pax_Fundamentals.root to processed minitree dir
+moving /project/lgrandi/jhowlett/170217_1241_testing_peak/000003/FakeWaveform_XENON1T_000003_pax.root to pax tree dir
+moving /project/lgrandi/jhowlett/170217_1241_testing_peak/000003/FakeWaveform_XENON1T_000003_truth.root to truth minitree dir
+moving /project/lgrandi/jhowlett/170217_1241_testing_peak/000004/FakeWaveform_XENON1T_000004_pax_Basics.root to basics minitree dir
+moving /project/lgrandi/jhowlett/170217_1241_testing_peak/000004/FakeWaveform_XENON1T_000004_pax_Fundamentals.root to processed minitree dir
+moving /project/lgrandi/jhowlett/170217_1241_testing_peak/000004/FakeWaveform_XENON1T_000004_pax.root to pax tree dir
+moving /project/lgrandi/jhowlett/170217_1241_testing_peak/000004/FakeWaveform_XENON1T_000004_truth.root to truth minitree dir
+1
+Submitted batch job 24100901
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+2
+Submitted batch job 24100902
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+3
+Submitted batch job 24100903
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+4
+Submitted batch job 24100904
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+5
+Submitted batch job 24100905
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+To process -> FakeWaveform_XENON1T_000000_pax
+python /home/jh3226/processing_distances/montecarlo/fax_waveform//ReduceDataNormal.py FakeWaveform_XENON1T_000000_pax /project/lgrandi/jhowlett/170217_1241_testing_peak/pax_170217_1241_testing_peak
+Current job running number 1
+To process -> FakeWaveform_XENON1T_000003_pax
+python /home/jh3226/processing_distances/montecarlo/fax_waveform//ReduceDataNormal.py FakeWaveform_XENON1T_000003_pax /project/lgrandi/jhowlett/170217_1241_testing_peak/pax_170217_1241_testing_peak
+Current job running number 2
+To process -> FakeWaveform_XENON1T_000004_pax
+python /home/jh3226/processing_distances/montecarlo/fax_waveform//ReduceDataNormal.py FakeWaveform_XENON1T_000004_pax /project/lgrandi/jhowlett/170217_1241_testing_peak/pax_170217_1241_testing_peak
+Current job running number 3
+To process -> FakeWaveform_XENON1T_000001_pax
+python /home/jh3226/processing_distances/montecarlo/fax_waveform//ReduceDataNormal.py FakeWaveform_XENON1T_000001_pax /project/lgrandi/jhowlett/170217_1241_testing_peak/pax_170217_1241_testing_peak
+Current job running number 4
+To process -> FakeWaveform_XENON1T_000002_pax
+python /home/jh3226/processing_distances/montecarlo/fax_waveform//ReduceDataNormal.py FakeWaveform_XENON1T_000002_pax /project/lgrandi/jhowlett/170217_1241_testing_peak/pax_170217_1241_testing_peak
+Current job running number 5
