@@ -58,7 +58,7 @@ Data = {}
 
 # initialize Data for truth 
 event_keys = ['index_truth', 'peaks_length']
-s1s2_keys = ['time_truth', 'time_std_truth', 'time_last_photon_truth', 'time_interaction_truth', 'area_truth', 'type_truth', 'x_truth', 'y_truth', 'z_truth', 'peak_top_fraction']
+s1s2_keys = ['time_truth', 'time_std_truth', 'time_last_photon_truth', 'time_interaction_truth', 'area_truth', 'type_truth', 'x_truth', 'y_truth', 'z_truth', 'top_fraction']
 s2_only_keys = ['electron_time_truth', 'first_electron_time_truth', 'last_electron_time_truth']
 
 for field in (event_keys + s1s2_keys + s2_only_keys):
@@ -92,7 +92,7 @@ for event_id in range(10000000):
         result['x_truth'].append(truth_tree.x)
         result['y_truth'].append(truth_tree.y)
         result['z_truth'].append(truth_tree.z)
-        result['peak_top_fraction'].append(truth_tree.peak_top_fraction)
+        result['top_fraction'].append(truth_tree.top_fraction)
 
         if tag==0:
             # peak is an S1

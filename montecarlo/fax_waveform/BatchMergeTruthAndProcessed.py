@@ -24,16 +24,16 @@ ProcessedRootPath = sys.argv[3]
 OutputPath = sys.argv[4]
 IfPublicNode = 1
 RelativeSubmitPath = "Submit"
+if len(sys.argv)>5:
+    RelativeSubmitPath = sys.argv[5]
 if len(sys.argv)>6:
-    RelativeSubmitPath = sys.argv[6]
-if len(sys.argv)>7:
-    IfPublicNode = int(sys.argv[7])
+    IfPublicNode = int(sys.argv[6])
 SubmitID = 0
-if len(sys.argv)>8:
-    SubmitID = int(sys.argv[8])
+if len(sys.argv)>7:
+    SubmitID = int(sys.argv[7])
 ArrayOutput = 0
-if len(sys.argv)>9:
-    ArrayOutput = int(sys.argv[9])
+if len(sys.argv)>8:
+    ArrayOutput = int(sys.argv[8])
 
 
 #######################
