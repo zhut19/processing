@@ -62,12 +62,13 @@ Data['index_truth'] = []
 Data['s1_time_truth'] = [] 
 Data['s1_time_std_truth'] = [] 
 Data['s1_area_truth'] = [] 
+Data['s1_area_top_fraction_truth'] = []
 Data['s2_time_truth'] = [] 
 Data['s2_electron_time_truth'] = [] 
 Data['s2_first_electron_time_truth'] = [] 
 Data['s2_time_std_truth'] = [] 
 Data['s2_area_truth'] = [] 
-Data['peak_top_fraction'] = []
+Data['s2_area_top_fraction_truth'] = []
 Data['x_truth'] = []
 Data['y_truth'] = []
 
@@ -81,32 +82,39 @@ for event_id in range(10000000):
     s1_time_truth = -1
     s1_time_std_truth = -1
     s1_area_truth = -1
+    s1_area_top_fraction_truth = -1
     s2_electron_time_truth = -1
     s2_first_electron_time_truth = -1
     s2_time_truth = -1
     s2_time_std_truth = -1
     s2_area_truth = -1
-    peak_top_fraction = -1
+    s2_area_top_fraction_truth = -1
     x_truth = -1e10
     y_truth = -1e10
+    ifcounteds2 = 0
     while truth_tree.event==event_id:
-        tag = 0 # 0 for s1, 1 for s2
-        if not str(truth_tree.n_electrons)=='nan':
+        tag = 0 # 0 for s1, 1 for s2, 2 for photoionization
+        if not str(truth_tree.n_electrons)=='nan' and ifcounteds2==0:
             tag = 1
+            ifcounteds2==1
+        elif ifcounteds2!=0:
+            tag=0
+        else:
+            tag=2
         if tag==0:
             #print("Iterator: "+str(iteration_id)+" -> S1")
             s1_time_truth = truth_tree.t_mean_photons
             s1_time_std_truth = truth_tree.t_sigma_photons
             s1_area_truth = truth_tree.n_photons
-            peak_top_fraction = truth_tree.peak_top_fraction
-    else:
+            s1_area_top_fraction_truth = truth_tree.peak_top_fraction
+        elif tag==1:
             #print("Iterator: "+str(iteration_id)+" -> S2")
             s2_electron_time_truth = truth_tree.t_mean_electrons
             s2_first_electron_time_truth = truth_tree.t_first_electron
             s2_time_truth = truth_tree.t_mean_photons
             s2_time_std_truth = truth_tree.t_sigma_photons
             s2_area_truth = truth_tree.n_photons
-	    peak_top_fraction = truth_tree.peak_top_fraction
+	        s2_area_top_fraction_truth = truth_tree.peak_top_fraction
             x_truth = truth_tree.x
             y_truth = truth_tree.y
         iteration_id += 1
