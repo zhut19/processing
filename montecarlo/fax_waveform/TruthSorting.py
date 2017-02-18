@@ -106,7 +106,7 @@ for event_id in range(10000000):
             s1_time_truth = truth_tree.t_mean_photons
             s1_time_std_truth = truth_tree.t_sigma_photons
             s1_area_truth = truth_tree.n_photons
-            s1_area_top_fraction_truth = truth_tree.peak_top_fraction
+            s1_area_top_fraction_truth = truth_tree.top_fraction
         elif tag==1:
             #print("Iterator: "+str(iteration_id)+" -> S2")
             s2_electron_time_truth = truth_tree.t_mean_electrons
@@ -114,7 +114,7 @@ for event_id in range(10000000):
             s2_time_truth = truth_tree.t_mean_photons
             s2_time_std_truth = truth_tree.t_sigma_photons
             s2_area_truth = truth_tree.n_photons
-	        s2_area_top_fraction_truth = truth_tree.peak_top_fraction
+	        s2_area_top_fraction_truth = truth_tree.top_fraction
             x_truth = truth_tree.x
             y_truth = truth_tree.y
         iteration_id += 1
