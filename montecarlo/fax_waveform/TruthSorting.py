@@ -91,14 +91,14 @@ for event_id in range(10000000):
     s2_area_top_fraction_truth = -1
     x_truth = -1e10
     y_truth = -1e10
-    ifcounteds2 = 0
+    ifcounteds1 = 0
     while truth_tree.event==event_id:
         tag = 0 # 0 for s1, 1 for s2, 2 for photoionization
-        if not str(truth_tree.n_electrons)=='nan' and ifcounteds2==0:
+        if not str(truth_tree.n_electrons)=='nan':
             tag = 1
-            ifcounteds2==1
-        elif ifcounteds2!=0:
+        elif ifcounteds1==0:
             tag=0
+            ifcounteds1=1
         else:
             tag=2
         if tag==0:
@@ -130,7 +130,8 @@ for event_id in range(10000000):
     Data['s2_time_truth'].append(s2_time_truth)
     Data['s2_time_std_truth'].append(s2_time_std_truth)
     Data['s2_area_truth'].append(s2_area_truth)
-    Data['peak_top_fraction'].append(peak_top_fraction)
+    Data['s1_area_top_fraction_truth'].append(s1_area_top_fraction_truth)
+    Data['s2_area_top_fraction_truth'].append(s2_area_top_fraction_truth)
     Data['x_truth'].append(x_truth)
     Data['y_truth'].append(y_truth)
 
