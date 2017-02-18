@@ -14,7 +14,7 @@ from subprocess import Popen, PIPE
 
 if len(sys.argv)<=1:
     print("======== Usage =========")
-    print("python BatchMergeTruthAndProcessed.py <config file> <truth root path> <processed root path> <output path> <(opt)top-to-total fraction in truth(default 0.68)> <(opt)relative path for submission> <(opt) if use public node (1) optional (2 for use kicp nodes)> <(opt)Submit ID> <(opt) if use arrays in output (1) (default 0)>")
+    print("python BatchMergeTruthAndProcessed.py <config file> <truth root path> <processed root path> <output path> <(opt)relative path for submission> <(opt) if use public node (1) optional (2 for use kicp nodes)> <(opt)Submit ID> <(opt) if use arrays in output (1) (default 0)>")
     exit()
 
 CurrentEXE = sys.argv[0]
@@ -23,9 +23,6 @@ TruthRootPath = sys.argv[2]
 ProcessedRootPath = sys.argv[3]
 OutputPath = sys.argv[4]
 IfPublicNode = 1
-TopFraction = 0.68
-if len(sys.argv)>5:
-    TopFraction = float(sys.argv[5])
 RelativeSubmitPath = "Submit"
 if len(sys.argv)>6:
     RelativeSubmitPath = sys.argv[6]
@@ -112,7 +109,7 @@ for j, ID_job in enumerate(IDList):
         subp.call("echo '#SBATCH --qos=xenon1t-kicp\n' >> "+SubmitFile, shell=True)
         subp.call("echo '#SBATCH --partition=kicp\n' >> "+SubmitFile, shell=True)
     subp.call("echo '. /home/mcfate/Env/GlobalPAXEnv.sh\n\n' >> "+SubmitFile, shell=True)
-    subp.call("echo 'python "+EXE1+" "+TruthRootFilename+" "+TmpOutputFilename+" "+str(TopFraction)+"' >> "+SubmitFile, shell=True)
+    subp.call("echo 'python "+EXE1+" "+TruthRootFilename+" "+TmpOutputFilename+"' >> "+SubmitFile, shell=True)
     subp.call("echo 'python "+EXE2+" "+AbsoluteConfigFile+" "+TmpOutputFilename+" "+ProcessedRootFilename+" "+OutputFilename+"' >> "+SubmitFile, shell=True)
     
     #submit

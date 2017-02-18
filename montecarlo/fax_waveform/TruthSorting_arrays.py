@@ -22,23 +22,19 @@ import sys
 
 if len(sys.argv)<2:
     print("============= Syntax =============")
-    print("python TruthSorting_arrays.py <truth file.root (abs.)> <output file (no ext)> <(opt) top-to-total fraction; default = 0.68> <output format; 0=pickle (default), 1=ROOT, 2=both>")
+    print("python TruthSorting_arrays.py <truth file.root (abs.)> <output file (no ext)> <output format; 0=pickle (default), 1=ROOT, 2=both>")
     exit()
 
 
 TruthFile = sys.argv[1]
 OutputFile = sys.argv[2]
 OutputFile = OutputFile.split('.')[0]
-mean_top_fraction = 0.68
-if len(sys.argv)>3:
-    mean_top_fraction = float(sys.argv[3])
 
 OutputFormat=0
 if len(sys.argv)>4:
     OutputFormat = float(sys.argv[4])
 
 print ("Input file: ", TruthFile)
-print ("Mean top fraction: ", mean_top_fraction)
 
 #################
 ## load the root files
@@ -62,8 +58,8 @@ Data = {}
 
 # initialize Data for truth 
 event_keys = ['index_truth', 'peaks_length']
-s1s2_keys = ['time_truth', 'time_std_truth', 'time_last_photon_truth', 'time_interaction_truth', 'area_truth', 'type_truth', 'x_truth', 'y_truth', 'z_truth']
-s2_only_keys = ['electron_time_truth', 'first_electron_time_truth', 'last_electron_time_truth', 'bottom_area_truth']
+s1s2_keys = ['time_truth', 'time_std_truth', 'time_last_photon_truth', 'time_interaction_truth', 'area_truth', 'type_truth', 'x_truth', 'y_truth', 'z_truth', 'peak_top_fraction']
+s2_only_keys = ['electron_time_truth', 'first_electron_time_truth', 'last_electron_time_truth']
 
 for field in (event_keys + s1s2_keys + s2_only_keys):
     Data[field] = []
@@ -96,6 +92,8 @@ for event_id in range(10000000):
         result['x_truth'].append(truth_tree.x)
         result['y_truth'].append(truth_tree.y)
         result['z_truth'].append(truth_tree.z)
+        result['peak_top_fraction'].append(truth_tree.peak_top_fraction)
+
         if tag==0:
             # peak is an S1
             for s2_field in s2_only_keys:
@@ -105,7 +103,6 @@ for event_id in range(10000000):
             result['electron_time_truth'].append(truth_tree.t_mean_electrons)
             result['first_electron_time_truth'].append(truth_tree.t_first_electron)
             result['last_electron_time_truth'].append(truth_tree.t_last_electron)
-            result['bottom_area_truth'].append(truth_tree.n_photons * (1.-mean_top_fraction))
         iteration_id += 1
         if iteration_id>=NumStepsInTruth:
             break

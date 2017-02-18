@@ -23,23 +23,19 @@ import sys
 
 if len(sys.argv)<2:
     print("============= Syntax =============")
-    print("python TruthSorting.py <truth file.root (abs.)> <output file (no ext)> <(opt) top-to-total fraction; default = 0.68> <output format; 0=pickle (default), 1=ROOT, 2=both>")
+    print("python TruthSorting.py <truth file.root (abs.)> <output file (no ext)> <output format; 0=pickle (default), 1=ROOT, 2=both>")
     exit()
 
 
 TruthFile = sys.argv[1]
 OutputFile = sys.argv[2]
 OutputFile = OutputFile.split('.')[0]
-mean_top_fraction = 0.68
-if len(sys.argv)>3:
-    mean_top_fraction = float(sys.argv[3])
 
 OutputFormat=0
 if len(sys.argv)>4:
     OutputFormat = float(sys.argv[4])
 
 print ("Input file: ", TruthFile)
-print ("Mean top fraction: ", mean_top_fraction)
 
 #################
 ## load the root files
@@ -71,7 +67,7 @@ Data['s2_electron_time_truth'] = []
 Data['s2_first_electron_time_truth'] = [] 
 Data['s2_time_std_truth'] = [] 
 Data['s2_area_truth'] = [] 
-Data['s2_bottom_area_truth'] = []
+Data['peak_top_fraction'] = []
 Data['x_truth'] = []
 Data['y_truth'] = []
 
@@ -90,7 +86,7 @@ for event_id in range(10000000):
     s2_time_truth = -1
     s2_time_std_truth = -1
     s2_area_truth = -1
-    s2_bottom_area_truth = -1
+    peak_top_fraction = -1
     x_truth = -1e10
     y_truth = -1e10
     while truth_tree.event==event_id:
@@ -102,14 +98,15 @@ for event_id in range(10000000):
             s1_time_truth = truth_tree.t_mean_photons
             s1_time_std_truth = truth_tree.t_sigma_photons
             s1_area_truth = truth_tree.n_photons
-        else:
+            peak_top_fraction = truth_tree.peak_top_fraction
+    else:
             #print("Iterator: "+str(iteration_id)+" -> S2")
             s2_electron_time_truth = truth_tree.t_mean_electrons
             s2_first_electron_time_truth = truth_tree.t_first_electron
             s2_time_truth = truth_tree.t_mean_photons
             s2_time_std_truth = truth_tree.t_sigma_photons
             s2_area_truth = truth_tree.n_photons
-            s2_bottom_area_truth = truth_tree.n_photons * (1.-mean_top_fraction)
+	    peak_top_fraction = truth_tree.peak_top_fraction
             x_truth = truth_tree.x
             y_truth = truth_tree.y
         iteration_id += 1
@@ -125,7 +122,7 @@ for event_id in range(10000000):
     Data['s2_time_truth'].append(s2_time_truth)
     Data['s2_time_std_truth'].append(s2_time_std_truth)
     Data['s2_area_truth'].append(s2_area_truth)
-    Data['s2_bottom_area_truth'].append(s2_bottom_area_truth)
+    Data['peak_top_fraction'].append(peak_top_fraction)
     Data['x_truth'].append(x_truth)
     Data['y_truth'].append(y_truth)
 
