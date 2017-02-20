@@ -31,8 +31,8 @@ OutputFile = sys.argv[2]
 OutputFile = OutputFile.split('.')[0]
 
 OutputFormat=0
-if len(sys.argv)>4:
-    OutputFormat = float(sys.argv[4])
+if len(sys.argv)>3:
+    OutputFormat = float(sys.argv[3])
 
 print ("Input file: ", TruthFile)
 

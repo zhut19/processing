@@ -32,8 +32,8 @@ OutputFile = sys.argv[2]
 OutputFile = OutputFile.split('.')[0]
 
 OutputFormat=0
-if len(sys.argv)>4:
-    OutputFormat = float(sys.argv[4])
+if len(sys.argv)>3:
+    OutputFormat = float(sys.argv[3])
 
 print ("Input file: ", TruthFile)
 
@@ -114,7 +114,7 @@ for event_id in range(10000000):
             s2_time_truth = truth_tree.t_mean_photons
             s2_time_std_truth = truth_tree.t_sigma_photons
             s2_area_truth = truth_tree.n_photons
-	        s2_area_top_fraction_truth = truth_tree.top_fraction
+            s2_area_top_fraction_truth = truth_tree.top_fraction
             x_truth = truth_tree.x
             y_truth = truth_tree.y
         iteration_id += 1
