@@ -73,10 +73,10 @@ truthData = pickle.load( open(TruthFile, 'rb') )
 pfile2 = TFile(ProcessedFile)
 processed_tree = pfile2.Get(processedTreeName)
 
-if (not processed_tree):
-    raise ValueError("Input file not complete")
+#if (not processed_tree):
+#    raise ValueError("Input file not complete")
 
-NumEventsInData = processed_tree.GetEntries()
+#NumEventsInData = processed_tree.GetEntries()
 NumStepsInTruth = 0
 for i, item in enumerate(truthData):
     NumStepsInTruth = int(len(truthData[item]))
@@ -87,27 +87,7 @@ for i, item in enumerate(truthData):
 ###################
 ## load the data dict from processed root file
 ###################
-Data = {}
-Data['file_name']=[]
-# initial Data first with the branch name
-for (_, new_pandas_branch_name) in BranchesToKeep:
-    Data[new_pandas_branch_name] = []
-for i in range(NumEventsInData):
-    if (i+1)%100==0:
-        print("==== processed_file: "+str(i+1)+" events finished loading")
-    processed_tree.GetEntry(i)
-    Data['file_name'].append(pfile2.GetName())
-    for (root_branch_name, new_pandas_branch_name) in BranchesToKeep:
-        Data[new_pandas_branch_name].append(getattr(processed_tree, root_branch_name))
-
-
-######################
-## Convert to data format in pandas
-######################
-processedPandasData = {}
-for item in Data:
-    processedPandasData[item] = pd.Series(Data[item])
-#df = pd.DataFrame(processedPandasData)
+df = pd.DataFrame(processedPandasData)
 import root_numpy
 df = pd.DataFrame.from_records(root_numpy.root2rec(ProcessedFile))
 for branch_name in list(df):

@@ -37,6 +37,9 @@ if len(sys.argv)>8:
 ArrayOutput = 0
 if len(sys.argv)>9:
     ArrayOutput = int(sys.argv[9])
+MinitreeType=0
+if len(sys.argv)>10:
+    MinitreeType = int(sys.argv[10])
 
 
 #######################
@@ -52,7 +55,10 @@ if ArrayOutput==1:
     EXE1 = CurrentPath+"/"+EXE_Path+"TruthSorting_arrays.py"
 else:
     EXE1 = CurrentPath+"/"+EXE_Path+"TruthSorting.py"
-EXE2 = CurrentPath+"/"+EXE_Path+"MergeTruthAndProcessed.py"
+if MinitreeType==2:
+    EXE2 = CurrentPath+"/"+EXE_Path+"MergeTruthAndProcessed_peaks.py"
+else:
+    EXE2 = CurrentPath+"/"+EXE_Path+"MergeTruthAndProcessed.py"
 
 
 #######################

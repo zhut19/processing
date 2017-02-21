@@ -13,7 +13,7 @@ import glob
 
 if len(sys.argv)<=1:
     print("======== Usage =========")
-    print("python ReduceDataNormal.py <filelist> <data path> <output path> <absolute path for submission> <if use public node (1) optional (2 for use kicp nodes)> <Submit ID>")
+    print("python ReduceDataNormal.py <filelist> <data path> <output path> <absolute path for submission> <if use public node (1) optional (2 for use kicp nodes)> <Submit ID> <Minitree Type (1 = S1S2Properties, 2 = PeakEfficiency)>")
     print("======== List file format: ==========")
     print("ex.:")
     print("FakeWaveform_XENON1T_000000_pax")
@@ -35,13 +35,20 @@ if len(sys.argv)>5:
 SubmitID = 0
 if len(sys.argv)>6:
     SubmitID = int(sys.argv[6])
+minitree_type = '1'
+if len(sys.argv)>7:
+    minitree_type = sys.argv[7]
+
 
 ##########################
 ## Some nuisance settings
 ##########################
 CurrentPath = os.getcwd()
 CurrentUser = getpass.getuser()
-EXE = CurrentPath+"/"+EXE_Path+"/ReduceDataNormal.py"
+if minitree_type == '1':
+    EXE = CurrentPath+"/"+EXE_Path+"/ReduceDataNormal.py"
+elif minitree_type == '2':
+    EXE = CurrentPath+"/"+EXE_Path+"/reduce_peak_level.py"
 MaxNumJob = 64
 if not IfPublicNode:
     MaxNumJob = 200
@@ -87,7 +94,10 @@ for j, line in enumerate(lines):
         subp.call("echo '#SBATCH --partition=kicp\n' >> "+SubmitFile, shell=True)
     subp.call("echo '. /home/mcfate/Env/GlobalPAXEnv.sh\n\n' >> "+SubmitFile, shell=True)
     subp.call("echo 'python "+EXE+" "+filename+" "+DataPath+"' >> "+SubmitFile, shell=True)
-    subp.call("echo 'mv "+SubmitPath+"/"+filename+"_S1S2Properties.root  "+OutputPath+"' >> "+SubmitFile, shell=True)
+    if minitree_type=='1':
+        subp.call("echo 'mv "+SubmitPath+"/"+filename+"_S1S2Properties.root  "+OutputPath+"' >> "+SubmitFile, shell=True)
+    elif minitree_type=='2':
+        subp.call("echo 'mv "+SubmitPath+"/"+filename+"_PeakEfficiency.root  "+OutputPath+"' >> "+SubmitFile, shell=True)
     
     #submit
     IfSubmitted=0
@@ -113,7 +123,4 @@ for j, line in enumerate(lines):
             time.sleep(1)
         else:
             time.sleep(30) 
-
-
-
 

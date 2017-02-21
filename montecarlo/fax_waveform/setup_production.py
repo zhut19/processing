@@ -1,10 +1,10 @@
 import sys
 ### Edit these three lines ###
-with open('copy_things_around.sh') as bashfile:
+with open('sort_processed_files.sh') as bashfile:
     lines = bashfile.readlines()
 head_dirname = lines[1].split('=')[1].split()[0] # all data will go under here (under subdir)
 username = lines[2].split('=')[1].split()[0] # midway username
-interactive = 1 # 1 for terminal prompt options, 0 for hardcoded options below
+interactive = 0 # 1 for terminal prompt options, 0 for hardcoded options below
 
 process_list = []
 
@@ -17,11 +17,11 @@ fields = [
          ]
 
 process = {}
-process['process_name'] = '170221_1145'
+process['process_name'] = '170221_1339_test'
 process['process_description'] = 'making standard s1/s2 basics data for matching pax_v6.4.2'
-process['log_file'] = '170221.log'
+process['log_file'] = '170221_test.log'
 process['nb_jobs'] = '5'
-process['events_per_job'] = '5'
+process['events_per_job'] = '2'
 process['pmt_afterpulse'] = '1'
 process['s2_afterpulse'] = '1'
 process['photon_nb_low'] = '0'
@@ -30,7 +30,7 @@ process['electron_nb_low'] = '0'
 process['electron_nb_high'] = '100'
 process['correlated'] = '1'
 process['nodetype'] = '0'
-process['minitree_type'] = '0'
+process['minitree_type'] = '2'
 process['use_array_truth'] = '0'
 if interactive == 0:
     process_list.append(process)
