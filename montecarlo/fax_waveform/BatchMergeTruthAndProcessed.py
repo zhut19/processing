@@ -99,7 +99,7 @@ for j, ID_job in enumerate(IDList):
     subp.call("echo '#!/bin/bash\n' >> "+SubmitFile, shell=True)
     subp.call("echo '#SBATCH --output="+SubmitPath+"/myout_"+str(SubmitID)+"_"+str(j)+".txt \n' >> "+SubmitFile, shell=True)
     subp.call("echo '#SBATCH --error="+SubmitPath+"/myerr_"+str(SubmitID)+"_"+str(j)+".txt\n' >> "+SubmitFile, shell=True)
-    subp.call("echo '#SBATCH --time=01:19:00\n' >> "+SubmitFile, shell=True)
+    subp.call("echo '#SBATCH --time=00:05:00\n' >> "+SubmitFile, shell=True)
     if not IfPublicNode:
         subp.call("echo '#SBATCH --account=pi-lgrandi\n' >> "+SubmitFile, shell=True)
         subp.call("echo '#SBATCH --qos=xenon1t\n' >> "+SubmitFile, shell=True)
