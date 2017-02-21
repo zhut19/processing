@@ -1,0 +1,41 @@
+1
+Submitted batch job 24191309
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+2
+Submitted batch job 24191310
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+3
+Submitted batch job 24191312
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+4
+Submitted batch job 24191313
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+5
+Submitted batch job 24191315
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+/home/jh3226/processing_distances/montecarlo/fax_waveform
+Current job running number 1
+Current job running number 2
+Current job running number 3
+Current job running number 4
+Current job running number 5
+moving /project/lgrandi/jhowlett/170221_1145/000000/FakeWaveform_XENON1T_000000_pax_Basics.root to basics minitree dir
+moving /project/lgrandi/jhowlett/170221_1145/000000/FakeWaveform_XENON1T_000000_pax_Fundamentals.root to processed minitree dir
+moving /project/lgrandi/jhowlett/170221_1145/000000/FakeWaveform_XENON1T_000000_pax.root to pax tree dir
+moving /project/lgrandi/jhowlett/170221_1145/000000/FakeWaveform_XENON1T_000000_truth.root to truth minitree dir
+moving /project/lgrandi/jhowlett/170221_1145/000001/FakeWaveform_XENON1T_000001_pax_Basics.root to basics minitree dir
+moving /project/lgrandi/jhowlett/170221_1145/000001/FakeWaveform_XENON1T_000001_pax_Fundamentals.root to processed minitree dir
+moving /project/lgrandi/jhowlett/170221_1145/000001/FakeWaveform_XENON1T_000001_pax.root to pax tree dir
+moving /project/lgrandi/jhowlett/170221_1145/000001/FakeWaveform_XENON1T_000001_truth.root to truth minitree dir
+moving /project/lgrandi/jhowlett/170221_1145/000002/FakeWaveform_XENON1T_000002_pax_Basics.root to basics minitree dir
+moving /project/lgrandi/jhowlett/170221_1145/000002/FakeWaveform_XENON1T_000002_pax_Fundamentals.root to processed minitree dir
+moving /project/lgrandi/jhowlett/170221_1145/000002/FakeWaveform_XENON1T_000002_pax.root to pax tree dir
+moving /project/lgrandi/jhowlett/170221_1145/000002/FakeWaveform_XENON1T_000002_truth.root to truth minitree dir
+moving /project/lgrandi/jhowlett/170221_1145/000003/FakeWaveform_XENON1T_000003_pax_Basics.root to basics minitree dir
+moving /project/lgrandi/jhowlett/170221_1145/000003/FakeWaveform_XENON1T_000003_pax_Fundamentals.root to processed minitree dir
+moving /project/lgrandi/jhowlett/170221_1145/000003/FakeWaveform_XENON1T_000003_pax.root to pax tree dir
+moving /project/lgrandi/jhowlett/170221_1145/000003/FakeWaveform_XENON1T_000003_truth.root to truth minitree dir
+moving /project/lgrandi/jhowlett/170221_1145/000004/FakeWaveform_XENON1T_000004_pax_Basics.root to basics minitree dir
+moving /project/lgrandi/jhowlett/170221_1145/000004/FakeWaveform_XENON1T_000004_pax_Fundamentals.root to processed minitree dir
+moving /project/lgrandi/jhowlett/170221_1145/000004/FakeWaveform_XENON1T_000004_pax.root to pax tree dir
+moving /project/lgrandi/jhowlett/170221_1145/000004/FakeWaveform_XENON1T_000004_truth.root to truth minitree dir
