@@ -30,7 +30,8 @@ PMTAfterpulseEnableFlag=$5
 S2AfterpulseEnableFlag=$6
 
 # Select fax+pax version
-PAXVERSION=head
+#~ PAXVERSION=head
+PAXVERSION=v6.5.0 # temporary change
 
 # Specify number of events
 NumEvents=$7
@@ -42,8 +43,8 @@ SUBRUN=$9
 
 # Setup the software
 CVMFSDIR=/cvmfs/xenon.opensciencegrid.org
-export PATH="${CVMFSDIR}/releases/anaconda/2.4/bin:$PATH"
-#export PATH="/project/lgrandi/anaconda3/bin:$PATH"
+#export PATH="${CVMFSDIR}/releases/anaconda/2.4/bin:$PATH"
+export PATH="/project/lgrandi/anaconda3/bin:$PATH"
 source activate pax_${PAXVERSION} &> /dev/null
 
 # Use path of this script for Python scripts below
@@ -78,6 +79,7 @@ FAX_FILENAME=${FILENAME}_truth # fax truth info
 PKL_FILENAME=${FILENAME}_truth.pkl # converted fax truth info
 RAW_FILENAME=${FILENAME}_raw       # fax simulated raw data
 PAX_FILENAME=${FILENAME}_pax       # pax processed data
+PAX_FILENAME_WOPATH=${FILEROOT}_pax       # pax processed data without path
 HAX_FILENAME=${FILENAME}_hax       # hax reduced data
 CustomIniFilename=${RELEASEDIR}/NoS2Afterpulses.ini
 NoPMTAfterpulseIniFilename=${RELEASEDIR}/NoPMTAfterpulses.ini
@@ -123,6 +125,11 @@ HAXPYTHON+="hax.init(main_data_paths=['${OUTDIR}'], minitree_paths=['${OUTDIR}']
 HAXPYTHON+="hax.minitrees.load('${PAX_FILENAME##*/}', ['Basics', 'Fundamentals']);"
 
 (time python -c "${HAXPYTHON}";)  &> ${HAX_FILENAME}.log
+
+
+# custom minitree
+(time python ${RELEASEDIR}/ReduceDataNormal.py ${PAX_FILENAME_WOPATH} ${OUTDIR};) &> ${HAX_FILENAME}.log
+
 
 # Cleanup
 rm -f pax*
