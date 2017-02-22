@@ -44,7 +44,7 @@ if int(sys.argv[9])==0:
 ####################################
 ## Some nuisance parameters (HARDCODE WARNING):
 ####################################
-MaxDriftTime = 675. # us
+MaxDriftTime = 650. # us
 
 
 ####################################
@@ -65,8 +65,7 @@ def IfPassFV(x,y,z):
         if I<1:
             return True
     elif Detector == "XENON1T": # NEED TO UPDATE THIS
-        #Zlower, Zupper = -90*scalecmtomm, -15*scalecmtomm
-        Zlower, Zupper = -120*scalecmtomm, -1*scalecmtomm
+        Zlower, Zupper = -90*scalecmtomm, -15*scalecmtomm
         Zcut = ((z>=Zlower) & (z<=Zupper))
         R2upper=radius2_cut(z)
         Rcut = (x**2+y**2<R2upper)
@@ -84,28 +83,7 @@ def RandomizeFV():
         Rlower, Rupper = -np.sqrt(200.), np.sqrt(200.)
 
     elif Detector == "XENON1T": # NEED TO UPDATE THIS
-        #Zlower, Zupper = -90*scalecmtomm, -15*scalecmtomm
-        Zlower, Zupper = -90*scalecmtomm, -1*scalecmtomm
-        Rlower, Rupper = -46*scalecmtomm, 46*scalecmtomm
-
-    for i in range(100000):
-        x = np.random.uniform(Rlower,Rupper)
-        y = np.random.uniform(Rlower,Rupper)
-        z = np.random.uniform(Zlower,Zupper)
-        if IfPassFV(x,y,z):
-            return (x,y,z)
-    return (0,0,0)
-
-def RandomizeBC():
-
-    # randomize the X, Y, Z according to X48kg FV
-    if Detector == "XENON100":
-        Zlower, Zupper = -14.6-15.0, -14.6+15.0
-        Rlower, Rupper = -np.sqrt(200.), np.sqrt(200.)
-
-    elif Detector == "XENON1T": # NEED TO UPDATE THIS
-        #Zlower, Zupper = -90*scalecmtomm, -15*scalecmtomm
-        Zlower, Zupper = -102*scalecmtomm, -100*scalecmtomm
+        Zlower, Zupper = -90*scalecmtomm, -15*scalecmtomm
         Rlower, Rupper = -46*scalecmtomm, 46*scalecmtomm
 
     for i in range(100000):
@@ -122,8 +100,6 @@ def RandomizeBC():
 ####################################
 # Some default
 DefaultEventTime = MaxDriftTime*1000.
-Velocity=96.7/675
-
 ##########
 fout = open(OutputFilename, 'w')
 # headers
@@ -150,7 +126,7 @@ else:
         # first for S1
         fout.write(str(i)+",")
         fout.write(DefaultType+",")
-        X, Y, Z = RandomizeBC()
+        X, Y, Z = RandomizeFV()
         fout.write(str(X)+",")
         fout.write(str(Y)+",")
         fout.write(str(-Z)+",")
@@ -168,13 +144,7 @@ else:
         fout.write("0,")
         NumElectron = int( np.random.uniform(ElectronNumLower, ElectronNumUpper) )
         fout.write(str(NumElectron)+",")
-        IfSimS2=0
-        while IfSimS2==0:
-            TimeOffset = np.random.uniform(-1000*MaxDriftTime, MaxDriftTime*1000.)
-            DtTest=TimeOffset+(-Z)/Velocity*1000     
-            S2EventTime = DefaultEventTime+TimeOffset
-            if DtTest>0 and DtTest<MaxDriftTime*1000.:              
-                S2EventTime = DefaultEventTime+TimeOffset
-                fout.write(str(S2EventTime)+"\n")
-                IfSimS2+=1
+        TimeOffset = np.random.uniform(-MaxDriftTime*1000., MaxDriftTime*1000.)
+        S2EventTime = DefaultEventTime+TimeOffset
+        fout.write(str(S2EventTime)+"\n")
 fout.close()
