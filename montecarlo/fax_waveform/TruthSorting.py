@@ -29,8 +29,10 @@ if len(sys.argv)<2:
 
 TruthFile = sys.argv[1]
 OutputFile = sys.argv[2]
-OutputFile = OutputFile.split('.')[0]
-
+if '.root' in OutputFile:
+    OutputFile = OutputFile.split('.root')[0]
+else:
+    OutputFile = OutputFile.split('.pkl')[0]
 OutputFormat=0
 if len(sys.argv)>3:
     OutputFormat = float(sys.argv[3])

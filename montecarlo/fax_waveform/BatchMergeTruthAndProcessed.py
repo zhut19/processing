@@ -14,7 +14,7 @@ from subprocess import Popen, PIPE
 
 if len(sys.argv)<=1:
     print("======== Usage =========")
-    print("python BatchMergeTruthAndProcessed.py <config file> <truth root path> <processed root path> <output path> <(opt)relative path for submission> <(opt) if use public node (1) optional (2 for use kicp nodes)> <(opt)Submit ID> <(opt) if use arrays in output (1) (default 0)>")
+    print("python BatchMergeTruthAndProcessed.py <config file> <truth root path> <processed root path> <output path> <(opt)relative path for submission> <(opt) if use public node (1) optional (2 for use kicp nodes)> <(opt)Submit ID> <(opt) if use arrays in output (1) (default 0)> <(opt) minitree type; 0(default): Basics, 1: S1S2Properties, 2: PeakEfficiency")
     exit()
 
 CurrentEXE = sys.argv[0]
@@ -34,6 +34,9 @@ if len(sys.argv)>7:
 ArrayOutput = 0
 if len(sys.argv)>8:
     ArrayOutput = int(sys.argv[8])
+MinitreeType=0
+if len(sys.argv)>9:
+    MinitreeType = int(sys.argv[9])
 
 
 #######################
@@ -49,7 +52,10 @@ if ArrayOutput==1:
     EXE1 = CurrentPath+"/"+EXE_Path+"TruthSorting_arrays.py"
 else:
     EXE1 = CurrentPath+"/"+EXE_Path+"TruthSorting.py"
-EXE2 = CurrentPath+"/"+EXE_Path+"MergeTruthAndProcessed.py"
+if MinitreeType==2:
+    EXE2 = CurrentPath+"/"+EXE_Path+"MergeTruthAndProcessed_peaks.py"
+else:
+    EXE2 = CurrentPath+"/"+EXE_Path+"MergeTruthAndProcessed.py"
 
 
 #######################
