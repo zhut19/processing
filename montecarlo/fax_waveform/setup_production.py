@@ -1,7 +1,7 @@
 import sys
 ### Edit these three lines ###
-head_dirname = '/project/lgrandi/jhowlett/' # all data will go under here (under subdir)
-username = 'jh3226' # midway username
+head_dirname = '/project/lgrandi/feigao/fax_data/ac_background/' # all data will go under here (under subdir)
+username = 'feigao' # midway username
 interactive = 0 # 1 for terminal prompt options, 0 for hardcoded options below
 
 process_list = []
@@ -85,18 +85,18 @@ if interactive == 0:
 '''
 
 process = {}
-process['process_name'] = '170217_1241_testing_peak'
-process['process_description'] = 's2 only for efficiency'
-process['log_file'] = 'log.log'
+process['process_name'] = 'ac_0221_bc'
+process['process_description'] = 'ac 0221 bc'
+process['log_file'] = 'ac_0221_bc.log'
 process['nb_jobs'] = '5'
 process['events_per_job'] = '5'
 process['pmt_afterpulse'] = '1'
 process['s2_afterpulse'] = '1'
-process['photon_nb_low'] = '0'
-process['photon_nb_high'] = '1000'
+process['photon_nb_low'] = '3'
+process['photon_nb_high'] = '300'
 process['electron_nb_low'] = '0'
-process['electron_nb_high'] = '50'
-process['correlated'] = '1'
+process['electron_nb_high'] = '100'
+process['correlated'] = '0'
 process['nodetype'] = '0'
 process['make_peak_trees'] = '1'
 if interactive == 0:

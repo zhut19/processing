@@ -1,5 +1,5 @@
 #!/bin/bash
-file_header=/project/lgrandi/jhowlett/
+file_header=/project/lgrandi/feigao/fax_data/ac_background/
 datetime=$1
 truth_dir=$file_header"$datetime/truth_minitrees_"$datetime
 processed_dir=$file_header"$datetime/processed_minitrees_"$datetime

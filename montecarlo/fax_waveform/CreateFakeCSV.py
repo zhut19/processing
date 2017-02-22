@@ -96,7 +96,7 @@ def RandomizeFV():
             return (x,y,z)
     return (0,0,0)
 
-def RandomizeFVS1():
+def RandomizeBC():
 
     # randomize the X, Y, Z according to X48kg FV
     if Detector == "XENON100":
@@ -105,7 +105,7 @@ def RandomizeFVS1():
 
     elif Detector == "XENON1T": # NEED TO UPDATE THIS
         #Zlower, Zupper = -90*scalecmtomm, -15*scalecmtomm
-        Zlower, Zupper = -103*scalecmtomm, -101*scalecmtomm
+        Zlower, Zupper = -102*scalecmtomm, -100*scalecmtomm
         Rlower, Rupper = -46*scalecmtomm, 46*scalecmtomm
 
     for i in range(100000):
@@ -122,6 +122,8 @@ def RandomizeFVS1():
 ####################################
 # Some default
 DefaultEventTime = MaxDriftTime*1000.
+Velocity=96.7/675
+
 ##########
 fout = open(OutputFilename, 'w')
 # headers
@@ -148,7 +150,7 @@ else:
         # first for S1
         fout.write(str(i)+",")
         fout.write(DefaultType+",")
-        X, Y, Z = RandomizeFVS1()
+        X, Y, Z = RandomizeBC()
         fout.write(str(X)+",")
         fout.write(str(Y)+",")
         fout.write(str(-Z)+",")
@@ -166,7 +168,13 @@ else:
         fout.write("0,")
         NumElectron = int( np.random.uniform(ElectronNumLower, ElectronNumUpper) )
         fout.write(str(NumElectron)+",")
-        TimeOffset = np.random.uniform(0, MaxDriftTime*1000.)
-        S2EventTime = DefaultEventTime+TimeOffset
-        fout.write(str(S2EventTime)+"\n")
+        IfSimS2=0
+        while IfSimS2==0:
+            TimeOffset = np.random.uniform(-1000*MaxDriftTime, MaxDriftTime*1000.)
+            DtTest=TimeOffset+(-Z)/Velocity*1000     
+            S2EventTime = DefaultEventTime+TimeOffset
+            if DtTest>0 and DtTest<MaxDriftTime*1000.:              
+                S2EventTime = DefaultEventTime+TimeOffset
+                fout.write(str(S2EventTime)+"\n")
+                IfSimS2+=1
 fout.close()
