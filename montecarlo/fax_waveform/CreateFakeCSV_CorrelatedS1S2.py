@@ -116,7 +116,7 @@ for i in range(NumEvents):
     fout.write(str(Y)+",")
     fout.write(str(-Z)+",")
     NumPhoton, NumElectron = pGen.GetPhotonChargeNum()
-    fout.write(str(NumPhoton)+",")
-    fout.write(str(NumElectron)+",")
+    fout.write(str(int(NumPhoton))+",")
+    fout.write(str(int(NumElectron))+",")
     fout.write(str(DefaultEventTime)+"\n")
 

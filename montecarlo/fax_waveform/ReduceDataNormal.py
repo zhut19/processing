@@ -52,7 +52,7 @@ WidthThreshold = 0.5 # us on the half
 # hax.init(experiment='XENON1T')
 
 # my own builder
-from collections import defaultdict
+#~ from collections import defaultdict
 
 class S1S2Properties(hax.minitrees.TreeMaker):
     """Computing properties of the S1

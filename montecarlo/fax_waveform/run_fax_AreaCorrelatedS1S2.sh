@@ -21,9 +21,6 @@ Nomial_g2=$3
 
 RecoilType=ER
 
-echo 'IfS1S2Correlation = ${IfS1S2Correlation}'
-# enable s2 after pulse depending on the argument
-# 1 for enable
 PMTAfterpulseEnableFlag=$4
 S2AfterpulseEnableFlag=$5
 
@@ -81,6 +78,7 @@ PAX_FILENAME_WOPATH=${FILEROOT}_pax       # pax processed data without path
 MERGEDTRUTH_FILENAME=${FILENAME}_merged_truth
 MERGED_FILENAME=${FILENAME}_merged
 HAX_FILENAME=${FILENAME}_hax       # hax reduced data
+MINITREE_FILENAME=${FILENAME}_pax_S1S2Properties.root
 CustomIniFilename=${RELEASEDIR}/NoS2Afterpulses.ini
 NoPMTAfterpulseIniFilename=${RELEASEDIR}/NoPMTAfterpulses.ini
 echo ${CustomIniFilename}
@@ -119,20 +117,20 @@ python ${RELEASEDIR}/ConvertFaxTruthToPickle.py ${FAX_FILENAME} ${PKL_FILENAME}
 # pax stage
 (time paxer --ignore_rundb --input ${RAW_FILENAME} --config ${Detector} --output ${PAX_FILENAME};) &> ${PAX_FILENAME}.log
 
-# hax stage
-HAXPYTHON="import hax; "
-HAXPYTHON+="hax.init(main_data_paths=['${OUTDIR}'], minitree_paths=['${OUTDIR}'], pax_version_policy = 'loose'); "
-HAXPYTHON+="hax.minitrees.load('${PAX_FILENAME##*/}', ['Basics', 'Fundamentals']);"
+#~ # hax stage
+#~ HAXPYTHON="import hax; "
+#~ HAXPYTHON+="hax.init(main_data_paths=['${OUTDIR}'], minitree_paths=['${OUTDIR}'], pax_version_policy = 'loose'); "
+#~ HAXPYTHON+="hax.minitrees.load('${PAX_FILENAME##*/}', ['Basics', 'Fundamentals']);"
 
-(time python -c "${HAXPYTHON}";)  &> ${HAX_FILENAME}.log
+#~ (time python -c "${HAXPYTHON}";)  &> ${HAX_FILENAME}.log
 
 
 # custom minitree
 (time python ${RELEASEDIR}/ReduceDataNormal.py ${PAX_FILENAME_WOPATH} ${OUTDIR};) &> ${HAX_FILENAME}.log
 
 # merge
-python ${RELEASEDIR}/TruthSorting.py ${FAX_FILENAME}.root ${MERGEDTRUTH_FILENAME}.pkl
-python ${RELEASEDIR}/MergeTruthAndProcessed.py ${MERGEDTRUTH_FILENAME}.pkl ${RELEASEDIR}/Configs/QingConfig ${MERGED_FILENAME}.pkl
+(time python ${RELEASEDIR}/TruthSorting.py ${FAX_FILENAME}.root ${MERGEDTRUTH_FILENAME}.pkl;) &> ${MERGEDTRUTH_FILENAME}.log
+(time python ${RELEASEDIR}/MergeTruthAndProcessed.py   ${RELEASEDIR}/Configs/QingConfig ${MERGEDTRUTH_FILENAME}.pkl  ${MINITREE_FILENAME} ${MERGED_FILENAME}.pkl;) &> ${MERGED_FILENAME}.log
 
 
 # Cleanup
