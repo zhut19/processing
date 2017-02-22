@@ -78,6 +78,8 @@ PKL_FILENAME=${FILENAME}_truth.pkl # converted fax truth info
 RAW_FILENAME=${FILENAME}_raw       # fax simulated raw data
 PAX_FILENAME=${FILENAME}_pax       # pax processed data
 PAX_FILENAME_WOPATH=${FILEROOT}_pax       # pax processed data without path
+MERGEDTRUTH_FILENAME=${FILENAME}_merged_truth
+MERGED_FILENAME=${FILENAME}_merged
 HAX_FILENAME=${FILENAME}_hax       # hax reduced data
 CustomIniFilename=${RELEASEDIR}/NoS2Afterpulses.ini
 NoPMTAfterpulseIniFilename=${RELEASEDIR}/NoPMTAfterpulses.ini
@@ -127,6 +129,10 @@ HAXPYTHON+="hax.minitrees.load('${PAX_FILENAME##*/}', ['Basics', 'Fundamentals']
 
 # custom minitree
 (time python ${RELEASEDIR}/ReduceDataNormal.py ${PAX_FILENAME_WOPATH} ${OUTDIR};) &> ${HAX_FILENAME}.log
+
+# merge
+python ${RELEASEDIR}/TruthSorting.py ${FAX_FILENAME}.root ${MERGEDTRUTH_FILENAME}.pkl
+python ${RELEASEDIR}/MergeTruthAndProcessed.py ${MERGEDTRUTH_FILENAME}.pkl ${RELEASEDIR}/Configs/QingConfig ${MERGED_FILENAME}.pkl
 
 
 # Cleanup
