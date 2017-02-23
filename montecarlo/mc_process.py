@@ -189,6 +189,7 @@ PAX_VERSIONS = get_pax_versions()
 def generate_mc_workflow(mc_config,
                          mc_flavor,
                          mc_version,
+                         fax_version,
                          pax_version,
                          start_job,
                          num_events,
@@ -202,6 +203,7 @@ def generate_mc_workflow(mc_config,
     :param mc_config: MC config to use
     :param mc_flavor: MC flavor to use
     :param mc_version: version of MC code to use
+    :param fax_version: version of FAX code to use
     :param pax_version: version of PAX code to use
     :param start_job: starting job id number
     :param num_events: total number of events to generate
@@ -219,6 +221,10 @@ def generate_mc_workflow(mc_config,
     num_jobs = get_num_jobs(num_events, batch_size)
     sys.stdout.write("Generating {0} events ".format(num_events) +
                      "using {0} jobs\n".format(num_jobs))
+
+    if fax_version is None:
+	fax_version = pax_version
+
     if preinit_macro is None:
         if "Cs137" in mc_config:
             preinit_macro = 'preinit_{0}.mac'.format(mc_config)
@@ -282,6 +288,7 @@ def generate_mc_workflow(mc_config,
                                          mc_config,
                                          str(left_events),
                                          mc_version,
+                                         fax_version,
                                          pax_version,
                                          '0',  # don't save raw data
                                          preinit_macro,
@@ -293,6 +300,7 @@ def generate_mc_workflow(mc_config,
                                          mc_config,
                                          str(batch_size),
                                          mc_version,
+                                         fax_version,
                                          pax_version,
                                          '0',  # don't save raw data
                                          preinit_macro,
@@ -358,6 +366,10 @@ def run_main():
                         choices=MC_VERSIONS,
                         action='store', required=True,
                         help='version of MC code to use')
+    parser.add_argument('--fax-version', dest='fax_version',
+                        choices=PAX_VERSIONS,
+                        action='store', default=None,
+                        help='version of fax to use')
     parser.add_argument('--pax-version', dest='pax_version',
                         choices=PAX_VERSIONS,
                         action='store', required=True,
@@ -388,6 +400,7 @@ def run_main():
                      args.mc_config,
                      args.batch_size,
                      args.mc_version,
+                     args.fax_version,
                      args.pax_version,
                      args.preinit_macro,
                      args.optical_setup,
@@ -396,6 +409,7 @@ def run_main():
     workflow_info[0] = generate_mc_workflow(args.mc_config,
                                             args.mc_flavor,
                                             args.mc_version,
+                                            args.fax_version,
                                             args.pax_version,
                                             args.start_job,
                                             args.num_events,

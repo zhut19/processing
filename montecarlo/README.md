@@ -38,7 +38,7 @@ cd processing/montecarlo
 
 7) Submit jobs (this creates one master job (DAG) which then submits the rest):
 ~~~~
-python mc_process.py --flavor <MC_FLAVOR> --config <MC_CONFIG> --batch-size <JOB_BATCH_SIZE> --events <NUM_EVENTS> --mc-version <MC_VERSION> --pax-version <PAX_VERSION> --grid-type <GRID_TYPE> --preinit-macro <PREINIT_MACRO> --optical-setup <OPTICAL_SETUP> --source-macro <SOURCE_MACRO>
+python mc_process.py --flavor <MC_FLAVOR> --config <MC_CONFIG> --batch-size <JOB_BATCH_SIZE> --events <NUM_EVENTS> --mc-version <MC_VERSION> --fax-version <FAX_VERSION> --pax-version <PAX_VERSION> --grid-type <GRID_TYPE> --preinit-macro <PREINIT_MACRO> --optical-setup <OPTICAL_SETUP> --source-macro <SOURCE_MACRO>
 ~~~~
 where 
 ~~~~
@@ -47,7 +47,8 @@ where
     JOB_BATCH_SIZE: Number of events per job (default=2000 should be fine for most users running the full chain)
     NUM_EVENTS: Total number of events (summed over all jobs)
     MC_VERSION: MC GitHub release number (https://github.com/XENON1T/mc/releases)
-    PAX_VERSION: pax (also fax) GitHub release number (https://github.com/XENON1T/pax/releases)
+    FAX_VERSION: fax GitHub release number (default=PAX_VERSION)
+    PAX_VERSION: pax (also fax if not specified above) GitHub release number (https://github.com/XENON1T/pax/releases)
     GRID_TYPE: osg (US grid), egi (EU grid)
     PREINIT_MACRO: name of macro to use for Geant4 preinit (defaults to preinit[,_MV,_cs137].mac depending on SOURCE_MACRO)
     OPTICAL_SETUP: name of macro to use for Geant4 optical setup (defaults to setup_optical_S1.mac)
@@ -105,7 +106,7 @@ for f in *; do tar xf $f; done
 You may run locally on Midway with e.g.:
 ~~~~
     cd processing/montecarlo/
-    ./run_sim.sh <Job_Number> <MC_FLAVOR> <MC_CONFIG> <NUM_EVENTS> <MC_VERSION> <PAX_VERSION> <SAVE_WAVEFORMS> <PREINIT_MACRO> <OPTICAL_SETUP> <SOURCE_MACRO>
+    ./run_sim.sh <Job_Number> <MC_FLAVOR> <MC_CONFIG> <NUM_EVENTS> <MC_VERSION> <FAX_VERSION> <PAX_VERSION> <SAVE_WAVEFORMS> <PREINIT_MACRO> <OPTICAL_SETUP> <SOURCE_MACRO>
 ~~~~
 where
 ~~~~
@@ -114,7 +115,8 @@ where
     MC_CONFIG: the string between ```run_``` and ```.mac``` of any of the macros here: https://github.com/XENON1T/mc/tree/master/macros
     NUM_EVENTS: Number of events 
     MC_VERSION: MC GitHub release number (https://github.com/XENON1T/mc/releases)
-    PAX_VERSION: pax (also fax) GitHub release number (https://github.com/XENON1T/pax/releases)
+    FAX_VERSION: fax GitHub release number (default=PAX_VERSION)
+    PAX_VERSION: pax (also fax if not specified above) GitHub release number (https://github.com/XENON1T/pax/releases)
     SAVE_WAVEFORMS: Flag to save raw waveforms (disk space intensive); 0 - off (default), 1 - on
     PREINIT_MACRO: name of macro to use for Geant4 preinit (defaults to preinit[,_MV,_cs137].mac depending on SOURCE_MACRO)
     OPTICAL_SETUP: name of macro to use for Geant4 optical setup (defaults to setup_optical_S1.mac)
