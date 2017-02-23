@@ -137,7 +137,8 @@ for j, ID_job in enumerate(IDList):
         Output=int(output)
         #print(Status)
         print("Current job running number "+str(Output))            
-        if Status==0 and Output<MaxNumJob:
+        #if Status==0 and Output<MaxNumJob:
+        if Status<MaxNumJob:
             #sbatch it 
             subp.call("cd "+SubmitPath+";sbatch "+SubmitFile+";cd -", shell=True)
             IfSubmitted=1   

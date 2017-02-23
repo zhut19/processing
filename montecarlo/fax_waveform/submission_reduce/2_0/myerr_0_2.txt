@@ -1,10 +1,0 @@
-slurmstepd-midway2-0411: error: task/cgroup: unable to add task[pid=14327] to memory cg '(null)'
-INFO:ROOT.TUnixSystem.ACLiC] creating shared library /home/jh3226/testing_pull_request_arrays/montecarlo/fax_waveform/submission_reduce/2_0/pax_event_class-ab40dc332c86cad2188cf0845c0185fe_cpp.so
-/project/lgrandi/anaconda3/envs/pax_head/bin/rootcling: /project/lgrandi/anaconda3/envs/pax_head/bin/../lib/liblzma.so.5: no version information available (required by /project/lgrandi/anaconda3/envs/pax_head/bin/rootcling)
-Run FakeWaveform_XENON1T_000004_pax: Making PeakEfficiency minitree:   0%|          | 0/2 [00:00<?, ?it/s]Run FakeWaveform_XENON1T_000004_pax: Making PeakEfficiency minitree: 100%|██████████| 2/2 [00:00<00:00, 45.49it/s]
-DEBUG:hax.__init__] Extraction completed, now concatenating data
-DEBUG:hax.minitrees] Retrieved PeakEfficiency minitree data for dataset FakeWaveform_XENON1T_000004_pax
-Run FakeWaveform_XENON1T_000004_pax: Making PeakEfficiency minitree:   0%|          | 0/2 [00:00<?, ?it/s]Run FakeWaveform_XENON1T_000004_pax: Making PeakEfficiency minitree: 100%|██████████| 2/2 [00:00<00:00, 772.65it/s]
-DEBUG:hax.__init__] Extraction completed, now concatenating data
-DEBUG:hax.minitrees] Retrieved PeakEfficiency minitree data for dataset FakeWaveform_XENON1T_000004_pax
-DEBUG:hax.minitrees] Removing weird index column

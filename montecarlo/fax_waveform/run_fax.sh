@@ -30,7 +30,9 @@ PMTAfterpulseEnableFlag=$5
 S2AfterpulseEnableFlag=$6
 
 # Select fax+pax version
-PAXVERSION=6.4.2
+#PAXVERSION=6.5.0
+
+PAXVERSION=head
 
 # Specify number of events
 NumEvents=$7
@@ -42,7 +44,8 @@ SUBRUN=$9
 
 # Setup the software
 CVMFSDIR=/cvmfs/xenon.opensciencegrid.org
-export PATH="${CVMFSDIR}/releases/anaconda/2.4/bin:$PATH"
+#export PATH="${CVMFSDIR}/releases/anaconda/2.4/bin:$PATH"
+export PATH="/project/lgrandi/anaconda3/bin/:$PATH"
 source activate pax_${PAXVERSION} &> /dev/null
 
 # Use path of this script for Python scripts below

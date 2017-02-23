@@ -1,6 +1,6 @@
 #!/bin/bash
-file_header=/project/lgrandi/jhowlett/ # change this line
-username=jh3226 # and this line
+file_header=/project/lgrandi/feigao/fax_data/ac_background/ # change this line
+username=feigao # and this line
 datetime=$1
 truth_dir=$file_header"$datetime/truth_minitrees_"$datetime
 processed_dir=$file_header"$datetime/processed_minitrees_"$datetime

@@ -6,7 +6,7 @@ squeue_dict = {'0': 'xenon1t', '1': 'sandyb', '2': 'kicp'}
 configs = {'0': 'basics_config', '1' : 's1s2_preserve_all', '2' : 'PeakEfficiency'}
 
 def wait_for_squeue(username, nodetype):
-    while len(subp.check_output(['squeue', '-u', username, '--partition', squeue_dict[nodetype]]).splitlines())>1:
+    while len(subp.check_output(['squeue', '-u', username,'--partition', squeue_dict[nodetype]]).splitlines())>1:
         print('waiting for squeue to free up, time = %i' % int(time.time()))
         time.sleep(60)
 

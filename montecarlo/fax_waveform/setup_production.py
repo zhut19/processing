@@ -17,20 +17,20 @@ fields = [
          ]
 
 process = {}
-process['process_name'] = '170221_1339_test'
-process['process_description'] = 'making standard s1/s2 basics data for matching pax_v6.4.2'
-process['log_file'] = '170221_test.log'
-process['nb_jobs'] = '5'
-process['events_per_job'] = '2'
+process['process_name'] = 'ac_0222_bc'
+process['process_description'] = 'ac_0222_bc'
+process['log_file'] = 'ac_0222_bc.log'
+process['nb_jobs'] = '100'
+process['events_per_job'] = '1000'
 process['pmt_afterpulse'] = '1'
 process['s2_afterpulse'] = '1'
-process['photon_nb_low'] = '0'
-process['photon_nb_high'] = '1000'
+process['photon_nb_low'] = '3'
+process['photon_nb_high'] = '400'
 process['electron_nb_low'] = '0'
 process['electron_nb_high'] = '100'
-process['correlated'] = '1'
-process['nodetype'] = '0'
-process['minitree_type'] = '2'
+process['correlated'] = '0'
+process['nodetype'] = '2'
+process['minitree_type'] = '1'
 process['use_array_truth'] = '0'
 if interactive == 0:
     process_list.append(process)
