@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import argparse
+import getpass
 import json
 import math
 import os
@@ -223,7 +224,7 @@ def generate_mc_workflow(mc_config,
                      "using {0} jobs\n".format(num_jobs))
 
     if fax_version is None:
-	fax_version = pax_version
+        fax_version = pax_version
 
     if preinit_macro is None:
         if "Cs137" in mc_config:
@@ -424,6 +425,7 @@ def run_main():
         except OSError:
             sys.stderr.write("Can't remove mc_process.xml\n")
         return 1
+    pegasus_id = None
     if args.grid_type == 'osg':
         pegasus_id = pegasus_submit('mc_process.xml',
                                     'condorpool',
@@ -433,6 +435,17 @@ def run_main():
         pegasus_id = pegasus_submit('mc_process.xml',
                                     'egi',
                                     output_directory)
+    if pegasus_id:
+        workflow_dir = os.path.join(os.getcwd(),
+                                    getpass.getuser(),
+                                    "pegasus",
+                                    "montecarlo",
+                                    pegasus_id)
+        sys.stdout.write("MC workflow started:\n")
+        sys.stdout.write("Run 'pegasus-status -l " +
+                         "{0}' to monitor\n".format(workflow_dir))
+        sys.stdout.write("Run 'pegasus-remove " +
+                         "{0}' to stop\n".format(workflow_dir))
     try:
         os.unlink('mc_process.xml')
     except OSError:
