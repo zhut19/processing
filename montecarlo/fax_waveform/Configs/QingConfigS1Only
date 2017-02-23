@@ -1,0 +1,9 @@
+Name: S1S2Properties
+PeaksPeakTime									peak_time_processed
+PeaksPeakTimeStd								peak_time_std_processed
+PeaksTot												peak_area_processed
+PeakTopFraction								peak_top_fraction_processed
+S1sPeakTime									s1_time_processed
+S1sPeakTimeStd								s1_time_std_processed
+S1sTot												s1_area_processed
+PeakTopFraction								s1_top_fraction_processed

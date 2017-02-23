@@ -43,8 +43,8 @@ SUBRUN=$9
 
 # Setup the software
 CVMFSDIR=/cvmfs/xenon.opensciencegrid.org
-#export PATH="${CVMFSDIR}/releases/anaconda/2.4/bin:$PATH"
-export PATH="/project/lgrandi/anaconda3/bin:$PATH"
+export PATH="${CVMFSDIR}/releases/anaconda/2.4/bin:$PATH"
+#export PATH="/project/lgrandi/anaconda3/bin:$PATH"
 source activate pax_${PAXVERSION} &> /dev/null
 
 # Use path of this script for Python scripts below
