@@ -21,7 +21,15 @@
         <profile namespace="condor" key="+WANT_RCC_ciconnect">True</profile>
         <profile namespace="condor" key="requirements">
             (HAS_CVMFS_xenon_opensciencegrid_org) &amp;&amp;
-            (OpSysAndVer == "CentOS6" || OpSysAndVer == "RedHat6" || OpSysAndVer == "SL6")
+            (((TARGET.GLIDEIN_ResourceName =!= MY.MachineAttrGLIDEIN_ResourceName1) ||
+              (RCC_Factory == "ciconnect")) &amp;&amp;
+             ((TARGET.GLIDEIN_ResourceName =!= MY.MachineAttrGLIDEIN_ResourceName2) ||
+              (RCC_Factory == "ciconnect")) &amp;&amp;
+             ((TARGET.GLIDEIN_ResourceName =!= MY.MachineAttrGLIDEIN_ResourceName3)  ||
+              (RCC_Factory == "ciconnect")) &amp;&amp;
+             ((TARGET.GLIDEIN_ResourceName =!= MY.MachineAttrGLIDEIN_ResourceName4) ||
+              (RCC_Factory == "ciconnect"))) &amp;&amp;
+            (OSGVO_OS_STRING == "RHEL 6" || RCC_Factory == "ciconnect")
         </profile>
     </site>
 
