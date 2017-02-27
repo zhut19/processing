@@ -74,12 +74,12 @@ and ongoing job logs in:
 /scratch/${USER}/<production_name>/processing/montecarlo/${USER}/pegasus/montecarlo/*
 ~~~~
 
-10) Once everything's complete, copy tarballs to Midway using ```rsync``` or https://globus.rcc.uchicago.edu/globus-app/
+10) Once everything's complete and verified (e.g. checked logs for errors), copy tarballs to ```/stash/user/${USER}``` or Midway using ```rsync```. If you copy to ```/stash/user/${USER}```, you may use (instead of ```rsync```) https://globus.rcc.uchicago.edu/globus-app/
 ~~~~
 Source Endpoint: OSG Connect Stash
 Destination Endpoint: UChicago RCC Midway
 ~~~~
-More details about using Globus online can be found here: https://rcc.uchicago.edu/docs/data-transfer/index.html#globus-online
+which optimizes the transfer. More details about using Globus online can be found here: https://rcc.uchicago.edu/docs/data-transfer/index.html#globus-online
 
 The official location will be ```/project/lgrandi/xenon1t/simulations```; please follow the existing directory structure within, e.g.:
 ~~~~
@@ -90,7 +90,12 @@ and ensure you set the group appropriately
 chgrp -R pi-lgrandi /project/lgrandi/xenon1t/simulations
 ~~~~
 
-11) Untar all the files after transferred: 
+11) Once you have completed and verified the transfer, clean up your space:
+~~~~
+rm -rf /scratch/${USER}
+~~~~
+
+12) Untar all the files after transferred: 
 ~~~~
 for f in *; do tar xf $f; done
 ~~~~
@@ -99,7 +104,7 @@ for f in *; do tar xf $f; done
 /project/lgrandi/xenon1t/simulations/organize.sh
 ~~~~
 
-12) Keep track and share the details of your production here https://xecluster.lngs.infn.it/dokuwiki/doku.php?id=xenon:xenon1t:sim:data
+13) Keep track and share the details of your production here https://xecluster.lngs.infn.it/dokuwiki/doku.php?id=xenon:xenon1t:sim:data
 
 ### Midway local running
 
