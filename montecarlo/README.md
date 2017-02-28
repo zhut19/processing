@@ -74,12 +74,14 @@ and ongoing job logs in:
 /scratch/${USER}/<production_name>/processing/montecarlo/${USER}/pegasus/montecarlo/*
 ~~~~
 
-10) Once everything's complete and verified (e.g. checked logs for errors), copy tarballs to ```/stash/user/${USER}``` or Midway using ```rsync```. If you copy to ```/stash/user/${USER}```, you may use (instead of ```rsync```) https://globus.rcc.uchicago.edu/globus-app/
+10) Once everything's complete and verified (e.g. checked logs for errors), we will want to keep all the results on Midway for all analysts to access. You may either use:
+  a) ```rsync``` to directly copy to Midway, or
+  b) copy results to ```/stash/user/${USER}``` then use Globus (https://globus.rcc.uchicago.edu/globus-app)
 ~~~~
 Source Endpoint: OSG Connect Stash
 Destination Endpoint: UChicago RCC Midway
 ~~~~
-which optimizes the transfer. More details about using Globus online can be found here: https://rcc.uchicago.edu/docs/data-transfer/index.html#globus-online
+which can queue several transfers and maximizes the bandwidth usage. More details about using Globus online can be found here: https://rcc.uchicago.edu/docs/data-transfer/index.html#globus-online
 
 The official location will be ```/project2/lgrandi/xenon1t/simulations```; please follow the existing directory structure within, e.g.:
 ~~~~
