@@ -77,9 +77,14 @@ fi
  
 start_dir=$PWD
 
+
 # Setup CVMFS directories
 CVMFSDIR=/cvmfs/xenon.opensciencegrid.org
 RELEASEDIR=${CVMFSDIR}/releases/mc/${MCVERSION}
+
+# Get the directory where libopcodes is located, LD_LIBRARY_PATH gets wiped
+# when source activate is run so we should set it after that for safety
+PAX_LIB_DIR=${CVMFSDIR}/releases/anaconda/2.4/envs/pax_${PAXVERSION}/lib/
 
 # Setup Geant4 macros
 MACROSDIR=${RELEASEDIR}/macros
@@ -140,6 +145,13 @@ set -o pipefail
 # Setup the software
 export PATH="${CVMFSDIR}/releases/anaconda/2.4/bin:$PATH"
 source activate mc
+
+# make sure libopcodes is in the LD_LIBRARY_PATH
+if [[ ! `/bin/env` =~ .*${PAX_LIB_DIR}.* ]];
+then
+    export LD_LIBRARY_PATH=$PAX_LIB_DIR:$LD_LIBRARY_PATH
+fi
+
 if [ $? -ne 0 ];
 then
   exit 1
@@ -242,6 +254,11 @@ FAX_FILENAME=${FILENAME}_faxtruth
 # fax+pax stages
 source deactivate
 source activate pax_${FAXVERSION}
+# make sure libopcodes is in the LD_LIBRARY_PATH
+if [[ ! `/bin/env` =~ .*${PAX_LIB_DIR}.* ]];
+then
+    export LD_LIBRARY_PATH=$PAX_LIB_DIR:$LD_LIBRARY_PATH
+fi
 
 # Do not save raw waveforms
 if [[ ${SAVE_RAW} == 0 && ${PAXVERSION} == ${FAXVERSION} ]]; then
@@ -261,8 +278,15 @@ else
 	terminate 14
     fi
 
-    if [[ ${PAXVERSION} != ${FAXVERSION} ]]; then
-	source activate pax_${PAXVERSION}
+    if [[ ${PAXVERSION} != ${FAXVERSION} ]];
+    then
+	    source activate pax_${PAXVERSION}
+        # make sure libopcodes is in the LD_LIBRARY_PATH
+        if [[ ! `/bin/env` =~ .*${PAX_LIB_DIR}.* ]];
+        then
+            export LD_LIBRARY_PATH=$PAX_LIB_DIR:$LD_LIBRARY_PATH
+        fi
+
     fi
 
     (time paxer --ignore_rundb --input ${RAW_FILENAME} --config XENON1T --output ${PAX_FILENAME};) 2>&1 | tee ${PAX_FILENAME}.log
@@ -278,6 +302,11 @@ else
 fi
 
 source activate pax_${FAXVERSION}
+# make sure libopcodes is in the LD_LIBRARY_PATH
+if [[ ! `/bin/env` =~ .*${PAX_LIB_DIR}.* ]];
+then
+    export LD_LIBRARY_PATH=$PAX_LIB_DIR:$LD_LIBRARY_PATH
+fi
 
 # Flatten fax truth info
 FAXSORT_FILENAME=${FAX_FILENAME}_sort
