@@ -150,7 +150,7 @@ class S1S2Properties(hax.minitrees.TreeMaker):
         # Look here for more info: http://xenon1t.github.io/pax/format.html#peak
         s1_fields = {'S1sTot': 'area',
                         'S1TopFraction': 'area_fraction_top',
-                        'S1sPeakTime': 'area_midpoint',
+                        'S1sPeakTime': 'center_time',
                         'S1sPeakTimeStd': 'hit_time_std',
                         'S1sCoin': 'n_contributing_channels',
                         'S1sHeight': 'height',
@@ -158,7 +158,7 @@ class S1S2Properties(hax.minitrees.TreeMaker):
                       }
         s2_fields = {'S2sTot': 'area',
                         'S2TopFraction': 'area_fraction_top',
-                        'S2sPeakTime': 'area_midpoint',
+                        'S2sPeakTime': 'center_time',
                         'S2sPeakTimeStd': 'hit_time_std',
                         'S2sCoin': 'n_contributing_channels',
                         'S2sHeight': 'height',

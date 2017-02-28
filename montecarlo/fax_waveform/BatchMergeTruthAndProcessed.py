@@ -14,7 +14,7 @@ from subprocess import Popen, PIPE
 
 if len(sys.argv)<=1:
     print("======== Usage =========")
-    print("python BatchMergeTruthAndProcessed.py <config file> <truth root path> <processed root path> <output path> <(opt)top-to-total fraction in truth(default 0.68)> <(opt)relative path for submission> <(opt) if use public node (1) optional (2 for use kicp nodes)> <(opt)Submit ID> <(opt) if use arrays in output (1) (default 0)>")
+    print("python BatchMergeTruthAndProcessed.py <config file> <truth root path> <processed root path> <output path> <(opt)relative path for submission> <(opt) if use public node (1) optional (2 for use kicp nodes)> <(opt)Submit ID> <(opt) if use arrays in output (1) (default 0)> <(opt) minitree type; 0(default): Basics, 1: S1S2Properties, 2: PeakEfficiency")
     exit()
 
 CurrentEXE = sys.argv[0]
@@ -23,20 +23,20 @@ TruthRootPath = sys.argv[2]
 ProcessedRootPath = sys.argv[3]
 OutputPath = sys.argv[4]
 IfPublicNode = 1
-TopFraction = 0.68
-if len(sys.argv)>5:
-    TopFraction = float(sys.argv[5])
 RelativeSubmitPath = "Submit"
+if len(sys.argv)>5:
+    RelativeSubmitPath = sys.argv[5]
 if len(sys.argv)>6:
-    RelativeSubmitPath = sys.argv[6]
-if len(sys.argv)>7:
-    IfPublicNode = int(sys.argv[7])
+    IfPublicNode = int(sys.argv[6])
 SubmitID = 0
-if len(sys.argv)>8:
-    SubmitID = int(sys.argv[8])
+if len(sys.argv)>7:
+    SubmitID = int(sys.argv[7])
 ArrayOutput = 0
+if len(sys.argv)>8:
+    ArrayOutput = int(sys.argv[8])
+MinitreeType=0
 if len(sys.argv)>9:
-    ArrayOutput = int(sys.argv[9])
+    MinitreeType = int(sys.argv[9])
 
 
 #######################
@@ -52,7 +52,10 @@ if ArrayOutput==1:
     EXE1 = CurrentPath+"/"+EXE_Path+"TruthSorting_arrays.py"
 else:
     EXE1 = CurrentPath+"/"+EXE_Path+"TruthSorting.py"
-EXE2 = CurrentPath+"/"+EXE_Path+"MergeTruthAndProcessed.py"
+if MinitreeType==2:
+    EXE2 = CurrentPath+"/"+EXE_Path+"MergeTruthAndProcessed_peaks.py"
+else:
+    EXE2 = CurrentPath+"/"+EXE_Path+"MergeTruthAndProcessed.py"
 
 
 #######################
@@ -102,7 +105,7 @@ for j, ID_job in enumerate(IDList):
     subp.call("echo '#!/bin/bash\n' >> "+SubmitFile, shell=True)
     subp.call("echo '#SBATCH --output="+SubmitPath+"/myout_"+str(SubmitID)+"_"+str(j)+".txt \n' >> "+SubmitFile, shell=True)
     subp.call("echo '#SBATCH --error="+SubmitPath+"/myerr_"+str(SubmitID)+"_"+str(j)+".txt\n' >> "+SubmitFile, shell=True)
-    subp.call("echo '#SBATCH --time=01:19:00\n' >> "+SubmitFile, shell=True)
+    subp.call("echo '#SBATCH --time=00:05:00\n' >> "+SubmitFile, shell=True)
     if not IfPublicNode:
         subp.call("echo '#SBATCH --account=pi-lgrandi\n' >> "+SubmitFile, shell=True)
         subp.call("echo '#SBATCH --qos=xenon1t\n' >> "+SubmitFile, shell=True)
@@ -112,7 +115,7 @@ for j, ID_job in enumerate(IDList):
         subp.call("echo '#SBATCH --qos=xenon1t-kicp\n' >> "+SubmitFile, shell=True)
         subp.call("echo '#SBATCH --partition=kicp\n' >> "+SubmitFile, shell=True)
     subp.call("echo '. /home/mcfate/Env/GlobalPAXEnv.sh\n\n' >> "+SubmitFile, shell=True)
-    subp.call("echo 'python "+EXE1+" "+TruthRootFilename+" "+TmpOutputFilename+" "+str(TopFraction)+"' >> "+SubmitFile, shell=True)
+    subp.call("echo 'python "+EXE1+" "+TruthRootFilename+" "+TmpOutputFilename+"' >> "+SubmitFile, shell=True)
     subp.call("echo 'python "+EXE2+" "+AbsoluteConfigFile+" "+TmpOutputFilename+" "+ProcessedRootFilename+" "+OutputFilename+"' >> "+SubmitFile, shell=True)
     
     #submit

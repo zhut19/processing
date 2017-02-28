@@ -23,23 +23,21 @@ import sys
 
 if len(sys.argv)<2:
     print("============= Syntax =============")
-    print("python TruthSorting.py <truth file.root (abs.)> <output file (no ext)> <(opt) top-to-total fraction; default = 0.68> <output format; 0=pickle (default), 1=ROOT, 2=both>")
+    print("python TruthSorting.py <truth file.root (abs.)> <output file (no ext)> <output format; 0=pickle (default), 1=ROOT, 2=both>")
     exit()
 
 
 TruthFile = sys.argv[1]
 OutputFile = sys.argv[2]
-OutputFile = OutputFile.split('.')[0]
-mean_top_fraction = 0.68
-if len(sys.argv)>3:
-    mean_top_fraction = float(sys.argv[3])
-
+if '.root' in OutputFile:
+    OutputFile = OutputFile.split('.root')[0]
+else:
+    OutputFile = OutputFile.split('.pkl')[0]
 OutputFormat=0
-if len(sys.argv)>4:
-    OutputFormat = float(sys.argv[4])
+if len(sys.argv)>3:
+    OutputFormat = float(sys.argv[3])
 
 print ("Input file: ", TruthFile)
-print ("Mean top fraction: ", mean_top_fraction)
 
 #################
 ## load the root files
@@ -66,12 +64,13 @@ Data['index_truth'] = []
 Data['s1_time_truth'] = [] 
 Data['s1_time_std_truth'] = [] 
 Data['s1_area_truth'] = [] 
+Data['s1_area_top_fraction_truth'] = []
 Data['s2_time_truth'] = [] 
 Data['s2_electron_time_truth'] = [] 
 Data['s2_first_electron_time_truth'] = [] 
 Data['s2_time_std_truth'] = [] 
 Data['s2_area_truth'] = [] 
-Data['s2_bottom_area_truth'] = []
+Data['s2_area_top_fraction_truth'] = []
 Data['x_truth'] = []
 Data['y_truth'] = []
 
@@ -85,31 +84,39 @@ for event_id in range(10000000):
     s1_time_truth = -1
     s1_time_std_truth = -1
     s1_area_truth = -1
+    s1_area_top_fraction_truth = -1
     s2_electron_time_truth = -1
     s2_first_electron_time_truth = -1
     s2_time_truth = -1
     s2_time_std_truth = -1
     s2_area_truth = -1
-    s2_bottom_area_truth = -1
+    s2_area_top_fraction_truth = -1
     x_truth = -1e10
     y_truth = -1e10
+    ifcounteds1 = 0
     while truth_tree.event==event_id:
-        tag = 0 # 0 for s1, 1 for s2
+        tag = 0 # 0 for s1, 1 for s2, 2 for photoionization
         if not str(truth_tree.n_electrons)=='nan':
             tag = 1
+        elif ifcounteds1==0:
+            tag=0
+            ifcounteds1=1
+        else:
+            tag=2
         if tag==0:
             #print("Iterator: "+str(iteration_id)+" -> S1")
             s1_time_truth = truth_tree.t_mean_photons
             s1_time_std_truth = truth_tree.t_sigma_photons
             s1_area_truth = truth_tree.n_photons
-        else:
+            s1_area_top_fraction_truth = truth_tree.top_fraction
+        elif tag==1:
             #print("Iterator: "+str(iteration_id)+" -> S2")
             s2_electron_time_truth = truth_tree.t_mean_electrons
             s2_first_electron_time_truth = truth_tree.t_first_electron
             s2_time_truth = truth_tree.t_mean_photons
             s2_time_std_truth = truth_tree.t_sigma_photons
             s2_area_truth = truth_tree.n_photons
-            s2_bottom_area_truth = truth_tree.n_photons * (1.-mean_top_fraction)
+            s2_area_top_fraction_truth = truth_tree.top_fraction
             x_truth = truth_tree.x
             y_truth = truth_tree.y
         iteration_id += 1
@@ -125,7 +132,8 @@ for event_id in range(10000000):
     Data['s2_time_truth'].append(s2_time_truth)
     Data['s2_time_std_truth'].append(s2_time_std_truth)
     Data['s2_area_truth'].append(s2_area_truth)
-    Data['s2_bottom_area_truth'].append(s2_bottom_area_truth)
+    Data['s1_area_top_fraction_truth'].append(s1_area_top_fraction_truth)
+    Data['s2_area_top_fraction_truth'].append(s2_area_top_fraction_truth)
     Data['x_truth'].append(x_truth)
     Data['y_truth'].append(y_truth)
 

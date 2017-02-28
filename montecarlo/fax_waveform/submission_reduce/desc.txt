@@ -1,0 +1,2 @@
+placeholder to load to git:
+this folder holds all the temporary reduced minitrees
