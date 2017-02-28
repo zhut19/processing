@@ -26,7 +26,7 @@ S2AfterpulseEnableFlag=$5
 
 # Select fax+pax version
 #~ PAXVERSION=head
-PAXVERSION=v6.5.0 # temporary change
+PAXVERSION=v6.5.1 # temporary change
 
 # Specify number of events
 NumEvents=$6
