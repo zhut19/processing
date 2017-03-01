@@ -81,6 +81,8 @@ for event_id in range(10000000):
     for field in (s1s2_keys + s2_only_keys):
         result[field] = []
 
+    ifcounteds1 = 0
+        
     while truth_tree.event==event_id:
         tag = 0 # 0 for s1, 1 for s2, 2 for photoionization
         if not str(truth_tree.n_electrons)=='nan':
