@@ -51,7 +51,7 @@ def fax_produce(process, head_dirname, username):
         production_commands.append('python BatchMergeTruthAndProcessed.py Configs/%s %s %s %s submission_merge/ %s 0 %s %s' % (configs[process['minitree_type']], 
                                             truth_dirname, basics_dirname, merged_dirname, process['nodetype'], process['use_array_truth'], process['minitree_type']))
     production_commands.append('python MergePickles.py %s' % (merged_dirname))
-    for command in production_commands[-2:]:
+    for command in production_commands:
         wait_for_squeue(username, process['nodetype'])
         if process['minitree_type']!='0':
             if 'BatchReduce' in command:
