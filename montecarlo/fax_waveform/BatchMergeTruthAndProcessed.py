@@ -14,12 +14,12 @@ from subprocess import Popen, PIPE
 
 if len(sys.argv)<=1:
     print("======== Usage =========")
-    print("python BatchMergeTruthAndProcessed.py <config file> <truth root path> <processed root path> <output path> <(opt)relative path for submission> <(opt) if use public node (1) optional (2 for use kicp nodes)> <(opt)Submit ID> <(opt) if use arrays in output (1) (default 0)> <(opt) minitree type; 0(default): Basics, 1: S1S2Properties, 2: PeakEfficiency")
+    print("python BatchMergeTruthAndProcessed.py <config file> <truth csv path> <processed root path> <output path> <(opt)relative path for submission> <(opt) if use public node (1) optional (2 for use kicp nodes)> <(opt)Submit ID> <(opt) if use arrays in output (1) (default 0)> <(opt) minitree type; 0(default): Basics, 1: S1S2Properties, 2: PeakEfficiency> <(opt) save afterpulses in arrays (default 0)>")
     exit()
 
 CurrentEXE = sys.argv[0]
 ConfigFile = sys.argv[1]
-TruthRootPath = sys.argv[2]
+TruthCSVPath = sys.argv[2]
 ProcessedRootPath = sys.argv[3]
 OutputPath = sys.argv[4]
 IfPublicNode = 1
@@ -37,6 +37,8 @@ if len(sys.argv)>8:
 MinitreeType=0
 if len(sys.argv)>9:
     MinitreeType = int(sys.argv[9])
+if len(sys.argv)>10:
+    save_ap = sys.argv[10]
 
 
 #######################
@@ -61,11 +63,11 @@ else:
 #######################
 ## Get the list 
 #######################
-FileList = glob.glob(TruthRootPath+"/*.root")
+FileList = glob.glob(TruthCSVPath+"/*.csv")
 # trail to IDList
 IDList = []
 for filename in FileList:
-    ID = filename.split("FakeWaveform_XENON1T_")[1].split("_truth.root")[0]
+    ID = filename.split("FakeWaveform_XENON1T_")[1].split("_truth.csv")[0]
     IDList.append(ID)
 
 # create temporary directory
@@ -94,11 +96,11 @@ for j, ID_job in enumerate(IDList):
     if len(OneProcessedFile)==0:
         continue
     ProcessedRootFilename = OneProcessedFile[0]
-    TruthRootFilename = TruthRootPath+"/FakeWaveform_XENON1T_"+ID_job+"_truth.root"
+    TruthCSVFilename = TruthCSVPath+"/FakeWaveform_XENON1T_"+ID_job+"_truth.csv"
     TmpOutputFilename = TmpPath+"/FakeWaveform_XENON1T_"+ID_job+"_tmp.pkl"
     OutputFilename = OutputPath+"/FakeWaveform_XENON1T_"+ID_job+"_merged.pkl"
     AbsoluteConfigFile = CurrentPath+"/"+ConfigFile
-    if len(ProcessedRootFilename)<2 or len(TruthRootFilename)<2:
+    if len(ProcessedRootFilename)<2 or len(TruthCSVFilename)<2:
         continue
     print("To process -> "+ID_job)
     # create the submit 
@@ -115,7 +117,11 @@ for j, ID_job in enumerate(IDList):
         subp.call("echo '#SBATCH --qos=xenon1t-kicp\n' >> "+SubmitFile, shell=True)
         subp.call("echo '#SBATCH --partition=kicp\n' >> "+SubmitFile, shell=True)
     subp.call("echo '. /home/mcfate/Env/GlobalPAXEnv.sh\n\n' >> "+SubmitFile, shell=True)
-    subp.call("echo 'python "+EXE1+" "+TruthRootFilename+" "+TmpOutputFilename+"' >> "+SubmitFile, shell=True)
+    if ArrayOutput:
+        print('running ' + TruthCSVFilename)
+        subp.call("echo 'python "+EXE1+" "+TruthCSVFilename+" "+TmpOutputFilename+" 0 "+save_ap+"' >> "+SubmitFile, shell=True)
+    else:
+        subp.call("echo 'python "+EXE1+" "+TruthCSVFilename+" "+TmpOutputFilename+"' >> "+SubmitFile, shell=True)
     subp.call("echo 'python "+EXE2+" "+AbsoluteConfigFile+" "+TmpOutputFilename+" "+ProcessedRootFilename+" "+OutputFilename+"' >> "+SubmitFile, shell=True)
     
     #submit

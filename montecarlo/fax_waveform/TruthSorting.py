@@ -23,7 +23,7 @@ import sys
 
 if len(sys.argv)<2:
     print("============= Syntax =============")
-    print("python TruthSorting.py <truth file.root (abs.)> <output file (no ext)> <output format; 0=pickle (default), 1=ROOT, 2=both>")
+    print("python TruthSorting.py <truth file.csv (abs.)> <output file (no ext)> <output format; 0=pickle (default), 1=ROOT, 2=both>")
     exit()
 
 
@@ -43,14 +43,6 @@ print ("Input file: ", TruthFile)
 ## load the root files
 ## and TTrees
 #################
-pfile1 = TFile(TruthFile)
-
-truth_tree = pfile1.Get("fax_truth")
-
-if (not truth_tree):
-    raise ValueError("Input file not complete")
-
-NumStepsInTruth = truth_tree.GetEntries()
 
 ###################
 ## need to sort and add the truth peak values into Data as well
@@ -58,6 +50,11 @@ NumStepsInTruth = truth_tree.GetEntries()
 ## both in time mean, sigma and area
 ####################
 Data = {}
+
+
+# load the truth data from csv
+truth_data = pd.read_csv(TruthFile)
+NumStepsInTruth = len(truth_data.index)
 
 # initialize Data for truth 
 Data['index_truth'] = []
@@ -75,7 +72,6 @@ Data['x_truth'] = []
 Data['y_truth'] = []
 
 iteration_id = 0
-truth_tree.GetEntry(iteration_id)
 for event_id in range(10000000):
     if iteration_id>=NumStepsInTruth:
         break
@@ -94,35 +90,31 @@ for event_id in range(10000000):
     x_truth = -1e10
     y_truth = -1e10
     ifcounteds1 = 0
-    while truth_tree.event==event_id:
-        tag = 0 # 0 for s1, 1 for s2, 2 for photoionization
-        if not str(truth_tree.n_electrons)=='nan':
+    while truth_data['event'][iteration_id]==event_id:
+        tag = 2 # 0 for s1, 1 for s2, 2 for photoionization
+        if truth_data['peak_type'][iteration_id] == 's1':
+            tag = 0
+        if truth_data['peak_type'][iteration_id] == 's2':
             tag = 1
-        elif ifcounteds1==0:
-            tag=0
-            ifcounteds1=1
-        else:
-            tag=2
         if tag==0:
             #print("Iterator: "+str(iteration_id)+" -> S1")
-            s1_time_truth = truth_tree.t_mean_photons
-            s1_time_std_truth = truth_tree.t_sigma_photons
-            s1_area_truth = truth_tree.n_photons
-            s1_area_top_fraction_truth = truth_tree.top_fraction
+            s1_time_truth = truth_data['t_mean_photons'][iteration_id]
+            s1_time_std_truth = truth_data['t_sigma_photons'][iteration_id]
+            s1_area_truth = truth_data['n_photons'][iteration_id]
+            s1_area_top_fraction_truth = truth_data['top_fraction'][iteration_id]
         elif tag==1:
             #print("Iterator: "+str(iteration_id)+" -> S2")
-            s2_electron_time_truth = truth_tree.t_mean_electrons
-            s2_first_electron_time_truth = truth_tree.t_first_electron
-            s2_time_truth = truth_tree.t_mean_photons
-            s2_time_std_truth = truth_tree.t_sigma_photons
-            s2_area_truth = truth_tree.n_photons
-            s2_area_top_fraction_truth = truth_tree.top_fraction
-            x_truth = truth_tree.x
-            y_truth = truth_tree.y
+            s2_electron_time_truth = truth_data['t_mean_electrons'][iteration_id]
+            s2_first_electron_time_truth = truth_data['t_first_electron'][iteration_id]
+            s2_time_truth = truth_data['t_mean_photons'][iteration_id]
+            s2_time_std_truth = truth_data['t_sigma_photons'][iteration_id]
+            s2_area_truth = truth_data['n_photons'][iteration_id]
+            s2_area_top_fraction_truth = truth_data['top_fraction'][iteration_id]
+            x_truth = truth_data['x'][iteration_id]
+            y_truth = truth_data['y'][iteration_id]
         iteration_id += 1
         if iteration_id>=NumStepsInTruth:
             break
-        truth_tree.GetEntry(iteration_id)
     Data['index_truth'].append(event_id)
     Data['s1_time_truth'].append(s1_time_truth)
     Data['s1_time_std_truth'].append(s1_time_std_truth)

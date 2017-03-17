@@ -45,11 +45,11 @@ def fax_produce(process, head_dirname, username):
         batchlist = 'processed_dataset_list.dat'
         production_commands.append('python BatchReduceDataSubmission.py %s %s %s %s %s 0 %s >> %s' % (batchlist, pax_dirname,
                                         reduced_dirname, os.path.join(os.getcwd(), 'submission_reduce/'), process['nodetype'], process['minitree_type'], process['log_file']))
-        production_commands.append('python BatchMergeTruthAndProcessed.py Configs/%s %s %s %s submission_merge/ %s 0 %s %s' % (configs[process['minitree_type']], 
-                                            truth_dirname, reduced_dirname, merged_dirname, process['nodetype'], process['use_array_truth'], process['minitree_type']))
+        production_commands.append('python BatchMergeTruthAndProcessed.py Configs/%s %s %s %s submission_merge/ %s 0 %s %s %s' % (configs[process['minitree_type']], 
+                                            truth_dirname, reduced_dirname, merged_dirname, process['nodetype'], process['use_array_truth'], process['minitree_type'], process['save_ap_truth']))
     else:
-        production_commands.append('python BatchMergeTruthAndProcessed.py Configs/%s %s %s %s submission_merge/ %s 0 %s %s' % (configs[process['minitree_type']], 
-                                            truth_dirname, basics_dirname, merged_dirname, process['nodetype'], process['use_array_truth'], process['minitree_type']))
+        production_commands.append('python BatchMergeTruthAndProcessed.py Configs/%s %s %s %s submission_merge/ %s 0 %s %s %s' % (configs[process['minitree_type']], 
+                                            truth_dirname, basics_dirname, merged_dirname, process['nodetype'], process['use_array_truth'], process['minitree_type'], process['save_ap_truth']))
     production_commands.append('python MergePickles.py %s' % (merged_dirname))
     for command in production_commands:
         wait_for_squeue(username, process['nodetype'])
