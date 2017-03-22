@@ -311,7 +311,7 @@ fi
 # Flatten fax truth info
 FAXSORT_FILENAME=${FAX_FILENAME}_sort
 FAXSORT_OUTPUT_FORMAT=2 # Pickle + ROOT
-(time python ${CVMFSDIR}/releases/processing/montecarlo/fax_waveform/TruthSorting_arrays.py ${FAX_FILENAME}.root ${FAXSORT_FILENAME} ${FAXSORT_OUTPUT_FORMAT};) 2>&1 | tee ${FAXSORT_FILENAME}.log
+(time python ${CVMFSDIR}/releases/processing/montecarlo/fax_waveform/TruthSorting_arrays.py ${FAX_FILENAME}.csv ${FAXSORT_FILENAME} ${FAXSORT_OUTPUT_FORMAT};) 2>&1 | tee ${FAXSORT_FILENAME}.log
 if [ $? -ne 0 ];
 then
     terminate 16
