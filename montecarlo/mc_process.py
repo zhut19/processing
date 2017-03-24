@@ -314,6 +314,7 @@ def generate_mc_workflow(mc_config,
             if source_macro_input:
                 run_sim_job.uses(source_macro_input, link=Pegasus.DAX3.Link.INPUT)
             run_sim_job.addProfile(Pegasus.DAX3.Profile(Pegasus.DAX3.Namespace.CONDOR, "request_disk", "1G"))
+            run_sim_job.addProfile(Pegasus.DAX3.Profile(Pegasus.DAX3.Namespace.CONDOR, "request_memory", "2G"))
 
             output = Pegasus.DAX3.File("{0}_output.tar.bz2".format(job))
             run_sim_job.uses(output, link=Pegasus.DAX3.Link.OUTPUT, transfer=True)
