@@ -22,6 +22,8 @@ CONFIGS = (
     'Cryostat_neutron',
     'Cryostat_Th232',
     'Cryostat_U238',
+    'Cryostat_Cs137',
+    'Cryostat_Co60',
     'DDFusion_neutron',
     #'Disk15m_muon', # Not yet tested
     'ib1sp1_Cs137',
@@ -227,7 +229,7 @@ def generate_mc_workflow(mc_config,
         fax_version = pax_version
 
     if preinit_macro is None:
-        if "Cs137" in mc_config:
+        if "Cs137" in mc_config and "ib" in mc_config and "sp" in mc_config:
             preinit_macro = 'preinit_{0}.mac'.format(mc_config)
         elif "muon" in mc_config or "MV" in mc_config:
             preinit_macro = 'preinit_MV.mac'
