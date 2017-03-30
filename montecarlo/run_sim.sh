@@ -316,6 +316,8 @@ if [ $? -ne 0 ];
 then
     terminate 16
 fi
+rm ${FAX_FILENAME}.csv # Peak-by-peak file with all photoionization info
+
 
 # hax stage
 HAX_TREEMAKERS="Basics Fundamentals DoubleScatter LargestPeakProperties TotalProperties Extended"
