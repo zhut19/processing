@@ -17,7 +17,7 @@ fields = [
          ]
 
 process = {}
-process['process_name'] = '170222_1108'
+process['process_name'] = '170310_7'
 process['process_description'] = 'testing on new branch'
 process['log_file'] = '170221_test.log'
 process['nb_jobs'] = '5'
@@ -30,8 +30,9 @@ process['electron_nb_low'] = '0'
 process['electron_nb_high'] = '100'
 process['correlated'] = '1'
 process['nodetype'] = '0'
-process['minitree_type'] = '1'
+process['minitree_type'] = '0'
 process['use_array_truth'] = '1'
+process['save_ap_truth'] = '1'
 if interactive == 0:
     process_list.append(process)
 

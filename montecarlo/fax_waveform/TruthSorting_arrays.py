@@ -22,7 +22,7 @@ import sys
 
 if len(sys.argv)<2:
     print("============= Syntax =============")
-    print("python TruthSorting_arrays.py <truth file.root (abs.)> <output file (no ext)> <output format; 0=pickle (default), 1=ROOT, 2=both>")
+    print("python TruthSorting_arrays.py <truth file.csv (abs.)> <output file (no ext)> <output format; 0=pickle (default), 1=ROOT, 2=both> <(opt.) save afterpulses (default 0)>")
     exit()
 
 
@@ -32,25 +32,15 @@ if '.root' in OutputFile:
     OutputFile = OutputFile.split('.root')[0]
 else:
     OutputFile = OutputFile.split('.pkl')[0]
-
 OutputFormat=0
 if len(sys.argv)>3:
     OutputFormat = float(sys.argv[3])
 
+save_ap = 0
+if len(sys.argv)>4:
+    save_ap = sys.argv[4]
+
 print ("Input file: ", TruthFile)
-
-#################
-## load the root files
-## and TTrees
-#################
-pfile1 = TFile(TruthFile)
-
-truth_tree = pfile1.Get("fax_truth")
-
-if (not truth_tree):
-    raise ValueError("Input file not complete")
-
-NumStepsInTruth = truth_tree.GetEntries()
 
 ###################
 ## need to sort and add the truth peak values into Data as well
@@ -59,16 +49,20 @@ NumStepsInTruth = truth_tree.GetEntries()
 ####################
 Data = {}
 
+
+# load the truth data from csv
+truth_data = pd.read_csv(TruthFile)
+NumStepsInTruth = len(truth_data.index)
+
 # initialize Data for truth 
 event_keys = ['index_truth', 'peaks_length']
-s1s2_keys = ['time_truth', 'time_std_truth', 'time_last_photon_truth', 'time_interaction_truth', 'area_truth', 'type_truth', 'x_truth', 'y_truth', 'z_truth', 'top_fraction', 'tag']
+s1s2_keys = ['time_truth', 'time_std_truth', 'time_last_photon_truth', 'time_interaction_truth', 'area_truth', 'type_truth', 'x_truth', 'y_truth', 'z_truth', 'top_fraction']
 s2_only_keys = ['electron_time_truth', 'first_electron_time_truth', 'last_electron_time_truth']
 
 for field in (event_keys + s1s2_keys + s2_only_keys):
     Data[field] = []
 
 iteration_id = 0
-truth_tree.GetEntry(iteration_id)
 for event_id in range(10000000):
     if iteration_id>=NumStepsInTruth:
         break
@@ -82,42 +76,39 @@ for event_id in range(10000000):
         result[field] = []
 
     ifcounteds1 = 0
-        
-    while truth_tree.event==event_id:
-        tag = 0 # 0 for s1, 1 for s2, 2 for photoionization
-        if not str(truth_tree.n_electrons)=='nan':
-            tag = 1
-        elif ifcounteds1==0:
-            tag=0
-            ifcounteds1=1
-        else:
-            tag=2
-        # fill these fields either way
-        result['time_truth'].append(truth_tree.t_mean_photons)
-        result['time_std_truth'].append(truth_tree.t_sigma_photons)
-        result['time_last_photon_truth'].append(truth_tree.t_last_photon)
-        result['time_interaction_truth'].append(truth_tree.t_interaction)
-        result['area_truth'].append(truth_tree.n_photons)
-        result['type_truth'].append(tag + 1)
-        result['x_truth'].append(truth_tree.x)
-        result['y_truth'].append(truth_tree.y)
-        result['z_truth'].append(truth_tree.z)
-        result['top_fraction'].append(truth_tree.top_fraction)
 
-        if tag!=1:
+    while truth_data['event'][iteration_id]==event_id:
+        tag = 2 # 0 for s1, 1 for s2, 2 for photoionization
+        if truth_data['peak_type'][iteration_id] == 's1':
+            tag = 0
+        if truth_data['peak_type'][iteration_id] == 's2':
+            tag = 1
+
+        # fill these fields either way
+        if save_ap or (tag!=2):
+            result['time_truth'].append(truth_data['t_mean_photons'][iteration_id])
+            result['time_std_truth'].append(truth_data['t_sigma_photons'][iteration_id])
+            result['time_last_photon_truth'].append(truth_data['t_last_photon'][iteration_id])
+            result['time_interaction_truth'].append(truth_data['t_interaction'][iteration_id])
+            result['area_truth'].append(truth_data['n_photons'][iteration_id])
+            result['type_truth'].append(tag + 1) # 1 for s1, 2 for s2, 3 for photoionization
+            result['x_truth'].append(truth_data['x'][iteration_id])
+            result['y_truth'].append(truth_data['y'][iteration_id])
+            result['z_truth'].append(truth_data['z'][iteration_id])
+            result['top_fraction'].append(truth_data['top_fraction'][iteration_id])
+
+        if (tag==1):
+            # peak is an S2
+            result['electron_time_truth'].append(truth_data['t_mean_electrons'][iteration_id])
+            result['first_electron_time_truth'].append(truth_data['t_first_electron'][iteration_id])
+            result['last_electron_time_truth'].append(truth_data['t_last_electron'][iteration_id])
+        elif (tag==0) or save_ap:
             # peak is not an s2
             for s2_field in s2_only_keys:
                 result[s2_field].append(float('nan'))
-        else:
-            # peak is an S2
-            result['electron_time_truth'].append(truth_tree.t_mean_electrons)
-            result['first_electron_time_truth'].append(truth_tree.t_first_electron)
-            result['last_electron_time_truth'].append(truth_tree.t_last_electron)
-        result['tag'].append(tag)
         iteration_id += 1
         if iteration_id>=NumStepsInTruth:
             break
-        truth_tree.GetEntry(iteration_id)
     result['index_truth'] = event_id
     result['peaks_length'] = len(result['area_truth'])
     #for field in list(Data.keys()):

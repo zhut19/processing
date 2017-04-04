@@ -27,4 +27,5 @@ You can use this code to produce fax-only data with Qing's framework in one term
 - `correlated` : this correlates s1 and s2 in time by adding dt, NOT in area
 - `nodetype` : 0 for xenon1t, 1 for public, 2 for kicp
 - `use_array_truth` : set to 1 to put truth information in arrays
+- `save_ap_truth` : if `use_array_truth=1`, set this to 1 to save afterpulse truth info
 - `minitree_type` : 0 for basics, 1 for S1S2Properties minitrees, 2 for PeakEfficiency minitrees

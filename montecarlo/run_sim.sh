@@ -5,11 +5,12 @@
 # $3 - mc_config
 # $4 - events to simulate
 # $5 - mc_version
-# $6 - pax_version
-# $7 - save_raw setting
-# $8 - preinit_macro
-# $9 - optical_setup
-# $10 - source_macro
+# $6 - fax_version
+# $7 - pax_version
+# $8 - save_raw setting
+# $9 - preinit_macro
+# $10 - optical_setup
+# $11 - source_macro
 
 function terminate {
 
@@ -51,13 +52,16 @@ NEVENTS=$4
 # Select MC version
 MCVERSION=$5
 
-# Select fax+pax version
-PAXVERSION=$6
+# Select fax version
+FAXVERSION=$6
+
+# Select pax version
+PAXVERSION=$7
 
 # Save raw waveforms (0: no, 1: yes)
 SAVE_RAW=0
-if [[ "$7" == 1 ]]; then
-    SAVE_RAW=$7
+if [[ "$8" == 1 ]]; then
+    SAVE_RAW=$8
 fi
 
 # runPatch argument corresponding to CONFIG variable above
@@ -73,14 +77,19 @@ fi
  
 start_dir=$PWD
 
+
 # Setup CVMFS directories
 CVMFSDIR=/cvmfs/xenon.opensciencegrid.org
 RELEASEDIR=${CVMFSDIR}/releases/mc/${MCVERSION}
 
+# Get the directory where libopcodes is located, LD_LIBRARY_PATH gets wiped
+# when source activate is run so we should set it after that for safety
+PAX_LIB_DIR=${CVMFSDIR}/releases/anaconda/2.4/envs/pax_${PAXVERSION}/lib/
+
 # Setup Geant4 macros
 MACROSDIR=${RELEASEDIR}/macros
 
-PREINIT_MACRO=$8
+PREINIT_MACRO=$9
 if [[ -z $PREINIT_MACRO ]];
 then
     PREINIT_MACRO=preinit.mac
@@ -98,7 +107,7 @@ else
     fi
 fi
 
-OPTICAL_SETUP=$9
+OPTICAL_SETUP=$10
 if [[ -z $OPTICAL_SETUP ]];
 then
     OPTICAL_SETUP=${MACROSDIR}/setup_optical_S1.mac
@@ -110,7 +119,7 @@ else
     fi
 fi
 
-SOURCE_MACRO=${10}
+SOURCE_MACRO=${11}
 if [[ -z $SOURCE_MACRO ]];
 then
     SOURCE_MACRO=${MACROSDIR}/run_${CONFIG}.mac
@@ -136,6 +145,13 @@ set -o pipefail
 # Setup the software
 export PATH="${CVMFSDIR}/releases/anaconda/2.4/bin:$PATH"
 source activate mc
+
+# make sure libopcodes is in the LD_LIBRARY_PATH
+if [[ ! `/bin/env` =~ .*${PAX_LIB_DIR}.* ]];
+then
+    export LD_LIBRARY_PATH=$PAX_LIB_DIR:$LD_LIBRARY_PATH
+fi
+
 if [ $? -ne 0 ];
 then
   exit 1
@@ -237,10 +253,15 @@ FAX_FILENAME=${FILENAME}_faxtruth
 
 # fax+pax stages
 source deactivate
-source activate pax_${PAXVERSION}
+source activate pax_${FAXVERSION}
+# make sure libopcodes is in the LD_LIBRARY_PATH
+if [[ ! `/bin/env` =~ .*${PAX_LIB_DIR}.* ]];
+then
+    export LD_LIBRARY_PATH=$PAX_LIB_DIR:$LD_LIBRARY_PATH
+fi
 
 # Do not save raw waveforms
-if [[ ${SAVE_RAW} == 0 ]]; then
+if [[ ${SAVE_RAW} == 0 && ${PAXVERSION} == ${FAXVERSION} ]]; then
     (time paxer --input ${PAX_INPUT_FILENAME}.root --config_string "[WaveformSimulator]truth_file_name=\"${FAX_FILENAME}\"" --config XENON1T SimulationMCInput --output ${PAX_FILENAME};) 2>&1 | tee ${PAX_FILENAME}.log
 
     if [ $? -ne 0 ];
@@ -248,7 +269,7 @@ if [[ ${SAVE_RAW} == 0 ]]; then
 	terminate 13
     fi
 
-# Save raw waveforms
+# Save raw waveforms or different fax/pax versions
 else
     (time paxer --input ${PAX_INPUT_FILENAME}.root --config_string "[WaveformSimulator]truth_file_name=\"${FAX_FILENAME}\"" --config XENON1T reduce_raw_data SimulationMCInput --output ${RAW_FILENAME};) 2>&1 | tee ${RAW_FILENAME}.log
 
@@ -257,25 +278,49 @@ else
 	terminate 14
     fi
 
+    if [[ ${PAXVERSION} != ${FAXVERSION} ]];
+    then
+	    source activate pax_${PAXVERSION}
+        # make sure libopcodes is in the LD_LIBRARY_PATH
+        if [[ ! `/bin/env` =~ .*${PAX_LIB_DIR}.* ]];
+        then
+            export LD_LIBRARY_PATH=$PAX_LIB_DIR:$LD_LIBRARY_PATH
+        fi
+
+    fi
+
     (time paxer --ignore_rundb --input ${RAW_FILENAME} --config XENON1T --output ${PAX_FILENAME};) 2>&1 | tee ${PAX_FILENAME}.log
-    
+
     if [ $? -ne 0 ];
     then
 	terminate 15
     fi
+
+    if [[ ${SAVE_RAW} == 0 ]]; then
+	rm -r ${RAW_FILENAME}
+    fi
+fi
+
+source activate pax_${FAXVERSION}
+# make sure libopcodes is in the LD_LIBRARY_PATH
+if [[ ! `/bin/env` =~ .*${PAX_LIB_DIR}.* ]];
+then
+    export LD_LIBRARY_PATH=$PAX_LIB_DIR:$LD_LIBRARY_PATH
 fi
 
 # Flatten fax truth info
 FAXSORT_FILENAME=${FAX_FILENAME}_sort
 FAXSORT_OUTPUT_FORMAT=2 # Pickle + ROOT
-(time python ${CVMFSDIR}/releases/processing/montecarlo/fax_waveform/TruthSorting_arrays.py ${FAX_FILENAME}.root ${FAXSORT_FILENAME} ${FAXSORT_OUTPUT_FORMAT};) 2>&1 | tee ${FAXSORT_FILENAME}.log
+(time python ${CVMFSDIR}/releases/processing/montecarlo/fax_waveform/TruthSorting_arrays.py ${FAX_FILENAME}.csv ${FAXSORT_FILENAME} ${FAXSORT_OUTPUT_FORMAT};) 2>&1 | tee ${FAXSORT_FILENAME}.log
 if [ $? -ne 0 ];
 then
     terminate 16
 fi
+rm ${FAX_FILENAME}.csv # Peak-by-peak file with all photoionization info
+
 
 # hax stage
-HAX_TREEMAKERS="Basics Fundamentals DoubleScatter LargestPeakProperties TotalProperties"
+HAX_TREEMAKERS="Basics Fundamentals DoubleScatter LargestPeakProperties TotalProperties Extended"
 
 # ROOT output
 (time haxer --main_data_paths ${OUTDIR} --input ${PAX_FILENAME##*/} --pax_version_policy loose --treemakers ${HAX_TREEMAKERS} --force_reload;) 2>&1 | tee ${HAX_FILENAME}.log

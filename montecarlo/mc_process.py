@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import argparse
+import getpass
 import json
 import math
 import os
@@ -21,6 +22,8 @@ CONFIGS = (
     'Cryostat_neutron',
     'Cryostat_Th232',
     'Cryostat_U238',
+    'Cryostat_Cs137',
+    'Cryostat_Co60',
     'DDFusion_neutron',
     #'Disk15m_muon', # Not yet tested
     'ib1sp1_Cs137',
@@ -189,6 +192,7 @@ PAX_VERSIONS = get_pax_versions()
 def generate_mc_workflow(mc_config,
                          mc_flavor,
                          mc_version,
+                         fax_version,
                          pax_version,
                          start_job,
                          num_events,
@@ -202,6 +206,7 @@ def generate_mc_workflow(mc_config,
     :param mc_config: MC config to use
     :param mc_flavor: MC flavor to use
     :param mc_version: version of MC code to use
+    :param fax_version: version of FAX code to use
     :param pax_version: version of PAX code to use
     :param start_job: starting job id number
     :param num_events: total number of events to generate
@@ -219,8 +224,12 @@ def generate_mc_workflow(mc_config,
     num_jobs = get_num_jobs(num_events, batch_size)
     sys.stdout.write("Generating {0} events ".format(num_events) +
                      "using {0} jobs\n".format(num_jobs))
+
+    if fax_version is None:
+        fax_version = pax_version
+
     if preinit_macro is None:
-        if "Cs137" in mc_config:
+        if "Cs137" in mc_config and "ib" in mc_config and "sp" in mc_config:
             preinit_macro = 'preinit_{0}.mac'.format(mc_config)
         elif "muon" in mc_config or "MV" in mc_config:
             preinit_macro = 'preinit_MV.mac'
@@ -282,6 +291,7 @@ def generate_mc_workflow(mc_config,
                                          mc_config,
                                          str(left_events),
                                          mc_version,
+                                         fax_version,
                                          pax_version,
                                          '0',  # don't save raw data
                                          preinit_macro,
@@ -293,6 +303,7 @@ def generate_mc_workflow(mc_config,
                                          mc_config,
                                          str(batch_size),
                                          mc_version,
+                                         fax_version,
                                          pax_version,
                                          '0',  # don't save raw data
                                          preinit_macro,
@@ -304,6 +315,8 @@ def generate_mc_workflow(mc_config,
                 run_sim_job.uses(optical_macro_input, link=Pegasus.DAX3.Link.INPUT)
             if source_macro_input:
                 run_sim_job.uses(source_macro_input, link=Pegasus.DAX3.Link.INPUT)
+            run_sim_job.addProfile(Pegasus.DAX3.Profile(Pegasus.DAX3.Namespace.CONDOR, "request_disk", "1G"))
+
             output = Pegasus.DAX3.File("{0}_output.tar.bz2".format(job))
             run_sim_job.uses(output, link=Pegasus.DAX3.Link.OUTPUT, transfer=True)
             dax.addJob(run_sim_job)
@@ -358,6 +371,10 @@ def run_main():
                         choices=MC_VERSIONS,
                         action='store', required=True,
                         help='version of MC code to use')
+    parser.add_argument('--fax-version', dest='fax_version',
+                        choices=PAX_VERSIONS,
+                        action='store', default=None,
+                        help='version of fax to use')
     parser.add_argument('--pax-version', dest='pax_version',
                         choices=PAX_VERSIONS,
                         action='store', required=True,
@@ -388,6 +405,7 @@ def run_main():
                      args.mc_config,
                      args.batch_size,
                      args.mc_version,
+                     args.fax_version,
                      args.pax_version,
                      args.preinit_macro,
                      args.optical_setup,
@@ -396,6 +414,7 @@ def run_main():
     workflow_info[0] = generate_mc_workflow(args.mc_config,
                                             args.mc_flavor,
                                             args.mc_version,
+                                            args.fax_version,
                                             args.pax_version,
                                             args.start_job,
                                             args.num_events,
@@ -410,6 +429,7 @@ def run_main():
         except OSError:
             sys.stderr.write("Can't remove mc_process.xml\n")
         return 1
+    pegasus_id = None
     if args.grid_type == 'osg':
         pegasus_id = pegasus_submit('mc_process.xml',
                                     'condorpool',
@@ -419,6 +439,17 @@ def run_main():
         pegasus_id = pegasus_submit('mc_process.xml',
                                     'egi',
                                     output_directory)
+    if pegasus_id:
+        workflow_dir = os.path.join(os.getcwd(),
+                                    getpass.getuser(),
+                                    "pegasus",
+                                    "montecarlo",
+                                    pegasus_id)
+        sys.stdout.write("MC workflow started:\n")
+        sys.stdout.write("Run 'pegasus-status -l " +
+                         "{0}' to monitor\n".format(workflow_dir))
+        sys.stdout.write("Run 'pegasus-remove " +
+                         "{0}' to stop\n".format(workflow_dir))
     try:
         os.unlink('mc_process.xml')
     except OSError:
