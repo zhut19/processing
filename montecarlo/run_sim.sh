@@ -93,7 +93,7 @@ PREINIT_MACRO=$9
 if [[ -z $PREINIT_MACRO ]];
 then
     PREINIT_MACRO=preinit.mac
-    if [[ ${CONFIG} == *"Cs137"* && ${CONFIG} == *"ubsp"* ]]; then
+    if [[ ${CONFIG} == *"ubsp"* || ${CONFIG} == *"ib1sp"* || ${CONFIG} == *"ib2sp"* ]]; then
         PREINIT_MACRO=preinit_${CONFIG}.mac
     elif [[ ${CONFIG} == *"muon"* || ${CONFIG} == *"MV"* ]]; then
         PREINIT_MACRO=preinit_MV.mac

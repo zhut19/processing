@@ -16,7 +16,7 @@ MC_PATH = '/cvmfs/xenon.opensciencegrid.org/releases/mc/'
 PAX_PATH = "/cvmfs/xenon.opensciencegrid.org/releases/anaconda/2.4/envs/"
 MC_FLAVORS = ('G4', 'NEST', 'G4p10')
 CONFIGS = (
-    'AmBe_neutronISO',
+    'ib1sp500mm_AmBe',
     'Cryostat_Co60',
     'Cryostat_K40',
     'Cryostat_neutron',
@@ -230,7 +230,7 @@ def generate_mc_workflow(mc_config,
         fax_version = pax_version
 
     if preinit_macro is None:
-        if "Cs137" in mc_config and "ub" in mc_config and "sp" in mc_config:
+        if "ubsp" in mc_config or "ib1sp" in mc_config or "ib2sp" in mc_config:
             preinit_macro = 'preinit_{0}.mac'.format(mc_config)
         elif "muon" in mc_config or "MV" in mc_config:
             preinit_macro = 'preinit_MV.mac'
