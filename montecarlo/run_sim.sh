@@ -339,4 +339,6 @@ fi
 # Move hax output
 mv *.root *.pklz ${OUTDIR} 
 
+#rm ${PAX_FILENAME}.root  # Delete pax output for now
+
 terminate 0
