@@ -107,7 +107,7 @@ else
     fi
 fi
 
-OPTICAL_SETUP=$10
+OPTICAL_SETUP=${10}
 if [[ -z $OPTICAL_SETUP ]];
 then
     OPTICAL_SETUP=${MACROSDIR}/setup_optical_S1.mac
