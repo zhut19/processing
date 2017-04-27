@@ -8,6 +8,7 @@ import os
 import re
 import subprocess
 import sys
+import glob
 
 import Pegasus.DAX3
 import cStringIO
@@ -15,35 +16,6 @@ import cStringIO
 MC_PATH = '/cvmfs/xenon.opensciencegrid.org/releases/mc/'
 PAX_PATH = "/cvmfs/xenon.opensciencegrid.org/releases/anaconda/2.4/envs/"
 MC_FLAVORS = ('G4', 'NEST', 'G4p10')
-CONFIGS = (
-    'ib1sp500mm_AmBe',
-    'Cryostat_Co60',
-    'Cryostat_K40',
-    'Cryostat_neutron',
-    'Cryostat_Th232',
-    'Cryostat_U238',
-    'Cryostat_Cs137',
-    'Cryostat_Co60',
-    'DDFusion_neutron',
-    #'Disk15m_muon', # Not yet tested
-    'ubsp1250mm_Cs137',
-    'ubsp1350mm_Cs137',
-    'ubsp1450mm_Cs137',
-    'optPhot',
-    'Pmt_Co60',
-    'Pmt_K40',
-    'Pmt_neutron',
-    'Pmt_Th232',
-    'Pmt_U238',
-    'TPC_2n2b',
-    'TPC_ERsolar',
-    'TPC_Kr83m',
-    'TPC_Kr85',
-    'TPC_Rn222',
-    'TPC_WIMP',
-    'WholeLXe_Rn220',
-    'WholeLXe_Rn222'
-)
 
 # pegasus constants
 PEGASUSRC_PATH = './pegasusrc'
@@ -170,7 +142,7 @@ def get_pax_versions():
     """
     Return a tuple with pax versions that are available
 
-    :return: tuple with string of mc versions available
+    :return: tuple with string of pax versions available
     """
     try:
         versions = []
@@ -185,10 +157,41 @@ def get_pax_versions():
         sys.stderr.write("Can't get pax versions from {0}\n".format(PAX_PATH))
         return ()
 
+
+def get_configs():
+    """
+    Return a tuple with G4 macros that are available
+    Warning: reads from latest MC version in /cvmfs
+
+    :return: tuple with string of G4 macros available in latest MC version
+    """
+    try:
+	configs = []
+    	if os.path.isdir(MC_PATH):
+    	    versions = glob.glob(MC_PATH+'/*')
+    	    latest_dir = max(versions, key=os.path.getctime)
+
+	MACROS_PATH = latest_dir+'/macros'
+
+	if os.path.isdir(MACROS_PATH):
+	    configs = glob.glob(MACROS_PATH+'/run_*.mac')
+	    configs = [config.split('run_', 1)[1] for config in configs]
+	    configs = [config.split('.mac', 1)[0] for config in configs]
+	    configs.sort()
+
+        print ('Reading G4 macros from ', latest_dir)
+
+	return tuple(configs)
+
+    except OSError:
+        sys.stderr.write("Can't get configs from {0}\n".format(MC_PATH))
+        return ()
+
+
 # needs to be set after functions defined
 MC_VERSIONS = get_mc_versions()
 PAX_VERSIONS = get_pax_versions()
-
+CONFIGS = get_configs()
 
 def generate_mc_workflow(mc_config,
                          mc_flavor,
