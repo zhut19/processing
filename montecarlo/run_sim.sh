@@ -92,10 +92,8 @@ MACROSDIR=${RELEASEDIR}/macros
 PREINIT_MACRO=$9
 if [[ -z $PREINIT_MACRO ]];
 then
-    PREINIT_MACRO=preinit.mac
-    if [[ ${CONFIG} == *"ubsp"* || ${CONFIG} == *"ib1sp"* || ${CONFIG} == *"ib2sp"* ]]; then
-        PREINIT_MACRO=preinit_${CONFIG}.mac
-    elif [[ ${CONFIG} == *"muon"* || ${CONFIG} == *"MV"* ]]; then
+    PREINIT_MACRO=preinit_TPC.mac
+    if [[ ${CONFIG} == *"muon"* || ${CONFIG} == *"MV"* ]]; then
         PREINIT_MACRO=preinit_MV.mac
     fi
     PREINIT_MACRO=${MACROSDIR}/${PREINIT_MACRO}
@@ -106,8 +104,47 @@ else
         PREINIT_MACRO=${MACROSDIR}/${PREINIT_MACRO}
     fi
 fi
+echo "Preinit macro: $PREINIT_MACRO" 
 
-OPTICAL_SETUP=${10}
+PREINIT_BELT=${10}
+if [[ -z $PREINIT_BELT ]];
+then
+    PREINIT_BELT=preinit_B_none.mac
+    if [[ ${CONFIG} == *"B_"* ]]; then
+        for belt_type in ib ub
+        do
+            if [[ ${CONFIG} == *"_${belt_type}"* ]]; then
+                belt_config=${belt_type}`echo ${CONFIG} | sed -e 's/.*ib\(.*\)/\1/'`
+            fi
+        done
+
+        PREINIT_BELT=preinit_B_${belt_config}.mac
+    fi
+    PREINIT_BELT=${MACROSDIR}/${PREINIT_BELT}
+else
+    if [[ -f ${start_dir}/${PREINIT_BELT} ]]; then
+        PREINIT_BELT=${start_dir}/${PREINIT_BELT}
+    else
+        PREINIT_BELT=${MACROSDIR}/${PREINIT_BELT}
+    fi
+fi
+echo "Preinit belt: $PREINIT_BELT" 
+
+PREINIT_EFIELD=${11}
+if [[ -z $PREINIT_EFIELD ]];
+then
+    PREINIT_EFIELD=preinit_EF_C15kVA4kV.mac
+    PREINIT_EFIELD=${MACROSDIR}/${PREINIT_EFIELD}
+else
+    if [[ -f ${start_dir}/${PREINIT_EFIELD} ]]; then
+        PREINIT_EFIELD=${start_dir}/${PREINIT_EFIELD}
+    else
+        PREINIT_EFIELD=${MACROSDIR}/${PREINIT_EFIELD}
+    fi
+fi
+echo "Preinit efield: $PREINIT_EFIELD"
+
+OPTICAL_SETUP=${12}
 if [[ -z $OPTICAL_SETUP ]];
 then
     OPTICAL_SETUP=${MACROSDIR}/setup_optical_S1.mac
@@ -118,8 +155,9 @@ else
         OPTICAL_SETUP=${MACROSDIR}/${OPTICAL_SETUP}
     fi
 fi
+echo "Optical macro: $OPTICAL_SETUP" 
 
-SOURCE_MACRO=${11}
+SOURCE_MACRO=${13}
 if [[ -z $SOURCE_MACRO ]];
 then
     SOURCE_MACRO=${MACROSDIR}/run_${CONFIG}.mac
@@ -130,6 +168,7 @@ else
         SOURCE_MACRO=${MACROSDIR}/${SOURCE_MACRO}
     fi
 fi
+echo "Source macro: $SOURCE_MACRO"
 
 # set HOME directory if it's not set
 if [[ ${HOME} == "" ]];
@@ -205,8 +244,7 @@ G4NSORT_FILENAME=${G4_FILENAME}_Sort
 G4EXEC=${RELEASEDIR}/xenon1t_${MCFLAVOR}
 ln -sf ${MACROSDIR} # For reading e.g. input spectra from CWD
 
-echo "preinit: $PREINIT_MACRO setup: $OPTICAL_SETUP source: $SOURCE_MACRO"
-(time ${G4EXEC} -p ${PREINIT_MACRO} -s ${OPTICAL_SETUP} -f ${SOURCE_MACRO} -n ${NEVENTS} -o ${G4_FILENAME}.root;) 2>&1 | tee ${G4_FILENAME}.log
+(time ${G4EXEC} -p ${PREINIT_MACRO} -b ${PREINIT_BELT} -e ${PREINIT_EFIELD} -s ${OPTICAL_SETUP} -f ${SOURCE_MACRO} -n ${NEVENTS} -o ${G4_FILENAME}.root;) 2>&1 | tee ${G4_FILENAME}.log
 if [ $? -ne 0 ];
 then
     terminate 10

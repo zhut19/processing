@@ -50,9 +50,11 @@ where
     FAX_VERSION: fax GitHub release number (default=PAX_VERSION)
     PAX_VERSION: pax (also fax if not specified above) GitHub release number (https://github.com/XENON1T/pax/releases)
     GRID_TYPE: osg (US grid), egi (EU grid)
-    PREINIT_MACRO: name of macro to use for Geant4 preinit (defaults to preinit[,_MV,_cs137].mac depending on SOURCE_MACRO)
-    OPTICAL_SETUP: name of macro to use for Geant4 optical setup (defaults to setup_optical_S1.mac)
-    SOURCE_MACRO: name of macro to run in Geant4 (defaults to run_<MC_CONFIG>.mac)
+    PREINIT_MACRO: (Optional) name of macro to use for Geant4 preinit (defaults to preinit_TPC.mac)
+    PREINIT_BELT: (Optional) name of macro for setting up calibration belts (defaults to preinit_B_none.mac or depending on MC_CONFIG)
+    PREINIT_EFIELD: (Optional) name of macro for varying e-field in NEST (defaults to preinit_EF_C15kVA4kV.mac)
+    OPTICAL_SETUP: (Optional) name of macro to use for Geant4 optical setup (defaults to setup_optical_S1.mac)
+    SOURCE_MACRO: (Optional) name of macro to run in Geant4 (defaults to run_<MC_CONFIG>.mac)
 ~~~~
 For example:
 ~~~~
@@ -125,9 +127,11 @@ where
     FAX_VERSION: fax GitHub release number (default=PAX_VERSION)
     PAX_VERSION: pax (also fax if not specified above) GitHub release number (https://github.com/XENON1T/pax/releases)
     SAVE_WAVEFORMS: Flag to save raw waveforms (disk space intensive); 0 - off (default), 1 - on
-    PREINIT_MACRO: name of macro to use for Geant4 preinit (defaults to preinit[,_MV,_cs137].mac depending on SOURCE_MACRO)
-    OPTICAL_SETUP: name of macro to use for Geant4 optical setup (defaults to setup_optical_S1.mac)
-    SOURCE_MACRO: name of macro to run in Geant4 (defaults to run_<MC_CONFIG>.mac)
+    PREINIT_MACRO: (Optional) name of macro to use for Geant4 preinit (defaults to preinit_TPC.mac)
+    PREINIT_BELT: (Optional) name of macro for setting up calibration belts (defaults to preinit_B_none.mac or depending on MC_CONFIG)
+    PREINIT_EFIELD: (Optional) name of macro for varying e-field in NEST (defaults to preinit_EF_C15kVA4kV.mac)
+    OPTICAL_SETUP: (Optional) name of macro to use for Geant4 optical setup (defaults to setup_optical_S1.mac)
+    SOURCE_MACRO: (Optional) name of macro to run in Geant4 (defaults to run_<MC_CONFIG>.mac)
 ~~~~
 
 This will create output files in "output" directory.

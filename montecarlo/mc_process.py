@@ -20,7 +20,6 @@ MC_FLAVORS = ('G4', 'NEST', 'G4p10')
 # pegasus constants
 PEGASUSRC_PATH = './pegasusrc'
 
-
 def update_site_catalogs(site):
     """
     Update the pegasus site catalog to set the local scratch and output
@@ -202,6 +201,8 @@ def generate_mc_workflow(mc_config,
                          num_events,
                          batch_size,
                          preinit_macro,
+                         preinit_belt,
+                         preinit_efield,
                          optical_setup,
                          source_macro):
     """
@@ -216,6 +217,8 @@ def generate_mc_workflow(mc_config,
     :param num_events: total number of events to generate
     :param batch_size: number of events to generate per job
     :param preinit_macro: macro to use to preinitialize MC
+    :param preinit_belt: macro to use to preinitialize calibration belt
+    :param preinit_efield: macro to use to preinitialize efield (for NEST only)
     :param optical_setup: macro to setup optics
     :param source_macro: macro to use for MC generation
     :return: number of jobs in the workflow
@@ -233,16 +236,67 @@ def generate_mc_workflow(mc_config,
         fax_version = pax_version
 
     if preinit_macro is None:
-        if "ubsp" in mc_config or "ib1sp" in mc_config or "ib2sp" in mc_config:
-            preinit_macro = 'preinit_{0}.mac'.format(mc_config)
-        elif "muon" in mc_config or "MV" in mc_config:
+        if "muon" in mc_config or "MV" in mc_config:
             preinit_macro = 'preinit_MV.mac'
         else:
-            preinit_macro = 'preinit.mac'
+            preinit_macro = 'preinit_TPC.mac'
+
+    if preinit_belt is None:
+	belt_pos = "none"
+        for belt_type in ["ib", "ub"]:
+            if "_"+belt_type in mc_config:
+                belt_pos = mc_config[mc_config.index(belt_type):]
+
+
+        preinit_belt = "preinit_B_{0}.mac".format(belt_pos)
+
+    if preinit_efield is None:
+        preinit_efield = "preinit_EF_C15kVA4kV.mac"
+
     if optical_setup is None:
         optical_setup = 'setup_optical_S1.mac'
+
     if source_macro is None:
         source_macro = "run_{0}.mac".format(mc_config)
+
+    preinit_macro_input = None
+    if not check_macro(preinit_macro, mc_version):
+        if not os.path.exists(preinit_macro):
+            sys.stderr.write("Preinit macro not in OASIS or current "
+                             "directory, exiting.\n")
+            sys.exit(1)
+        preinit_macro_input = Pegasus.DAX3.File(preinit_macro)
+        macro_path = os.path.join(os.getcwd(), preinit_macro)
+        file_pfn = Pegasus.DAX3.PFN("file://{0}".format(macro_path),
+                                    "local")
+        preinit_macro_input.addPFN(file_pfn)
+        dax.addFile(preinit_macro_input)
+
+    preinit_belt_input = None
+    if not check_macro(preinit_belt, mc_version):
+        if not os.path.exists(preinit_belt):
+            sys.stderr.write("Preinit belt not in OASIS or current "
+                             "directory, exiting.\n")
+            sys.exit(1)
+        preinit_belt_input = Pegasus.DAX3.File(preinit_belt)
+        macro_path = os.path.join(os.getcwd(), preinit_belt)
+        file_pfn = Pegasus.DAX3.PFN("file://{0}".format(macro_path),
+                                    "local")
+        preinit_belt_input.addPFN(file_pfn)
+        dax.addFile(preinit_belt_input)
+
+    preinit_efield_input = None
+    if not check_macro(preinit_efield, mc_version):
+        if not os.path.exists(preinit_efield):
+            sys.stderr.write("Preinit efield not in OASIS or current "
+                             "directory, exiting.\n")
+            sys.exit(1)
+        preinit_efield_input = Pegasus.DAX3.File(preinit_efield)
+        macro_path = os.path.join(os.getcwd(), preinit_efield)
+        file_pfn = Pegasus.DAX3.PFN("file://{0}".format(macro_path),
+                                    "local")
+        preinit_efield_input.addPFN(file_pfn)
+        dax.addFile(preinit_efield_input)
 
     source_macro_input = None
     if not check_macro(source_macro, mc_version):
@@ -270,19 +324,6 @@ def generate_mc_workflow(mc_config,
         optical_macro_input.addPFN(file_pfn)
         dax.addFile(optical_macro_input)
 
-    preinit_macro_input = None
-    if not check_macro(preinit_macro, mc_version):
-        if not os.path.exists(preinit_macro):
-            sys.stderr.write("Preinit macro not in OASIS or current "
-                             "directory, exiting.\n")
-            sys.exit(1)
-        preinit_macro_input = Pegasus.DAX3.File(preinit_macro)
-        macro_path = os.path.join(os.getcwd(), preinit_macro)
-        file_pfn = Pegasus.DAX3.PFN("file://{0}".format(macro_path),
-                                    "local")
-        preinit_macro_input.addPFN(file_pfn)
-        dax.addFile(preinit_macro_input)
-
     try:
         for job in range(start_job, start_job+num_jobs):
             run_sim_job = Pegasus.DAX3.Job(id="{0}".format(job), name="run_sim.sh")
@@ -299,6 +340,8 @@ def generate_mc_workflow(mc_config,
                                          pax_version,
                                          '0',  # don't save raw data
                                          preinit_macro,
+                                         preinit_belt,
+                                         preinit_efield,
                                          optical_setup,
                                          source_macro)
             else:
@@ -311,10 +354,16 @@ def generate_mc_workflow(mc_config,
                                          pax_version,
                                          '0',  # don't save raw data
                                          preinit_macro,
+                                         preinit_belt,
+                                         preinit_efield,
                                          optical_setup,
                                          source_macro)
             if preinit_macro_input:
                 run_sim_job.uses(preinit_macro_input, link=Pegasus.DAX3.Link.INPUT)
+            if preinit_belt_input:
+                run_sim_job.uses(preinit_belt_input, link=Pegasus.DAX3.Link.INPUT)
+            if preinit_efield_input:
+                run_sim_job.uses(preinit_efield_input, link=Pegasus.DAX3.Link.INPUT)
             if optical_macro_input:
                 run_sim_job.uses(optical_macro_input, link=Pegasus.DAX3.Link.INPUT)
             if source_macro_input:
@@ -390,6 +439,12 @@ def run_main():
     parser.add_argument('--preinit-macro', dest='preinit_macro',
                         action='store', default=None,
                         help='preinit macro to use')
+    parser.add_argument('--preinit-belt', dest='preinit_belt',
+                        action='store', default=None,
+                        help='preinit belt to use')
+    parser.add_argument('--preinit-efield', dest='preinit_efield',
+                        action='store', default=None,
+                        help='preinit efield to use')
     parser.add_argument('--optical-setup', dest='optical_setup',
                         action='store', default=None,
                         help='macro to use to setup optical properties')
@@ -412,6 +467,8 @@ def run_main():
                      args.fax_version,
                      args.pax_version,
                      args.preinit_macro,
+                     args.preinit_belt,
+                     args.preinit_efield,
                      args.optical_setup,
                      args.source_macro]
 
@@ -424,6 +481,8 @@ def run_main():
                                             args.num_events,
                                             args.batch_size,
                                             args.preinit_macro,
+                                            args.preinit_belt,
+                                            args.preinit_efield,
                                             args.optical_setup,
                                             args.source_macro)
     if workflow_info[0] == 0:
