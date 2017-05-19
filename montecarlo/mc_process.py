@@ -254,7 +254,7 @@ def generate_mc_workflow(mc_config,
         preinit_efield = "preinit_EF_C15kVA4kV.mac"
 
     if optical_setup is None:
-        optical_setup = 'setup_optical_S1.mac'
+        optical_setup = 'setup_optical.mac'
 
     if source_macro is None:
         source_macro = "run_{0}.mac".format(mc_config)

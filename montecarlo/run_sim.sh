@@ -147,7 +147,7 @@ echo "Preinit efield: $PREINIT_EFIELD"
 OPTICAL_SETUP=${12}
 if [[ -z $OPTICAL_SETUP ]];
 then
-    OPTICAL_SETUP=${MACROSDIR}/setup_optical_S1.mac
+    OPTICAL_SETUP=${MACROSDIR}/setup_optical.mac
 else
     if [[ -f ${start_dir}/${OPTICAL_SETUP} ]]; then
         OPTICAL_SETUP=${start_dir}/${OPTICAL_SETUP}
