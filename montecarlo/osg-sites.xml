@@ -21,6 +21,7 @@
         <profile namespace="condor" key="+WANT_RCC_ciconnect">True</profile>
         <profile namespace="condor" key="requirements">
             (HAS_CVMFS_xenon_opensciencegrid_org) &amp;&amp;
+              ( GLIDEIN_Site =!= "Comet" ) &amp;&amp;
             (((TARGET.GLIDEIN_ResourceName =!= MY.MachineAttrGLIDEIN_ResourceName1) ||
               (RCC_Factory == "ciconnect")) &amp;&amp;
              ((TARGET.GLIDEIN_ResourceName =!= MY.MachineAttrGLIDEIN_ResourceName2) ||
