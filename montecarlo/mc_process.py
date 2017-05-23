@@ -11,7 +11,6 @@ import sys
 import glob
 
 import Pegasus.DAX3
-import cStringIO
 
 MC_PATH = '/cvmfs/xenon.opensciencegrid.org/releases/mc/'
 PAX_PATH = "/cvmfs/xenon.opensciencegrid.org/releases/anaconda/2.4/envs/"
@@ -19,6 +18,7 @@ MC_FLAVORS = ('G4', 'NEST', 'G4p10')
 
 # pegasus constants
 PEGASUSRC_PATH = './pegasusrc'
+
 
 def update_site_catalogs(site):
     """
@@ -111,7 +111,7 @@ def pegasus_submit(dax, site, output_directory):
                                          stderr=subprocess.STDOUT)
         match = re.search('running in the base directory:.*?(\d{8}T\d{6}-\d{4})',
                           output,
-                          re.MULTILINE|re.DOTALL)
+                          re.MULTILINE | re.DOTALL)
         if match:
             return match.group(1)
     except subprocess.CalledProcessError as err:
@@ -165,22 +165,22 @@ def get_configs():
     :return: tuple with string of G4 macros available in latest MC version
     """
     try:
-	configs = []
-    	if os.path.isdir(MC_PATH):
-    	    versions = glob.glob(MC_PATH+'/*')
-    	    latest_dir = max(versions, key=os.path.getctime)
+        configs = []
+        if os.path.isdir(MC_PATH):
+            versions = glob.glob(MC_PATH + '/*')
+            latest_dir = max(versions, key=os.path.getctime)
 
-	MACROS_PATH = latest_dir+'/macros'
+        macros_path = latest_dir + '/macros'
 
-	if os.path.isdir(MACROS_PATH):
-	    configs = glob.glob(MACROS_PATH+'/run_*.mac')
-	    configs = [config.split('run_', 1)[1] for config in configs]
-	    configs = [config.split('.mac', 1)[0] for config in configs]
-	    configs.sort()
+        if os.path.isdir(macros_path):
+            configs = glob.glob(macros_path + '/run_*.mac')
+            configs = [config.split('run_', 1)[1] for config in configs]
+            configs = [config.split('.mac', 1)[0] for config in configs]
+            configs.sort()
 
         print ('Reading G4 macros from ', latest_dir)
 
-	return tuple(configs)
+        return tuple(configs)
 
     except OSError:
         sys.stderr.write("Can't get configs from {0}\n".format(MC_PATH))
@@ -191,6 +191,7 @@ def get_configs():
 MC_VERSIONS = get_mc_versions()
 PAX_VERSIONS = get_pax_versions()
 CONFIGS = get_configs()
+
 
 def generate_mc_workflow(mc_config,
                          mc_flavor,
@@ -242,11 +243,10 @@ def generate_mc_workflow(mc_config,
             preinit_macro = 'preinit_TPC.mac'
 
     if preinit_belt is None:
-	belt_pos = "none"
+        belt_pos = "none"
         for belt_type in ["ib", "ub", "NGpos"]:
             if "_"+belt_type in mc_config:
                 belt_pos = mc_config[mc_config.index(belt_type):]
-
 
         preinit_belt = "preinit_B_{0}.mac".format(belt_pos)
 
