@@ -243,7 +243,7 @@ def generate_mc_workflow(mc_config,
 
     if preinit_belt is None:
 	belt_pos = "none"
-        for belt_type in ["ib", "ub"]:
+        for belt_type in ["ib", "ub", "NGpos"]:
             if "_"+belt_type in mc_config:
                 belt_pos = mc_config[mc_config.index(belt_type):]
 

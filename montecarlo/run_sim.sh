@@ -111,7 +111,7 @@ if [[ -z $PREINIT_BELT ]];
 then
     PREINIT_BELT=preinit_B_none.mac
     if [[ ${CONFIG} == *"B_"* ]]; then
-        for belt_type in ib ub
+        for belt_type in ib ub NGpos
         do
             if [[ ${CONFIG} == *"_${belt_type}"* ]]; then
                 belt_config=${belt_type}`echo ${CONFIG} | sed -e 's/.*ib\(.*\)/\1/'`
