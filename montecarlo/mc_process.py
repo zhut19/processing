@@ -432,11 +432,10 @@ def run_main():
                         help='version of pax to use')
     parser.add_argument('--grid-type', dest='grid_type',
                         choices=['osg', 'egi'],
-                        default='osg',
-                        action='store', required=True,
+                        default='osg', action='store',
                         help='Grid to submit to')
     parser.add_argument('--macro', dest='macro_list',
-                        action='store', default=None,
+                        action='append', default=None,
                         help='macro specification given as macro,filename ')
 
     args = parser.parse_args(sys.argv[1:])
@@ -476,11 +475,11 @@ def run_main():
                      args.fax_version,
                      args.pax_version,
                      macro_sources,
-                     args.preinit_macro,
-                     args.preinit_belt,
-                     args.preinit_efield,
-                     args.optical_setup,
-                     args.source_macro]
+                     macro_sources['preinit_macro']['name'],
+                     macro_sources['belt_macro']['name'],
+                     macro_sources['efield_macro']['name'],
+                     macro_sources['optical_macro']['name'],
+                     macro_sources['source_macro']['name']]
 
     workflow_info[0] = generate_mc_workflow(args.mc_config,
                                             args.mc_flavor,
