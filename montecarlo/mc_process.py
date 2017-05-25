@@ -389,12 +389,15 @@ def save_workflow_info(filename=None, workflow_info=None):
 
 def run_main():
     """
-    Main function to process user input and then generate the appropriate submit files
+    Main function to process user input and then generate the appropriate 
+    submit files
 
     :return: exit code -- 0 on success, 1 otherwise
     """
 
-    parser = argparse.ArgumentParser(description="Create a set of files for doing MC simulation for X1T")
+    parser = argparse.ArgumentParser(description="Create a set of files for "
+                                                 "doing MC simulation for X1T",
+                                     fromfile_prefix_chars='@')
 
     parser.add_argument('--flavor', dest='mc_flavor',
                         action='store', required=True,
