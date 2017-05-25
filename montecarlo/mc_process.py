@@ -432,6 +432,7 @@ def run_main():
                         help='version of pax to use')
     parser.add_argument('--grid-type', dest='grid_type',
                         choices=['osg', 'egi'],
+                        default='osg',
                         action='store', required=True,
                         help='Grid to submit to')
     parser.add_argument('--macro', dest='macro_list',
