@@ -258,35 +258,35 @@ def generate_mc_workflow(mc_config,
     if fax_version is None:
         fax_version = pax_version
 
-    if macro_sources['preinit_macro']['name'] is None:
+    if macro_sources['preinit_macro']['fname'] is None:
         if "muon" in mc_config or "MV" in mc_config:
-            macro_sources['preinit_macro']['name'] = 'preinit_MV.mac'
+            macro_sources['preinit_macro']['fname'] = 'preinit_MV.mac'
         else:
-            macro_sources['preinit_macro']['name'] = 'preinit_TPC.mac'
+            macro_sources['preinit_macro']['fname'] = 'preinit_TPC.mac'
 
-    if macro_sources['belt_macro']['name'] is None:
+    if macro_sources['belt_macro']['fname'] is None:
         belt_pos = "none"
         for belt_type in ["ib", "ub", "NGpos"]:
             if "_" + belt_type in mc_config:
                 belt_pos = mc_config[mc_config.index(belt_type):]
-        macro_sources['belt_macro']['name'] = "preinit_B_{0}.mac".format(belt_pos)
+        macro_sources['belt_macro']['fname'] = "preinit_B_{0}.mac".format(belt_pos)
 
-    if macro_sources['efield_macro']['name'] is None:
-        macro_sources['efield_macro']['name'] = "preinit_EF_C15kVA4kV.mac"
+    if macro_sources['efield_macro']['fname'] is None:
+        macro_sources['efield_macro']['fname'] = "preinit_EF_C15kVA4kV.mac"
 
-    if macro_sources['optical_macro']['name'] is None:
-        macro_sources['optical_macro']['name'] = 'setup_optical.mac'
+    if macro_sources['optical_macro']['fname'] is None:
+        macro_sources['optical_macro']['fname'] = 'setup_optical.mac'
 
-    if macro_sources['source_macro']['name'] is None:
-        macro_sources['source_macro']['name'] = "run_{0}.mac".format(mc_config)
+    if macro_sources['source_macro']['fname'] is None:
+        macro_sources['source_macro']['fname'] = "run_{0}.mac".format(mc_config)
 
     for macro in macro_sources.keys():
-        success, macro_file = check_and_add_macro_pfn(macro,
+        success, macro_file = check_and_add_macro_pfn(macro_sources[macro]['fname'],
                                                       mc_version,
                                                       dax)
         if not success:
             sys.stderr.write("{0} {1} not in OASIS ".format(macro,
-                                                            macro_sources['macro']['name']) +
+                                                            macro_sources['macro']['fname']) +
                              "or current directory, exiting.\n")
             sys.exit(1)
         macro_sources['pegasus_file'] = macro_file
@@ -306,11 +306,11 @@ def generate_mc_workflow(mc_config,
                                          fax_version,
                                          pax_version,
                                          '0',  # don't save raw data
-                                         macro_sources['preinit_macro']['name'],
-                                         macro_sources['belt_macro']['name'],
-                                         macro_sources['efield_macro']['name'],
-                                         macro_sources['optical_macro']['name'],
-                                         macro_sources['source_macro']['name'])
+                                         macro_sources['preinit_macro']['fname'],
+                                         macro_sources['belt_macro']['fname'],
+                                         macro_sources['efield_macro']['fname'],
+                                         macro_sources['optical_macro']['fname'],
+                                         macro_sources['source_macro']['fname'])
             else:
                 run_sim_job.addArguments(str(job),
                                          mc_flavor,
@@ -320,11 +320,11 @@ def generate_mc_workflow(mc_config,
                                          fax_version,
                                          pax_version,
                                          '0',  # don't save raw data
-                                         macro_sources['preinit_macro']['name'],
-                                         macro_sources['belt_macro']['name'],
-                                         macro_sources['efield_macro']['name'],
-                                         macro_sources['optical_macro']['name'],
-                                         macro_sources['source_macro']['name'])
+                                         macro_sources['preinit_macro']['fname'],
+                                         macro_sources['belt_macro']['fname'],
+                                         macro_sources['efield_macro']['fname'],
+                                         macro_sources['optical_macro']['fname'],
+                                         macro_sources['source_macro']['fname'])
             if macro_sources['preinit_macro']['pegasus_file']:
                 run_sim_job.uses(macro_sources['preinit_macro']['pegasus_file'],
                                  link=Pegasus.DAX3.Link.INPUT)
@@ -375,7 +375,7 @@ def save_workflow_info(filename=None, workflow_info=None):
     if filename is None or workflow_info is None:
         return True
     if os.path.isfile(filename):
-        workflow = json.loads(open(filename, 'r'))
+        workflow = json.load(open(filename, 'r'))
         if type(workflow) != dict:
             workflow = {}
     else:
@@ -384,7 +384,7 @@ def save_workflow_info(filename=None, workflow_info=None):
     workflow[times_string] = workflow_info
 
     with open('mc_workflow.json', 'w') as f:
-        f.write(json.dumps(workflow))
+        json.dump(workflow, f)
 
 
 def run_main():
@@ -443,15 +443,15 @@ def run_main():
         sys.stdout.write("No events to generate, exiting")
         return 0
 
-    macro_sources = {'preinit_macro': {'name': None,
+    macro_sources = {'preinit_macro': {'fname': None,
                                        'pegasus_file': None},
-                     'belt_macro': {'name': None,
+                     'belt_macro': {'fname': None,
                                     'pegasus_file': None},
-                     'efield_macro': {'name': None,
+                     'efield_macro': {'fname': None,
                                       'pegasus_file': None},
-                     'optical_macro': {'name': None,
+                     'optical_macro': {'fname': None,
                                        'pegasus_file': None},
-                     'source_macro': {'name': None,
+                     'source_macro': {'fname': None,
                                       'pegasus_file': None}, }
     for entry in args.macro_list:
         macro_fields = entry.split(',')
@@ -464,7 +464,7 @@ def run_main():
         if macro_name not in macro_sources:
             sys.stderr.write("Unknown macro {0} defined!\n")
             sys.exit(1)
-        macro_sources[macro_name]['name'] = macro_file
+        macro_sources[macro_name]['fname'] = macro_file
 
     output_directory = os.path.join(os.getcwd(), 'output')
     workflow_info = [0,
@@ -476,11 +476,11 @@ def run_main():
                      args.fax_version,
                      args.pax_version,
                      macro_sources,
-                     macro_sources['preinit_macro']['name'],
-                     macro_sources['belt_macro']['name'],
-                     macro_sources['efield_macro']['name'],
-                     macro_sources['optical_macro']['name'],
-                     macro_sources['source_macro']['name']]
+                     macro_sources['preinit_macro']['fname'],
+                     macro_sources['belt_macro']['fname'],
+                     macro_sources['efield_macro']['fname'],
+                     macro_sources['optical_macro']['fname'],
+                     macro_sources['source_macro']['fname']]
 
     workflow_info[0] = generate_mc_workflow(args.mc_config,
                                             args.mc_flavor,
