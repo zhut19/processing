@@ -281,15 +281,15 @@ def generate_mc_workflow(mc_config,
         macro_sources['source_macro']['name'] = "run_{0}.mac".format(mc_config)
 
     for macro in macro_sources.keys():
-        success, macro_file = check_and_add_macro_pfn(macro['name'],
+        success, macro_file = check_and_add_macro_pfn(macro,
                                                       mc_version,
                                                       dax)
         if not success:
             sys.stderr.write("{0} {1} not in OASIS ".format(macro,
-                                                            macro['name']) +
+                                                            macro_sources['macro']['name']) +
                              "or current directory, exiting.\n")
             sys.exit(1)
-        macro['pegasus_file'] = macro_file
+        macro_sources['pegasus_file'] = macro_file
 
     try:
         for job in range(start_job, start_job+num_jobs):
@@ -464,6 +464,7 @@ def run_main():
         if macro_name not in macro_sources:
             sys.stderr.write("Unknown macro {0} defined!\n")
             sys.exit(1)
+        macro_sources[macro_name]['name'] = macro_file
 
     output_directory = os.path.join(os.getcwd(), 'output')
     workflow_info = [0,
