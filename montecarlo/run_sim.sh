@@ -114,7 +114,7 @@ then
         for belt_type in ib ub NGpos
         do
             if [[ ${CONFIG} == *"_${belt_type}"* ]]; then
-                belt_config=${belt_type}`echo ${CONFIG} | sed -e 's/.*ib\(.*\)/\1/'`
+                belt_config=${belt_type}`echo ${CONFIG} | sed -e "s/.*${belt_type}\(.*\)/\1/"`
             fi
         done
 
