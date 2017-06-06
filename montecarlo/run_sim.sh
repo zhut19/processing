@@ -288,6 +288,7 @@ RAW_FILENAME=${PAX_INPUT_FILENAME}_raw
 PAX_FILENAME=${PAX_INPUT_FILENAME}_pax
 HAX_FILENAME=${PAX_INPUT_FILENAME}_hax
 FAX_FILENAME=${FILENAME}_faxtruth
+LAX_FILENAME=${PAX_INPUT_FILENAME}_lax
 
 # fax+pax stages
 source deactivate
@@ -375,7 +376,15 @@ then
 fi
 
 # Move hax output
-mv *.root *.pklz ${OUTDIR} 
+cp *.root *.pklz ${OUTDIR} 
+
+# lax stage
+(time laxer --run_number -1 --pax_version ${PAXVERSION#"v"} --minitree_path ${OUTDIR} --filename ${PAX_FILENAME##*/} --output_path ${LAX_FILENAME};) 2>&1 | tee ${LAX_FILENAME}.log
+
+if [ $? -ne 0 ];
+then
+  terminate 19
+fi
 
 #rm ${PAX_FILENAME}.root  # Delete pax output for now
 
