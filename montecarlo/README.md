@@ -38,7 +38,7 @@ cd processing/montecarlo
 
 7) Submit jobs (this creates one master job (DAG) which then submits the rest):
 ~~~~
-python mc_process.py --flavor <MC_FLAVOR> --config <MC_CONFIG> --batch-size <JOB_BATCH_SIZE> --events <NUM_EVENTS> --mc-version <MC_VERSION> --fax-version <FAX_VERSION> --pax-version <PAX_VERSION> --grid-type <GRID_TYPE> --preinit-macro <PREINIT_MACRO> --optical-setup <OPTICAL_SETUP> --source-macro <SOURCE_MACRO>
+python mc_process.py --flavor <MC_FLAVOR> --config <MC_CONFIG> --batch-size <JOB_BATCH_SIZE> --events <NUM_EVENTS> --mc-version <MC_VERSION> --fax-version <FAX_VERSION> --pax-version <PAX_VERSION> --grid-type <GRID_TYPE> --preinit-macro <PREINIT_MACRO> --preinit-belt <PREINIT_BELT> --preinit-efield <PREINIT_EFIELD> --optical-setup <OPTICAL_SETUP> --source-macro <SOURCE_MACRO>
 ~~~~
 where 
 ~~~~
@@ -115,7 +115,7 @@ for f in *; do tar xf $f; done
 You may run locally on Midway with e.g.:
 ~~~~
     cd processing/montecarlo/
-    ./run_sim.sh <Job_Number> <MC_FLAVOR> <MC_CONFIG> <NUM_EVENTS> <MC_VERSION> <FAX_VERSION> <PAX_VERSION> <SAVE_WAVEFORMS> <PREINIT_MACRO> <OPTICAL_SETUP> <SOURCE_MACRO>
+    ./run_sim.sh <Job_Number> <MC_FLAVOR> <MC_CONFIG> <NUM_EVENTS> <MC_VERSION> <FAX_VERSION> <PAX_VERSION> <SAVE_WAVEFORMS> <PREINIT_MACRO> <PREINIT_BELT> <PREINIT_EFIELD> <OPTICAL_SETUP> <SOURCE_MACRO>
 ~~~~
 where
 ~~~~
