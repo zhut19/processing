@@ -274,9 +274,18 @@ if [[ ${MCFLAVOR} == NEST ]]; then
     fi
 else
     # nSort Stage
-    NSORTEXEC=${RELEASEDIR}/nSort
     ln -sf ${RELEASEDIR}/data
-    (time ${NSORTEXEC} -s 2 -i ${G4_FILENAME};) 2>&1 | tee ${G4NSORT_FILENAME}.log
+    
+    # Old nSort executable
+    #NSORTEXEC=${RELEASEDIR}/nSort
+    #(time ${NSORTEXEC} -s 2 -i ${G4_FILENAME};) 2>&1 | tee ${G4NSORT_FILENAME}.log
+    
+    # XENON1T SR0 models
+    ln -sf ${RELEASEDIR}/nSortSrc/* .
+    source deactivate
+    source activate pax_${FAXVERSION}
+    python GenerateGeant4.py --InputFile ${G4_FILENAME}.root --OutputFilename ${G4NSORT_FILENAME}.root
+    
     if [ $? -ne 0 ];
     then
       terminate 12
