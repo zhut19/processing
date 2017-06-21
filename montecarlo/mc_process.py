@@ -74,6 +74,9 @@ def check_macro(macro_name, mc_version):
     :return: True if macro is available in OASIS for specified mc version
     """
     macro_location = os.path.join(MC_PATH, mc_version, 'macros', macro_name)
+
+    print ("Checking for macro:", macro_location)
+
     if os.path.isfile(macro_location):
         return True
 
@@ -178,7 +181,7 @@ def get_configs():
 	    configs = [config.split('.mac', 1)[0] for config in configs]
 	    configs.sort()
 
-        print ('Reading G4 macros from ', latest_dir)
+        #print ('Reading G4 macros from ', latest_dir)
 
 	return tuple(configs)
 
