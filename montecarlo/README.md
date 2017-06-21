@@ -9,34 +9,38 @@ Repository for scripts to run xenon1t MC code
 
 https://xecluster.lngs.infn.it/dokuwiki/doku.php?id=xenon:xenon1t:cmp:computing:midway_cluster:instructions
 
-2) ssh to:
+2) Add your ssh key to your http://www.osgconnect.net profile (instructions: http://bit.ly/2pGOcYY).  This may take up to an hour to propagate to the login node in the next step.
+
+3) ssh to:
 ~~~~
 login.xenon.ci-connect.net
 ~~~~
-or ```login.ci-connect.uchicago.edu``` to [add your SSH key](https://www.debian.org/devel/passwordlessssh) first, if above fails.
+or ```login.ci-connect.uchicago.edu```.
 
-3) Create your scratch space:
+4) Run ```connect project``` and select ```osg.xenon1t``` if you haven't already.
+
+5) Create your scratch space:
 ~~~~
 mkdir /scratch/${USER}
 ~~~~
 
-4) Create new directory for your production:
+6) Create new directory for your production:
 ~~~~
 mkdir /scratch/${USER}/<production_name>
 ~~~~
 
-5) Checkout this repository
+7) Checkout this repository
 ~~~~
 cd /scratch/${USER}/<production_name>
 git clone https://github.com/XENON1T/processing.git
 ~~~~
 
-6) Switch to MC directory
+8) Switch to MC directory
 ~~~~
 cd processing/montecarlo
 ~~~~
 
-7) Submit jobs (this creates one master job (DAG) which then submits the rest):
+9) Submit jobs (this creates one master job (DAG) which then submits the rest):
 ~~~~
 python mc_process.py --flavor <MC_FLAVOR> --config <MC_CONFIG> --batch-size <JOB_BATCH_SIZE> --events <NUM_EVENTS> --mc-version <MC_VERSION> --fax-version <FAX_VERSION> --pax-version <PAX_VERSION> --grid-type <GRID_TYPE> --preinit-macro <PREINIT_MACRO> --preinit-belt <PREINIT_BELT> --preinit-efield <PREINIT_EFIELD> --optical-setup <OPTICAL_SETUP> --source-macro <SOURCE_MACRO>
 ~~~~
@@ -61,13 +65,13 @@ For example:
 python mc_process.py --flavor G4 --config AmBe_neutronISO --events 1000000 --mc-version v0.1.7 --pax-version v6.2.1 --grid-type osg
 ~~~~
 
-8) Check job status with:
+10) Check job status with:
 ~~~~
 condor_q
 pegasus-status -l /scratch/${USER}/<production_name>/processing/montecarlo/${USER}/pegasus/montecarlo
 ~~~~
 
-9) Output should eventually appear in:
+11) Output should eventually appear in:
 ~~~~
 /scratch/${USER}/<production_name>/processing/montecarlo/output/${USER}/pegasus/montecarlo/*
 ~~~~
@@ -76,7 +80,7 @@ and ongoing job logs in:
 /scratch/${USER}/<production_name>/processing/montecarlo/${USER}/pegasus/montecarlo/*
 ~~~~
 
-10) Once everything's complete and verified (e.g. checked logs for errors), we will want to keep all the results on Midway for all analysts to access. You may either use:
+12) Once everything's complete and verified (e.g. checked logs for errors), we will want to keep all the results on Midway for all analysts to access. You may either use:
   a) ```rsync``` to directly copy to Midway, or
   b) copy results to ```/stash/user/${USER}``` then use Globus (https://globus.rcc.uchicago.edu/globus-app)
 ~~~~
@@ -94,12 +98,12 @@ and ensure you set the group appropriately
 chgrp -R pi-lgrandi /project2/lgrandi/xenon1t/simulations
 ~~~~
 
-11) Once you have completed and verified the transfer, clean up your space:
+13) Once you have completed and verified the transfer, clean up your space:
 ~~~~
 rm -rf /scratch/${USER}
 ~~~~
 
-12) Untar all the files after transferred: 
+14) Untar all the files after transferred: 
 ~~~~
 for f in *; do tar xf $f; done
 ~~~~
@@ -108,7 +112,7 @@ for f in *; do tar xf $f; done
 /project/lgrandi/xenon1t/simulations/organize.sh
 ~~~~
 
-13) Keep track and share the details of your production here https://xecluster.lngs.infn.it/dokuwiki/doku.php?id=xenon:xenon1t:sim:data
+15) Keep track and share the details of your production here https://xecluster.lngs.infn.it/dokuwiki/doku.php?id=xenon:xenon1t:sim:data
 
 ### Midway local running
 
