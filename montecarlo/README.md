@@ -71,11 +71,15 @@ condor_q
 pegasus-status -l /scratch/${USER}/<production_name>/processing/montecarlo/${USER}/pegasus/montecarlo
 ~~~~
 
-11) Output should eventually appear in:
+11) Output is temporarily written to:
+~~~~
+/scratch/${USER}/<production_name>/processing/montecarlo/scratch/${USER}/pegasus/montecarlo/*
+~~~~
+and once the job fully completes successfully, moved to:
 ~~~~
 /scratch/${USER}/<production_name>/processing/montecarlo/output/${USER}/pegasus/montecarlo/*
 ~~~~
-and ongoing job logs in:
+Job logs can be found in:
 ~~~~
 /scratch/${USER}/<production_name>/processing/montecarlo/${USER}/pegasus/montecarlo/*
 ~~~~
