@@ -359,7 +359,7 @@ rm ${FAX_FILENAME}.*  # Peak-by-peak file with all photoionization info
 
 
 # hax stage
-HAX_TREEMAKERS="Basics Fundamentals DoubleScatter LargestPeakProperties TotalProperties Extended"
+HAX_TREEMAKERS="Corrections Basics Fundamentals DoubleScatter LargestPeakProperties TotalProperties Extended"
 
 # ROOT output
 (time haxer --main_data_paths ${OUTDIR} --input ${PAX_FILENAME##*/} --pax_version_policy loose --treemakers ${HAX_TREEMAKERS} --force_reload;) 2>&1 | tee ${HAX_FILENAME}.log
