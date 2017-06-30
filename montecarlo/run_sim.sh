@@ -8,9 +8,12 @@
 # $6 - fax_version
 # $7 - pax_version
 # $8 - save_raw setting
-# $9 - preinit_macro
-# $10 - optical_setup
-# $11 - source_macro
+# $9 - science run
+# $10 - preinit_macro
+# $11 - preinit_belt
+# $12 - preinit_field
+# $13 - optical_setup
+# $14 - source_macro
 
 function terminate {
 
@@ -64,6 +67,21 @@ if [[ "$8" == 1 ]]; then
     SAVE_RAW=$8
 fi
 
+# For configuring model parameters and cuts
+# Warning: Currently only used for G4-NEST, fax and lax, but NOT nSort emission models 
+SCIENCERUN=$9
+echo 
+echo "Assuming science run ${SCIENCERUN}"
+echo
+
+# Taken from lax (https://github.com/XENON1T/lax/pull/62)
+if [[ ${SCIENCERUN} == 0 ]]; then
+    DIFFUSION_CONSTANT=22.8
+    DRIFT_VELOCITY=1.44
+else
+    DIFFUSION_CONSTANT=31.73
+    DRIFT_VELOCITY=1.335
+
 # runPatch argument corresponding to CONFIG variable above
 if [[ ${CONFIG} == *"Kr83m"* ]]; then
     PATCHTYPE=83
@@ -89,7 +107,7 @@ PAX_LIB_DIR=${CVMFSDIR}/releases/anaconda/2.4/envs/pax_${PAXVERSION}/lib/
 # Setup Geant4 macros
 MACROSDIR=${RELEASEDIR}/macros
 
-PREINIT_MACRO=$9
+PREINIT_MACRO=${10}
 if [[ -z $PREINIT_MACRO ]];
 then
     PREINIT_MACRO=preinit_TPC.mac
@@ -106,7 +124,7 @@ else
 fi
 echo "Preinit macro: $PREINIT_MACRO" 
 
-PREINIT_BELT=${10}
+PREINIT_BELT=${11}
 if [[ -z $PREINIT_BELT ]];
 then
     PREINIT_BELT=preinit_B_none.mac
@@ -130,10 +148,14 @@ else
 fi
 echo "Preinit belt: $PREINIT_BELT" 
 
-PREINIT_EFIELD=${11}
+PREINIT_EFIELD=${12}
 if [[ -z $PREINIT_EFIELD ]];
 then
-    PREINIT_EFIELD=preinit_EF_C15kVA4kV.mac
+    if [[ ${SCIENCERUN} == 0 ]]; then
+        PREINIT_EFIELD=preinit_EF_C12kVA4kV.mac
+    else
+        PREINIT_EFIELD=preinit_EF_C8kVA4kV.mac
+    fi
     PREINIT_EFIELD=${MACROSDIR}/${PREINIT_EFIELD}
 else
     if [[ -f ${start_dir}/${PREINIT_EFIELD} ]]; then
@@ -144,7 +166,7 @@ else
 fi
 echo "Preinit efield: $PREINIT_EFIELD"
 
-OPTICAL_SETUP=${12}
+OPTICAL_SETUP=${13}
 if [[ -z $OPTICAL_SETUP ]];
 then
     OPTICAL_SETUP=${MACROSDIR}/setup_optical.mac
@@ -157,7 +179,7 @@ else
 fi
 echo "Optical macro: $OPTICAL_SETUP" 
 
-SOURCE_MACRO=${13}
+SOURCE_MACRO=${14}
 if [[ -z $SOURCE_MACRO ]];
 then
     SOURCE_MACRO=${MACROSDIR}/run_${CONFIG}.mac
@@ -301,7 +323,7 @@ fi
 
 # Do not save raw waveforms
 if [[ ${SAVE_RAW} == 0 && ${PAXVERSION} == ${FAXVERSION} ]]; then
-    (time paxer --input ${PAX_INPUT_FILENAME}.root --config_string "[WaveformSimulator]truth_file_name=\"${FAX_FILENAME}\"" --config XENON1T SimulationMCInput --output ${PAX_FILENAME};) 2>&1 | tee ${PAX_FILENAME}.log
+    (time paxer --input ${PAX_INPUT_FILENAME}.root --config_string "[WaveformSimulator]truth_file_name=\"${FAX_FILENAME}\"; diffusion_constant_liquid=\"${DIFFUSION_CONSTANT}\" * cm**2 / s; [DEFAULT]drift_velocity_liquid=\"${DRIFT_VELOCITY}\" * um / ns" --config XENON1T SimulationMCInput --output ${PAX_FILENAME};) 2>&1 | tee ${PAX_FILENAME}.log
 
     if [ $? -ne 0 ];
     then
@@ -310,7 +332,7 @@ if [[ ${SAVE_RAW} == 0 && ${PAXVERSION} == ${FAXVERSION} ]]; then
 
 # Save raw waveforms or different fax/pax versions
 else
-    (time paxer --input ${PAX_INPUT_FILENAME}.root --config_string "[WaveformSimulator]truth_file_name=\"${FAX_FILENAME}\"" --config XENON1T reduce_raw_data SimulationMCInput --output ${RAW_FILENAME};) 2>&1 | tee ${RAW_FILENAME}.log
+    (time paxer --input ${PAX_INPUT_FILENAME}.root --config_string "[WaveformSimulator]truth_file_name=\"${FAX_FILENAME}\"; diffusion_constant_liquid=\"${DIFFUSION_CONSTANT}\" * cm**2 / s; [DEFAULT]drift_velocity_liquid=\"${DRIFT_VELOCITY}\" * um / ns" --config XENON1T reduce_raw_data SimulationMCInput --output ${RAW_FILENAME};) 2>&1 | tee ${RAW_FILENAME}.log
 
     if [ $? -ne 0 ];
     then
@@ -379,7 +401,7 @@ fi
 cp *.root *.pklz ${OUTDIR} 
 
 # lax stage
-(time laxer --run_number -1 --pax_version ${PAXVERSION#"v"} --minitree_path ${OUTDIR} --filename ${PAX_FILENAME##*/} --output_path ${LAX_FILENAME};) 2>&1 | tee ${LAX_FILENAME}.log
+(time laxer --run_number -1 --sciencerun ${SCIENCERUN} --pax_version ${PAXVERSION#"v"} --minitree_path ${OUTDIR} --filename ${PAX_FILENAME##*/} --output_path ${LAX_FILENAME};) 2>&1 | tee ${LAX_FILENAME}.log
 
 if [ $? -ne 0 ];
 then
