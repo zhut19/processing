@@ -70,17 +70,19 @@ fi
 # For configuring model parameters and cuts
 # Warning: Currently only used for G4-NEST, fax and lax, but NOT nSort emission models 
 SCIENCERUN=$9
-echo 
-echo "Assuming science run ${SCIENCERUN}"
-echo
+echo "Assuming science run " ${SCIENCERUN}
 
 # Taken from lax (https://github.com/XENON1T/lax/pull/62)
+# e-lifetime: https://xecluster.lngs.infn.it/dokuwiki/doku.php?id=xenon:xenon1t:org:commissioning:meetings:20170628#electron_lifetime
 if [[ ${SCIENCERUN} == 0 ]]; then
-    DIFFUSION_CONSTANT=22.8
-    DRIFT_VELOCITY=1.44
+    DIFFUSION_CONSTANT=22.8  # cm^2/s
+    DRIFT_VELOCITY=1.44      # um/ns
+    ELECTRON_LIFETIME=450    # us
 else
-    DIFFUSION_CONSTANT=31.73
-    DRIFT_VELOCITY=1.335
+    DIFFUSION_CONSTANT=31.73 # cm^2/s
+    DRIFT_VELOCITY=1.335     # um/ns
+    ELECTRON_LIFETIME=550    # us
+fi
 
 # runPatch argument corresponding to CONFIG variable above
 if [[ ${CONFIG} == *"Kr83m"* ]]; then
@@ -321,9 +323,12 @@ then
     export LD_LIBRARY_PATH=$PAX_LIB_DIR:$LD_LIBRARY_PATH
 fi
 
+# fax+pax run-dependent configuration
+FAX_PAX_CONFIG="[WaveformSimulator]truth_file_name=\"${FAX_FILENAME}\";diffusion_constant_liquid=${DIFFUSION_CONSTANT} * cm**2 / s;[DEFAULT]drift_velocity_liquid=${DRIFT_VELOCITY} * um / ns;electron_lifetime_liquid=${ELECTRON_LIFETIME} * us"
+
 # Do not save raw waveforms
 if [[ ${SAVE_RAW} == 0 && ${PAXVERSION} == ${FAXVERSION} ]]; then
-    (time paxer --input ${PAX_INPUT_FILENAME}.root --config_string "[WaveformSimulator]truth_file_name=\"${FAX_FILENAME}\"; diffusion_constant_liquid=\"${DIFFUSION_CONSTANT}\" * cm**2 / s; [DEFAULT]drift_velocity_liquid=\"${DRIFT_VELOCITY}\" * um / ns" --config XENON1T SimulationMCInput --output ${PAX_FILENAME};) 2>&1 | tee ${PAX_FILENAME}.log
+    (time paxer --input ${PAX_INPUT_FILENAME}.root --config XENON1T SimulationMCInput --config_string "${FAX_PAX_CONFIG}" --output ${PAX_FILENAME};) 2>&1 | tee ${PAX_FILENAME}.log
 
     if [ $? -ne 0 ];
     then
@@ -332,7 +337,7 @@ if [[ ${SAVE_RAW} == 0 && ${PAXVERSION} == ${FAXVERSION} ]]; then
 
 # Save raw waveforms or different fax/pax versions
 else
-    (time paxer --input ${PAX_INPUT_FILENAME}.root --config_string "[WaveformSimulator]truth_file_name=\"${FAX_FILENAME}\"; diffusion_constant_liquid=\"${DIFFUSION_CONSTANT}\" * cm**2 / s; [DEFAULT]drift_velocity_liquid=\"${DRIFT_VELOCITY}\" * um / ns" --config XENON1T reduce_raw_data SimulationMCInput --output ${RAW_FILENAME};) 2>&1 | tee ${RAW_FILENAME}.log
+    (time paxer --input ${PAX_INPUT_FILENAME}.root --config XENON1T reduce_raw_data SimulationMCInput --config_string "${FAX_PAX_CONFIG}" --output ${RAW_FILENAME};) 2>&1 | tee ${RAW_FILENAME}.log
 
     if [ $? -ne 0 ];
     then
@@ -350,7 +355,7 @@ else
 
     fi
 
-    (time paxer --ignore_rundb --input ${RAW_FILENAME} --config XENON1T --output ${PAX_FILENAME};) 2>&1 | tee ${PAX_FILENAME}.log
+    (time paxer --ignore_rundb --input ${RAW_FILENAME} --config XENON1T --config_string "${FAX_PAX_CONFIG}" --output ${PAX_FILENAME};) 2>&1 | tee ${PAX_FILENAME}.log
 
     if [ $? -ne 0 ];
     then

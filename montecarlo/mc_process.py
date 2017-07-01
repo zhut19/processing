@@ -347,7 +347,7 @@ def generate_mc_workflow(mc_config,
                                          fax_version,
                                          pax_version,
                                          '0',  # don't save raw data
-					 sciencerun,
+					 str(sciencerun),
                                          preinit_macro,
                                          preinit_belt,
                                          preinit_efield,
@@ -362,7 +362,7 @@ def generate_mc_workflow(mc_config,
                                          fax_version,
                                          pax_version,
                                          '0',  # don't save raw data
-					 sciencerun,
+					 str(sciencerun),
                                          preinit_macro,
                                          preinit_belt,
                                          preinit_efield,
@@ -443,7 +443,7 @@ def run_main():
                         action='store', required=True,
                         help='version of pax to use')
     parser.add_argument('--sciencerun', dest='sciencerun',
-                        choices=(0,2),
+                        choices=range(0,2), type=int,
                         action='store', required=True,
                         help='science run to simulate')
     parser.add_argument('--grid-type', dest='grid_type',
