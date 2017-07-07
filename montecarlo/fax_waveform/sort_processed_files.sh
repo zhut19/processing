@@ -21,7 +21,7 @@ mkdir $reduced_dir
 mkdir $basics_dir
 for dirname in $file_header$datetime"/0*"; do
     for filename in $dirname/*; do
-        if [[ $filename =~ .*truth\.root$ ]]; then
+        if [[ $filename =~ .*truth\.csv$ ]]; then
             echo "moving $filename to truth minitree dir"
             mv $filename $truth_dir/
         elif [[ $filename =~ .*pax_Basics\.root$ ]]; then
