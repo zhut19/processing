@@ -200,6 +200,7 @@ def generate_mc_workflow(mc_config,
                          mc_version,
                          fax_version,
                          pax_version,
+			 sciencerun,
                          start_job,
                          num_events,
                          batch_size,
@@ -216,6 +217,7 @@ def generate_mc_workflow(mc_config,
     :param mc_version: version of MC code to use
     :param fax_version: version of FAX code to use
     :param pax_version: version of PAX code to use
+    :param sciencerun: science run number
     :param start_job: starting job id number
     :param num_events: total number of events to generate
     :param batch_size: number of events to generate per job
@@ -254,7 +256,10 @@ def generate_mc_workflow(mc_config,
         preinit_belt = "preinit_B_{0}.mac".format(belt_pos)
 
     if preinit_efield is None:
-        preinit_efield = "preinit_EF_C15kVA4kV.mac"
+	if sciencerun == 0:
+            preinit_efield = "preinit_EF_C12kVA4kV.mac"
+        else:
+            preinit_efield = "preinit_EF_C8kVA4kV.mac"
 
     if optical_setup is None:
         optical_setup = 'setup_optical.mac'
@@ -342,6 +347,7 @@ def generate_mc_workflow(mc_config,
                                          fax_version,
                                          pax_version,
                                          '0',  # don't save raw data
+					 str(sciencerun),
                                          preinit_macro,
                                          preinit_belt,
                                          preinit_efield,
@@ -356,6 +362,7 @@ def generate_mc_workflow(mc_config,
                                          fax_version,
                                          pax_version,
                                          '0',  # don't save raw data
+					 str(sciencerun),
                                          preinit_macro,
                                          preinit_belt,
                                          preinit_efield,
@@ -435,6 +442,10 @@ def run_main():
                         choices=PAX_VERSIONS,
                         action='store', required=True,
                         help='version of pax to use')
+    parser.add_argument('--sciencerun', dest='sciencerun',
+                        choices=range(0,2), type=int,
+                        action='store', required=True,
+                        help='science run to simulate')
     parser.add_argument('--grid-type', dest='grid_type',
                         choices=['osg', 'egi'],
                         action='store', required=True,
@@ -469,6 +480,7 @@ def run_main():
                      args.mc_version,
                      args.fax_version,
                      args.pax_version,
+		     args.sciencerun,
                      args.preinit_macro,
                      args.preinit_belt,
                      args.preinit_efield,
@@ -480,6 +492,7 @@ def run_main():
                                             args.mc_version,
                                             args.fax_version,
                                             args.pax_version,
+					    args.sciencerun,
                                             args.start_job,
                                             args.num_events,
                                             args.batch_size,
