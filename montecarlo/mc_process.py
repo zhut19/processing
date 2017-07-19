@@ -11,7 +11,6 @@ import sys
 import glob
 
 import Pegasus.DAX3
-import cStringIO
 
 MC_PATH = '/cvmfs/xenon.opensciencegrid.org/releases/mc/'
 PAX_PATH = "/cvmfs/xenon.opensciencegrid.org/releases/anaconda/2.4/envs/"
@@ -20,7 +19,8 @@ MC_FLAVORS = ('G4', 'NEST', 'G4p10')
 # pegasus constants
 PEGASUSRC_PATH = './pegasusrc'
 
-def update_site_catalogs(site):
+
+def update_site_catalogs():
     """
     Update the pegasus site catalog to set the local scratch and output
     directories to subdirectories
@@ -32,10 +32,7 @@ def update_site_catalogs(site):
     scratch_re = re.compile('type="shared-scratch" path="(.*?)"')
     output_re = re.compile('type="local-storage" path="(.*?)"')
     url_re = re.compile('operation="all" url="file://(.*?)"')
-    if site == 'condorpool':
-        catalog_file = 'osg-sites.xml'
-    elif site == 'egi':
-        catalog_file = 'egi-sites.xml'
+    catalog_file = 'osg-sites.xml'
     buf = ""
     catalog = open(catalog_file, 'r')
     while True:
@@ -83,27 +80,20 @@ def check_macro(macro_name, mc_version):
     return False
 
 
-def pegasus_submit(dax, site, output_directory):
+def pegasus_submit(dax, output_directory):
     """
     Submit a workflow to pegasus
 
     :param dax:  path to xml file with DAX, used for submit
-    :param site: condorpool for osg, egi for EGI submission
     :param output_directory:  directory for workflow output
     :return: the pegasus workflow id
     """
     try:
-        if site == 'condorpool':
-            pegasus_rc = './osg-pegasusrc'
-        elif site == 'egi':
-            pegasus_rc = './egi-pegasusrc'
-        else:
-            sys.stderr.write("Invalid grid type: {0}\n".format(site))
-            sys.exit(1)
-        update_site_catalogs(site)
+        pegasus_rc = './osg-pegasusrc'
+        update_site_catalogs()
         output = subprocess.check_output(['/usr/bin/pegasus-plan',
                                           '--sites',
-                                          site,
+                                          'condorpool',
                                           '--conf',
                                           pegasus_rc,
                                           '--output-dir',
@@ -114,7 +104,7 @@ def pegasus_submit(dax, site, output_directory):
                                          stderr=subprocess.STDOUT)
         match = re.search('running in the base directory:.*?(\d{8}T\d{6}-\d{4})',
                           output,
-                          re.MULTILINE|re.DOTALL)
+                          re.MULTILINE | re.DOTALL)
         if match:
             return match.group(1)
     except subprocess.CalledProcessError as err:
@@ -168,22 +158,22 @@ def get_configs():
     :return: tuple with string of G4 macros available in latest MC version
     """
     try:
-	configs = []
-    	if os.path.isdir(MC_PATH):
-    	    versions = glob.glob(MC_PATH+'/*')
-    	    latest_dir = max(versions, key=os.path.getctime)
+        configs = []
+        if os.path.isdir(MC_PATH):
+            versions = glob.glob(MC_PATH + '/*')
+            latest_dir = max(versions, key=os.path.getctime)
 
-	MACROS_PATH = latest_dir+'/macros'
+        MACROS_PATH = latest_dir + '/macros'
 
-	if os.path.isdir(MACROS_PATH):
-	    configs = glob.glob(MACROS_PATH+'/run_*.mac')
-	    configs = [config.split('run_', 1)[1] for config in configs]
-	    configs = [config.split('.mac', 1)[0] for config in configs]
-	    configs.sort()
+        if os.path.isdir(MACROS_PATH):
+            configs = glob.glob(MACROS_PATH + '/run_*.mac')
+            configs = [config.split('run_', 1)[1] for config in configs]
+            configs = [config.split('.mac', 1)[0] for config in configs]
+            configs.sort()
 
-        #print ('Reading G4 macros from ', latest_dir)
+        # print ('Reading G4 macros from ', latest_dir)
 
-	return tuple(configs)
+        return tuple(configs)
 
     except OSError:
         sys.stderr.write("Can't get configs from {0}\n".format(MC_PATH))
@@ -195,12 +185,13 @@ MC_VERSIONS = get_mc_versions()
 PAX_VERSIONS = get_pax_versions()
 CONFIGS = get_configs()
 
+
 def generate_mc_workflow(mc_config,
                          mc_flavor,
                          mc_version,
                          fax_version,
                          pax_version,
-			 sciencerun,
+                         sciencerun,
                          start_job,
                          num_events,
                          batch_size,
@@ -247,16 +238,14 @@ def generate_mc_workflow(mc_config,
             preinit_macro = 'preinit_TPC.mac'
 
     if preinit_belt is None:
-	belt_pos = "none"
+        belt_pos = "none"
         for belt_type in ["ib", "ub", "NGpos"]:
-            if "_"+belt_type in mc_config:
+            if "_" + belt_type in mc_config:
                 belt_pos = mc_config[mc_config.index(belt_type):]
-
-
         preinit_belt = "preinit_B_{0}.mac".format(belt_pos)
 
     if preinit_efield is None:
-	if sciencerun == 0:
+        if sciencerun == 0:
             preinit_efield = "preinit_EF_C12kVA4kV.mac"
         else:
             preinit_efield = "preinit_EF_C8kVA4kV.mac"
@@ -347,7 +336,7 @@ def generate_mc_workflow(mc_config,
                                          fax_version,
                                          pax_version,
                                          '0',  # don't save raw data
-					 str(sciencerun),
+                                         str(sciencerun),
                                          preinit_macro,
                                          preinit_belt,
                                          preinit_efield,
@@ -362,7 +351,7 @@ def generate_mc_workflow(mc_config,
                                          fax_version,
                                          pax_version,
                                          '0',  # don't save raw data
-					 str(sciencerun),
+                                         str(sciencerun),
                                          preinit_macro,
                                          preinit_belt,
                                          preinit_efield,
@@ -443,13 +432,9 @@ def run_main():
                         action='store', required=True,
                         help='version of pax to use')
     parser.add_argument('--sciencerun', dest='sciencerun',
-                        choices=range(0,2), type=int,
+                        choices=range(0, 2), type=int,
                         action='store', required=True,
                         help='science run to simulate')
-    parser.add_argument('--grid-type', dest='grid_type',
-                        choices=['osg', 'egi'],
-                        action='store', required=True,
-                        help='Grid to submit to')
     parser.add_argument('--preinit-macro', dest='preinit_macro',
                         action='store', default=None,
                         help='preinit macro to use')
@@ -480,7 +465,7 @@ def run_main():
                      args.mc_version,
                      args.fax_version,
                      args.pax_version,
-		     args.sciencerun,
+                     args.sciencerun,
                      args.preinit_macro,
                      args.preinit_belt,
                      args.preinit_efield,
@@ -492,7 +477,7 @@ def run_main():
                                             args.mc_version,
                                             args.fax_version,
                                             args.pax_version,
-					    args.sciencerun,
+                                            args.sciencerun,
                                             args.start_job,
                                             args.num_events,
                                             args.batch_size,
@@ -508,16 +493,10 @@ def run_main():
         except OSError:
             sys.stderr.write("Can't remove mc_process.xml\n")
         return 1
-    pegasus_id = None
-    if args.grid_type == 'osg':
-        pegasus_id = pegasus_submit('mc_process.xml',
-                                    'condorpool',
-                                    output_directory)
-        workflow_info.append(pegasus_id)
-    elif args.grid_type == 'egi':
-        pegasus_id = pegasus_submit('mc_process.xml',
-                                    'egi',
-                                    output_directory)
+    pegasus_id = pegasus_submit('mc_process.xml',
+                                output_directory)
+    workflow_info.append(pegasus_id)
+
     if pegasus_id:
         workflow_dir = os.path.join(os.getcwd(),
                                     getpass.getuser(),
