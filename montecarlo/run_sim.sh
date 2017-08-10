@@ -78,10 +78,12 @@ if [[ ${SCIENCERUN} == 0 ]]; then
     DIFFUSION_CONSTANT=22.8  # cm^2/s
     DRIFT_VELOCITY=1.44      # um/ns
     ELECTRON_LIFETIME=450    # us
+    EFIELD=124               # V/cm
 else
     DIFFUSION_CONSTANT=31.73 # cm^2/s
     DRIFT_VELOCITY=1.335     # um/ns
     ELECTRON_LIFETIME=550    # us
+    EFIELD=0.082             # V/cm
 fi
 
 # runPatch argument corresponding to CONFIG variable above
@@ -300,7 +302,7 @@ else
     # nSort Stage
     NSORTEXEC=${RELEASEDIR}/nSort
     ln -sf ${RELEASEDIR}/data
-    (time ${NSORTEXEC} -s 2 -i ${G4_FILENAME};) 2>&1 | tee ${G4NSORT_FILENAME}.log
+    (time ${NSORTEXEC} -m 2 -f ${EFIELD} -s 2 -i ${G4_FILENAME};) 2>&1 | tee ${G4NSORT_FILENAME}.log
     if [ $? -ne 0 ];
     then
       terminate 12
