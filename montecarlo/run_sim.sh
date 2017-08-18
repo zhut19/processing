@@ -83,7 +83,7 @@ else
     DIFFUSION_CONSTANT=31.73 # cm^2/s
     DRIFT_VELOCITY=1.335     # um/ns
     ELECTRON_LIFETIME=550    # us
-    EFIELD=0.082             # V/cm
+    EFIELD=82                # V/cm
 fi
 
 # runPatch argument corresponding to CONFIG variable above
