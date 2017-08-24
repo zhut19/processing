@@ -96,7 +96,7 @@ which can queue several transfers and maximizes the bandwidth usage. More detail
 
 The official location will be ```/project/lgrandi/xenon1t/simulations```; please follow the existing directory structure within, e.g.:
 ~~~~
-/project/lgrandi/xenon1t/simulations/mc_v<MC_VERSION>/pax_v<PAX_VERSION>/<MC_FLAVOR>/<MC_CONFIG>
+/project/lgrandi/xenon1t/simulations/<MC_CONFIG>/mc_v<MC_VERSION>_<MC_FLAVOR>/fax_v<FAX_VERSION>/pax_v<PAX_VERSION>
 ~~~~
 and ensure you set the group appropriately
 ~~~~
