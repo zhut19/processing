@@ -76,8 +76,8 @@ class Setup(Controller):
                                                 )
         
         # Create example.ini
-        if not os.path.isfile(os.path.join(os.getcwd(),'Configs','%s.ini' % 'example_config')):
-            with open(os.path.join(os.getcwd(),'Configs','%s.ini' % 'example_config'), 'w') as config_file:
+        if not os.path.isfile(os.path.join(os.getcwd(),'configs','%s.ini' % 'example_config')):
+            with open(os.path.join(os.getcwd(),'configs','%s.ini' % 'example_config'), 'w') as config_file:
                 self.default_config.write(config_file)
                 config_file.close()
         
