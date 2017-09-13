@@ -51,21 +51,21 @@ class Setup(Controller):
         self.config_list = []
 
         self.default_config = ConfigParser()
-        self.default_config['BASICS'] = dict(name = 'ambe_single_v6.8.0',
-                                             description = 'Use ambe data as input',
+        self.default_config['BASICS'] = dict(name = 'test',
+                                             description = 'Testing',
                                              detector = 'XENON1T',
-                                             number_job = 30,
+                                             number_job = 5,
                                              production_id_format = '{name}_{index:06}',
-                                             number_event_per_job = 100,
+                                             number_event_per_job = 10,
                                              pmt_afterpulse = 'True',
                                              s2_afterpulse = 'True',
                                              personalize_config = 'True',
                                              photon_number_low = 0,
-                                             photon_number_high = 1000,
+                                             photon_number_high = 200,
                                              electron_number_low = 0,
-                                             electron_number_high = 100,
+                                             electron_number_high = 200,
                                              correlated = 'True', # 'False' to generate lone S1(2)
-                                             recoil_type = 'NR',
+                                             recoil_type = 'ER',
                                              use_array_truth = 'False',
                                              save_afterpulse_truth = 'False',
                                             )
@@ -76,8 +76,8 @@ class Setup(Controller):
                                                 )
         
         # Create example.ini
-        if not os.path.isfile(os.path.join(os.getcwd(),'Configs','%s.ini' % 'example_config')):
-            with open(os.path.join(os.getcwd(),'Configs','%s.ini' % 'example_config'), 'w') as config_file:
+        if not os.path.isfile(os.path.join(os.getcwd(),'configs','%s.ini' % 'example_config')):
+            with open(os.path.join(os.getcwd(),'configs','%s.ini' % 'example_config'), 'w') as config_file:
                 self.default_config.write(config_file)
                 config_file.close()
         
@@ -89,12 +89,17 @@ class Setup(Controller):
         """
         
         config = self.default_config
-        config_name = config['BASICS']['name'] 
-        with open(os.path.join(os.getcwd(), '%s.ini' % config_name), 'w') as config_file:
-            config.write(config_file)
+
+        for ix, num_photon in enumerate([100,200,300,400,500]):
+            config_name = 'test_with_%d_photons' % num_photon
+            config['BASICS']['name'] = config_name
+            config['BASICS']['photon_number_low'] = '%d' % (num_photon - 50)
+            config['BASICS']['photon_number_high'] = '%d' % (num_photon + 50)
+
+            with open(os.path.join(os.getcwd(), '%s.ini' % config_name), 'w') as config_file:
+                config.write(config_file)
             config_file.close()
-            
-        self.config_list.append(config_name)
+            self.config_list.append(config_name)
             
     def _setup_directory(self):
         if len(self.config_list) == 0:

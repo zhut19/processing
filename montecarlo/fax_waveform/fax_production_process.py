@@ -92,7 +92,7 @@ class RunAllProcess(ProductionProcess):
     __version__ = '0.0.1'
 
     def __init__(self):
-        self.process_list = [CreateFakeFromPickle(),
+        self.process_list = [CreateFake(),
                              Simulation(),
                              ProcessRaw(),
                              SortTruth(),
@@ -404,7 +404,7 @@ class BuildMiniTree(ProductionProcess):
         self.minitree_pickle_path = self.config['DIRECTORY']['minitree_pickle']
 
         with self._divert_stdout():
-            self.df = hax.minitrees.load(self.production_id,['Corrections', 'Basics', 'Fundamentals', 'Extended'])
+            self.df = hax.minitrees.load(self.production_id,['Basics', 'Fundamentals', 'Extended'])
             self.df.to_pickle(os.path.join(self.minitree_pickle_path, '{name}.pkl'.format(name = self.production_id)))
             print ('{production_id} minitrees building success :)'.format(production_id = self.production_id))
 

@@ -12,9 +12,9 @@ if __name__ == '__main__':
     #### Change the parameters in arg to change production directory and batching condition
     ## for changing config: go to fax_production_control
     ## for changing data processing: go to fax_production_process
-    head_directory = '/project2/lgrandi/{user}/sim/'.format(user = getpass.getuser()),
-    num_group = 3,
-    max_num_submit = 5,
+    head_directory = '/project2/lgrandi/{user}/sim/'.format(user = getpass.getuser())
+    num_group = 3
+    max_num_submit = 5
        
     crl = Setup()
     crl.execute(head_directory = head_directory)
