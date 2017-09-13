@@ -185,6 +185,37 @@ class CreateFake(ProductionProcess):
         self.csv.to_csv('{csv_path}/{production_id}.csv'.format(csv_path = self.csv_path, production_id = self.production_id), 
                         sep = ',', index = False)
 
+    def _randomize_FV(self):
+        self.cm2mm = 1
+
+        ####################################
+        ## FV definitions (HARDCODE WARNING):
+        ####################################
+
+        # randomize the X, Y, Z according to X48kg FV
+        if self.detector == 'XENON100':
+            Zlower, Zupper = -14.6-15.0, -14.6+15.0
+            Rlower, Rupper = -np.sqrt(200.), np.sqrt(200.)
+
+        elif self.detector == 'XENON1T': # NEED TO UPDATE THIS
+            Zlower, Zupper, Rupper = -92.9, -9, 36.94
+
+        r2 = np.random.uniform(0, Rupper*Rupper, self.number_event_per_job)
+        angle = np.random.uniform(-np.pi, np.pi, self.number_event_per_job)
+
+        self.r = np.sqrt(r2)
+        self.x = self.r * np.cos(angle) * self.cm2mm
+        self.y = self.r * np.sin(angle) * self.cm2mm
+        self.z = - 1 * np.random.uniform(Zlower,Zupper,self.number_event_per_job) * self.cm2mm
+        return (self.x, self.y, self.z)
+
+    def _randomize_photon_number(self):
+        self.photon_number = np.random.randint(self.photon_number_low, self.photon_number_high, self.number_event_per_job)
+        return self.photon_number
+
+    def _randomize_electron_number(self):        
+        self.electron_number = np.random.randint(self.electron_number_low, self.electron_number_high, self.number_event_per_job)
+        return self.electron_number
 
 class CreateFakeFromPickle(ProductionProcess):
     ''' Read a pickled real data from {cwd}/{config_name}.pkl
