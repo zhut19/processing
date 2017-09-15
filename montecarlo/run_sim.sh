@@ -302,7 +302,7 @@ else
     # nSort Stage
     NSORTEXEC=${RELEASEDIR}/nSort
     ln -sf ${RELEASEDIR}/data
-    (time ${NSORTEXEC} -m 2 -f ${EFIELD} -s 2 -i ${G4_FILENAME};) 2>&1 | tee ${G4NSORT_FILENAME}.log
+    (time ${NSORTEXEC} -m 2 -s 2 -i ${G4_FILENAME} -f ${EFIELD};) 2>&1 | tee ${G4NSORT_FILENAME}.log
     if [ $? -ne 0 ];
     then
       terminate 12
