@@ -326,7 +326,7 @@ then
 fi
 
 # fax+pax run-dependent configuration
-FAX_PAX_CONFIG="[WaveformSimulatoir]truth_file_name=\"${FAX_FILENAME}\";"
+FAX_PAX_CONFIG="[WaveformSimulator]truth_file_name=\"${FAX_FILENAME}\";"
 PAX_SR_CONFIG_FILE=${CVMFSDIR}/releases/processing/montecarlo/config/SR${SCIENCERUN}_parameters.ini
 
 # Do not save raw waveforms
