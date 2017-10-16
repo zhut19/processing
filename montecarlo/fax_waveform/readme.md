@@ -23,7 +23,8 @@ You will need Xenon1T code to run this, for testing run `python fax_production_m
 __First__ go to `fax_production_control.py`
  - Under class `Setup`
      - Edit `__init__()`: default_config will be the template for generating configurations.
-     - Edit `_generate_config()`: here you can make copies of default_config and change individual items in it and create a list of configurations you want to run. (All configurations must have differnt names)
+     - Edit `_generate_config()`: If you want make copies of default_config and change individual items in it, edit this and it will create a list of configurations you want to run. (All configurations must have differnt names)
+     - Else `__generate_config_by_default()`: will be called and only default config will be used.
 
  - Under class `Batch` 
      - Nothing needs editing.
