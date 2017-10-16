@@ -30,7 +30,7 @@ class Setup(Controller):
     Down fall of this is that ConfigParser couldn't be deep copyed
     Only config names (str) are stored in config_list.txt in current directory
     '''
-    __version__ = '0.0.1'
+    __version__ = '0.0.2'
 
     def setup(self, head_directory = ''):
         if head_directory == '':
@@ -38,7 +38,12 @@ class Setup(Controller):
             return 0
         
         self.head_directory = head_directory
-        self._generate_config()
+
+        # Customize and create multiple configs
+        #self._generate_config()
+        # Use default config and just for one time
+        self._generate_config_by_default()
+
         print ('following process will be generated under %s:' % self.head_directory)
         print (self.config_list)
         with open(os.path.join(os.getcwd(), '%s.txt' % 'config_list'), 'w+') as config_list_file:
@@ -68,6 +73,7 @@ class Setup(Controller):
                                              recoil_type = 'ER',
                                              use_array_truth = 'False',
                                              save_afterpulse_truth = 'False',
+                                             config_string = '', # add more paxer --config_string
                                             )
         
         self.default_config['MIDWAYNODE'] = dict(user = getpass.getuser(),
@@ -80,14 +86,26 @@ class Setup(Controller):
             with open(os.path.join(os.getcwd(),'configs','%s.ini' % 'example_config'), 'w') as config_file:
                 self.default_config.write(config_file)
                 config_file.close()
-        
+
+    def _generate_config_by_default(self):
+        """
+        just write default confit out
+        """
+
+        config = self.default_config
+
+        with open(os.path.join(os.getcwd(), '%s.ini' % config['BASICS']['name']), 'w') as config_file:
+            config.write(config_file)
+        config_file.close()
+        self.config_list.append(config['BASICS']['name'])
+
     def _generate_config(self):
         """
         Modify this to change configration
         Create a {config}.ini file in current folder for each configration
         Don't duplicate config name !
         """
-        
+
         config = self.default_config
 
         for ix, num_photon in enumerate([100,200,300,400,500]):
@@ -96,11 +114,11 @@ class Setup(Controller):
             config['BASICS']['photon_number_low'] = '%d' % (num_photon - 50)
             config['BASICS']['photon_number_high'] = '%d' % (num_photon + 50)
 
-            with open(os.path.join(os.getcwd(), '%s.ini' % config_name), 'w') as config_file:
+            with open(os.path.join(os.getcwd(), '%s.ini' % config['BASICS']['name']), 'w') as config_file:
                 config.write(config_file)
             config_file.close()
-            self.config_list.append(config_name)
-            
+            self.config_list.append(config['BASICS']['name'])
+
     def _setup_directory(self):
         if len(self.config_list) == 0:
             print ('Zero configuration found, use Config.generate_config to generate configurations')
