@@ -49,7 +49,7 @@ class Setup(Controller):
         self._generate_config_by_default()
 
         # Customize and create multiple configs
-        #self._generate_config_by_default()
+        #self._generate_config()
 
         print ('following process will be generated under %s:' % self.head_directory)
         print (self.config_list)
