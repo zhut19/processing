@@ -339,7 +339,7 @@ FAX_PAX_CONFIG="[WaveformSimulator]truth_file_name=\"${FAX_FILENAME}\";"
 
 # Do not save raw waveforms
 if [[ ${SAVE_RAW} == 0 && ${PAXVERSION} == ${FAXVERSION} ]]; then
-    (time paxer --input ${PAX_INPUT_FILENAME}.root --config XENON1T SimulationMCInput SR${SCIENCERUN}_parameters.ini --config_string "${FAX_PAX_CONFIG}" --output ${PAX_FILENAME};) 2>&1 | tee ${PAX_FILENAME}.log
+    (time paxer --input ${PAX_INPUT_FILENAME}.root --config XENON1T SimulationMCInput SR${SCIENCERUN}_parameters --config_string "${FAX_PAX_CONFIG}" --output ${PAX_FILENAME};) 2>&1 | tee ${PAX_FILENAME}.log
 
     if [ $? -ne 0 ];
     then
@@ -348,7 +348,7 @@ if [[ ${SAVE_RAW} == 0 && ${PAXVERSION} == ${FAXVERSION} ]]; then
 
 # Save raw waveforms or different fax/pax versions
 else
-    (time paxer --input ${PAX_INPUT_FILENAME}.root --config XENON1T reduce_raw_data SimulationMCInput SR${SCIENCERUN}_parameters.ini --config_string "${FAX_PAX_CONFIG}" --output ${RAW_FILENAME};) 2>&1 | tee ${RAW_FILENAME}.log
+    (time paxer --input ${PAX_INPUT_FILENAME}.root --config XENON1T reduce_raw_data SimulationMCInput SR${SCIENCERUN}_parameters --config_string "${FAX_PAX_CONFIG}" --output ${RAW_FILENAME};) 2>&1 | tee ${RAW_FILENAME}.log
 
     if [ $? -ne 0 ];
     then
@@ -366,7 +366,7 @@ else
 
     fi
 
-    (time paxer --ignore_rundb --input ${RAW_FILENAME} --config XENON1T SR${SCIENCERUN}_parameters.ini --config_string "${FAX_PAX_CONFIG}" --output ${PAX_FILENAME};) 2>&1 | tee ${PAX_FILENAME}.log
+    (time paxer --ignore_rundb --input ${RAW_FILENAME} --config XENON1T SR${SCIENCERUN}_parameters --config_string "${FAX_PAX_CONFIG}" --output ${PAX_FILENAME};) 2>&1 | tee ${PAX_FILENAME}.log
 
     if [ $? -ne 0 ];
     then
