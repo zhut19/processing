@@ -183,7 +183,6 @@ def get_configs(experiment):
 # needs to be set after functions defined
 MC_VERSIONS = get_mc_versions()
 PAX_VERSIONS = get_pax_versions()
-CONFIGS = get_configs("XENON1T")
 
 
 def generate_mc_workflow(mc_config,
@@ -410,12 +409,20 @@ def run_main():
 
     :return: exit code -- 0 on success, 1 otherwise
     """
+    #Parser to choose experiment
+    parser_exp = argparse.ArgumentParser(description="Chose experiment")
+
+    parser_exp.add_argument('--experiment', dest='experiment',
+                        choices=["XENON1T", "XENONnT"],
+                        action='store', default=None,
+                        help='experiment to use for MC')
+                        
+    args_exp = parser_exp.parse_known_args(sys.argv[1:])
+    CONFIGS=get_configs(args_exp[0].experiment)
+
 
     parser = argparse.ArgumentParser(description="Create a set of files for doing MC simulation for X1T")
     
-    parser.add_argument('--experiment', dest='experiment',
-                        action='store', default=None,
-                        help='experiment to use for MC')
     parser.add_argument('--flavor', dest='mc_flavor',
                         action='store', required=True,
                         choices=MC_FLAVORS,
@@ -468,43 +475,43 @@ def run_main():
                         help='macro to use for MC')
 
 
-    args = parser.parse_args(sys.argv[1:])
-    if args.num_events == 0:
+    args = parser.parse_known_args(sys.argv[1:])
+    if args[0].num_events == 0:
         sys.stdout.write("No events to generate, exiting")
         return 0
 
     output_directory = os.path.join(os.getcwd(), 'output')
     workflow_info = [0,
-                     args.num_events,
-                     args.mc_flavor,
-                     args.mc_config,
-                     args.batch_size,
-                     args.mc_version,
-                     args.fax_version,
-                     args.pax_version,
-                     args.sciencerun,
-                     args.preinit_macro,
-                     args.preinit_belt,
-                     args.preinit_efield,
-                     args.optical_setup,
-                     args.source_macro,
-                     args.experiment]
+                     args[0].num_events,
+                     args[0].mc_flavor,
+                     args[0].mc_config,
+                     args[0].batch_size,
+                     args[0].mc_version,
+                     args[0].fax_version,
+                     args[0].pax_version,
+                     args[0].sciencerun,
+                     args[0].preinit_macro,
+                     args[0].preinit_belt,
+                     args[0].preinit_efield,
+                     args[0].optical_setup,
+                     args[0].source_macro,
+                     args_exp[0].experiment]
 
-    workflow_info[0] = generate_mc_workflow(args.mc_config,
-                                            args.mc_flavor,
-                                            args.mc_version,
-                                            args.fax_version,
-                                            args.pax_version,
-                                            args.sciencerun,
-                                            args.start_job,
-                                            args.num_events,
-                                            args.batch_size,
-                                            args.preinit_macro,
-                                            args.preinit_belt,
-                                            args.preinit_efield,
-                                            args.optical_setup,
-                                            args.source_macro,
-                                            args.experiment)
+    workflow_info[0] = generate_mc_workflow(args[0].mc_config,
+                                            args[0].mc_flavor,
+                                            args[0].mc_version,
+                                            args[0].fax_version,
+                                            args[0].pax_version,
+                                            args[0].sciencerun,
+                                            args[0].start_job,
+                                            args[0].num_events,
+                                            args[0].batch_size,
+                                            args[0].preinit_macro,
+                                            args[0].preinit_belt,
+                                            args[0].preinit_efield,
+                                            args[0].optical_setup,
+                                            args[0].source_macro,
+                                            args_exp[0].experiment)
     if workflow_info[0] == 0:
         sys.stderr.write("Can't generate workflow, exiting\n")
         try:
