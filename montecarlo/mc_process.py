@@ -68,6 +68,7 @@ def check_macro(macro_name, mc_version, experiment):
 
     :param macro_name: name of macro file
     :param mc_version: version of mc code to use
+    :param experiment: choice of XENON1T or XENONnT for MC
     :return: True if macro is available in OASIS for specified mc version
     """
     macro_location = os.path.join(MC_PATH, mc_version, 'macros', experiment,  macro_name)
@@ -155,6 +156,7 @@ def get_configs(experiment):
     Return a tuple with G4 macros that are available
     Warning: reads from latest MC version in /cvmfs
 
+    :param experiment: choice of XENON1T or XENONnT for MC
     :return: tuple with string of G4 macros available in latest MC version
     """
     try:
@@ -260,7 +262,7 @@ def generate_mc_workflow(mc_config,
     if experiment is None:
         experiment = "XENON1T"
 
-    if not (experiment=="XENON1T" or experiment=="XENONnT"):
+    if experiment not in ["XENON1T", "XENONnT"]:
         sys.stderr.write("Chosen experiment not implemented, " 
                          "exiting.\n")
         sys.exit(1)
@@ -410,7 +412,7 @@ def run_main():
     :return: exit code -- 0 on success, 1 otherwise
     """
     #Parser to choose experiment
-    parser_exp = argparse.ArgumentParser(description="Chose experiment")
+    parser_exp = argparse.ArgumentParser(description="Choose experiment")
 
     parser_exp.add_argument('--experiment', dest='experiment',
                         choices=["XENON1T", "XENONnT"],
