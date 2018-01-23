@@ -422,7 +422,7 @@ def run_main():
     args_exp = parser_exp.parse_known_args(sys.argv[1:])
     if args_exp[0].experiment is None:
        args_exp[0].experiment="XENON1T"
-    CONFIGS=args_exp[0].experiment
+    CONFIGS=get_configs(args_exp[0].experiment)
 
 
     parser = argparse.ArgumentParser(description="Create a set of files for doing MC simulation for X1T")
