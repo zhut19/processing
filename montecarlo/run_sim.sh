@@ -14,6 +14,7 @@
 # $12 - preinit_field
 # $13 - optical_setup
 # $14 - source_macro
+# $15 - experiment 
 
 function terminate {
 
@@ -67,6 +68,9 @@ if [[ "$8" == 1 ]]; then
     SAVE_RAW=$8
 fi
 
+# Set Experiment
+EXPERIMENT=$15
+
 # For configuring model parameters and cuts
 # Warning: Currently only used for G4-NEST, fax and lax, but NOT nSort emission models 
 SCIENCERUN=$9
@@ -109,7 +113,7 @@ RELEASEDIR=${CVMFSDIR}/releases/mc/${MCVERSION}
 PAX_LIB_DIR=${CVMFSDIR}/releases/anaconda/2.4/envs/pax_${PAXVERSION}/lib/
 
 # Setup Geant4 macros
-MACROSDIR=${RELEASEDIR}/macros
+MACROSDIR=${RELEASEDIR}/macros/${EXPERIMENT}
 
 PREINIT_MACRO=${10}
 if [[ -z $PREINIT_MACRO ]];
@@ -268,9 +272,10 @@ G4NSORT_FILENAME=${G4_FILENAME}_Sort
 
 # Geant4 stage
 G4EXEC=${RELEASEDIR}/xenon1t_${MCFLAVOR}
-ln -sf ${MACROSDIR} # For reading e.g. input spectra from CWD
+SPECTRADIR=${RELEASEDIR}/macros
+ln -sf ${SPECTRADIR} # For reading e.g. input spectra from CWD
 
-(time ${G4EXEC} -p ${PREINIT_MACRO} -b ${PREINIT_BELT} -e ${PREINIT_EFIELD} -s ${OPTICAL_SETUP} -f ${SOURCE_MACRO} -n ${NEVENTS} -o ${G4_FILENAME}.root;) 2>&1 | tee ${G4_FILENAME}.log
+(time ${G4EXEC} -p ${PREINIT_MACRO} -b ${PREINIT_BELT} -e ${PREINIT_EFIELD} -s ${OPTICAL_SETUP} -f ${SOURCE_MACRO} -n ${NEVENTS} -d ${EXPERIMENT} -o ${G4_FILENAME}.root;) 2>&1 | tee ${G4_FILENAME}.log
 if [ $? -ne 0 ];
 then
     terminate 10
@@ -278,6 +283,11 @@ fi
 
 # Skip the rest for optical photons
 if [[ ${CONFIG} == *"optPhot"* ]]; then
+    terminate 0
+fi
+
+# Skip the rest for XENONnT, will move along as XENONnT chain takes shape
+if [[ ${EXPERIMENT} == "XENONnT" ]]; then
     terminate 0
 fi
 

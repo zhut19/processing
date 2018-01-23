@@ -62,7 +62,7 @@ def update_site_catalogs():
     open(catalog_file, 'w').write(buf)
 
 
-def check_macro(macro_name, mc_version):
+def check_macro(macro_name, mc_version, experiment):
     """
     Check to see if given macro is present in OASIS
 
@@ -70,7 +70,7 @@ def check_macro(macro_name, mc_version):
     :param mc_version: version of mc code to use
     :return: True if macro is available in OASIS for specified mc version
     """
-    macro_location = os.path.join(MC_PATH, mc_version, 'macros', macro_name)
+    macro_location = os.path.join(MC_PATH, mc_version, 'macros', experiment,  macro_name)
 
     print ("Checking for macro:", macro_location)
 
@@ -150,7 +150,7 @@ def get_pax_versions():
         return ()
 
 
-def get_configs():
+def get_configs(experiment):
     """
     Return a tuple with G4 macros that are available
     Warning: reads from latest MC version in /cvmfs
@@ -163,8 +163,8 @@ def get_configs():
             versions = glob.glob(MC_PATH + '/*')
             latest_dir = max(versions, key=os.path.getctime)
 
-        MACROS_PATH = latest_dir + '/macros'
-
+        MACROS_PATH = latest_dir + '/macros/' + experiment
+        
         if os.path.isdir(MACROS_PATH):
             configs = glob.glob(MACROS_PATH + '/run_*.mac')
             configs = [config.split('run_', 1)[1] for config in configs]
@@ -183,7 +183,7 @@ def get_configs():
 # needs to be set after functions defined
 MC_VERSIONS = get_mc_versions()
 PAX_VERSIONS = get_pax_versions()
-CONFIGS = get_configs()
+CONFIGS = get_configs("XENON1T")
 
 
 def generate_mc_workflow(mc_config,
@@ -199,7 +199,8 @@ def generate_mc_workflow(mc_config,
                          preinit_belt,
                          preinit_efield,
                          optical_setup,
-                         source_macro):
+                         source_macro, 
+                         experiment):
     """
     Generate a Pegasus workflow to do X1T MC processing
 
@@ -217,6 +218,7 @@ def generate_mc_workflow(mc_config,
     :param preinit_efield: macro to use to preinitialize efield (for NEST only)
     :param optical_setup: macro to setup optics
     :param source_macro: macro to use for MC generation
+    :param experiment: choice of XENON1T or XENONnT for MC
     :return: number of jobs in the workflow
     """
     dax = Pegasus.DAX3.ADAG('montecarlo')
@@ -255,9 +257,18 @@ def generate_mc_workflow(mc_config,
 
     if source_macro is None:
         source_macro = "run_{0}.mac".format(mc_config)
+        
+    if experiment is None:
+        experiment = "XENON1T"
+
+    if not (experiment=="XENON1T" or experiment=="XENONnT"):
+        sys.stderr.write("Chosen experiment not implemented, " 
+                         "exiting.\n")
+        sys.exit(1)
+
 
     preinit_macro_input = None
-    if not check_macro(preinit_macro, mc_version):
+    if not check_macro(preinit_macro, mc_version, experiment):
         if not os.path.exists(preinit_macro):
             sys.stderr.write("Preinit macro not in OASIS or current "
                              "directory, exiting.\n")
@@ -270,7 +281,7 @@ def generate_mc_workflow(mc_config,
         dax.addFile(preinit_macro_input)
 
     preinit_belt_input = None
-    if not check_macro(preinit_belt, mc_version):
+    if not check_macro(preinit_belt, mc_version, experiment):
         if not os.path.exists(preinit_belt):
             sys.stderr.write("Preinit belt not in OASIS or current "
                              "directory, exiting.\n")
@@ -283,7 +294,7 @@ def generate_mc_workflow(mc_config,
         dax.addFile(preinit_belt_input)
 
     preinit_efield_input = None
-    if not check_macro(preinit_efield, mc_version):
+    if not check_macro(preinit_efield, mc_version, experiment):
         if not os.path.exists(preinit_efield):
             sys.stderr.write("Preinit efield not in OASIS or current "
                              "directory, exiting.\n")
@@ -296,7 +307,7 @@ def generate_mc_workflow(mc_config,
         dax.addFile(preinit_efield_input)
 
     source_macro_input = None
-    if not check_macro(source_macro, mc_version):
+    if not check_macro(source_macro, mc_version, experiment):
         if not os.path.exists(source_macro):
             sys.stderr.write("Source macro not in OASIS or current "
                              "directory, exiting.\n")
@@ -309,7 +320,7 @@ def generate_mc_workflow(mc_config,
         dax.addFile(source_macro_input)
 
     optical_macro_input = None
-    if not check_macro(optical_setup, mc_version):
+    if not check_macro(optical_setup, mc_version, experiment):
         if not os.path.exists(optical_setup):
             sys.stderr.write("Optical setup macro not in OASIS or current "
                              "directory, exiting.\n")
@@ -341,7 +352,8 @@ def generate_mc_workflow(mc_config,
                                          preinit_belt,
                                          preinit_efield,
                                          optical_setup,
-                                         source_macro)
+                                         source_macro, 
+                                         experiment)
             else:
                 run_sim_job.addArguments(str(job),
                                          mc_flavor,
@@ -356,7 +368,8 @@ def generate_mc_workflow(mc_config,
                                          preinit_belt,
                                          preinit_efield,
                                          optical_setup,
-                                         source_macro)
+                                         source_macro,
+                                         experiment)
             if preinit_macro_input:
                 run_sim_job.uses(preinit_macro_input, link=Pegasus.DAX3.Link.INPUT)
             if preinit_belt_input:
@@ -399,7 +412,10 @@ def run_main():
     """
 
     parser = argparse.ArgumentParser(description="Create a set of files for doing MC simulation for X1T")
-
+    
+    parser.add_argument('--experiment', dest='experiment',
+                        action='store', default=None,
+                        help='experiment to use for MC')
     parser.add_argument('--flavor', dest='mc_flavor',
                         action='store', required=True,
                         choices=MC_FLAVORS,
@@ -451,6 +467,7 @@ def run_main():
                         action='store', default=None,
                         help='macro to use for MC')
 
+
     args = parser.parse_args(sys.argv[1:])
     if args.num_events == 0:
         sys.stdout.write("No events to generate, exiting")
@@ -470,7 +487,8 @@ def run_main():
                      args.preinit_belt,
                      args.preinit_efield,
                      args.optical_setup,
-                     args.source_macro]
+                     args.source_macro,
+                     args.experiment]
 
     workflow_info[0] = generate_mc_workflow(args.mc_config,
                                             args.mc_flavor,
@@ -485,7 +503,8 @@ def run_main():
                                             args.preinit_belt,
                                             args.preinit_efield,
                                             args.optical_setup,
-                                            args.source_macro)
+                                            args.source_macro,
+                                            args.experiment)
     if workflow_info[0] == 0:
         sys.stderr.write("Can't generate workflow, exiting\n")
         try:
