@@ -42,7 +42,7 @@ cd processing/montecarlo
 
 9) Submit jobs (this creates one master job (DAG) which then submits the rest):
 ~~~~
-python mc_process.py --flavor <MC_FLAVOR> --config <MC_CONFIG> --batch-size <JOB_BATCH_SIZE> --events <NUM_EVENTS> --mc-version <MC_VERSION> --fax-version <FAX_VERSION> --pax-version <PAX_VERSION> --sciencerun <SR # (0 or 1)> --preinit-macro <PREINIT_MACRO> --preinit-belt <PREINIT_BELT> --preinit-efield <PREINIT_EFIELD> --optical-setup <OPTICAL_SETUP> --source-macro <SOURCE_MACRO>
+python mc_process.py --flavor <MC_FLAVOR> --config <MC_CONFIG> --batch-size <JOB_BATCH_SIZE> --events <NUM_EVENTS> --mc-version <MC_VERSION> --fax-version <FAX_VERSION> --pax-version <PAX_VERSION> --sciencerun <SR # (0 or 1)> --preinit-macro <PREINIT_MACRO> --preinit-belt <PREINIT_BELT> --preinit-efield <PREINIT_EFIELD> --optical-setup <OPTICAL_SETUP> --source-macro <SOURCE_MACRO> --experiment <EXPERIMENT>
 ~~~~
 where 
 ~~~~
@@ -59,6 +59,7 @@ where
     PREINIT_EFIELD: (Optional) name of macro for varying e-field in NEST (defaults to preinit_EF_C15kVA4kV.mac)
     OPTICAL_SETUP: (Optional) name of macro to use for Geant4 optical setup (defaults to setup_optical_S1.mac)
     SOURCE_MACRO: (Optional) name of macro to run in Geant4 (defaults to run_<MC_CONFIG>.mac)
+    EXPERIMENT: (Optional) name of experiment (XENON1T, XENONnT) to implement (defaults to XENON1T) 
 ~~~~
 For example:
 ~~~~
@@ -123,7 +124,7 @@ for f in *; do tar xf $f; done
 You may run locally on Midway with e.g.:
 ~~~~
     cd processing/montecarlo/
-    ./run_sim.sh <Job_Number> <MC_FLAVOR> <MC_CONFIG> <NUM_EVENTS> <MC_VERSION> <FAX_VERSION> <PAX_VERSION> <SAVE_WAVEFORMS> <SR #> <PREINIT_MACRO> <PREINIT_BELT> <PREINIT_EFIELD> <OPTICAL_SETUP> <SOURCE_MACRO>
+    ./run_sim.sh <Job_Number> <MC_FLAVOR> <MC_CONFIG> <NUM_EVENTS> <MC_VERSION> <FAX_VERSION> <PAX_VERSION> <SAVE_WAVEFORMS> <SR #> <PREINIT_MACRO> <PREINIT_BELT> <PREINIT_EFIELD> <OPTICAL_SETUP> <SOURCE_MACRO> <EXPERIMENT> 
 ~~~~
 where
 ~~~~
@@ -141,6 +142,7 @@ where
     PREINIT_EFIELD: (Optional) name of macro for varying e-field in NEST (defaults to preinit_EF_C15kVA4kV.mac)
     OPTICAL_SETUP: (Optional) name of macro to use for Geant4 optical setup (defaults to setup_optical_S1.mac)
     SOURCE_MACRO: (Optional) name of macro to run in Geant4 (defaults to run_<MC_CONFIG>.mac)
+    EXPERIMENT: (Optional) name of experiment (XENON1T, XENONnT) to implement (defaults to XENON1T) 
 ~~~~
 
 This will create output files in "output" directory.
