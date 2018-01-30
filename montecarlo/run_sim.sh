@@ -69,7 +69,7 @@ if [[ "$8" == 1 ]]; then
 fi
 
 # Set Experiment
-EXPERIMENT=$15
+EXPERIMENT=${15}
 
 # For configuring model parameters and cuts
 # Warning: Currently only used for G4-NEST, fax and lax, but NOT nSort emission models 
