@@ -227,9 +227,9 @@ then
 fi
 
 if [[ ${MCFLAVOR} == G4p10 ]]; then
-    source ${CVMFSDIR}/software/mc_setup.sh
+    source ${CVMFSDIR}/software/mc_setup_G4p10.sh
 else
-    source ${CVMFSDIR}/software/mc_old_setup.sh
+    source ${CVMFSDIR}/software/mc_setup_G4p9.sh
 fi
 if [ $? -ne 0 ];
 then
@@ -291,7 +291,7 @@ if [[ ${EXPERIMENT} == "XENONnT" ]]; then
     terminate 0
 fi
 
-source ${CVMFSDIR}/software/mc_old_setup.sh
+source ${CVMFSDIR}/software/mc_setup_G4p9.sh
 
 if [[ ${MCFLAVOR} == NEST ]]; then
     # Patch stage
