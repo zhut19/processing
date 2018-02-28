@@ -352,7 +352,7 @@ FAX_PAX_CONFIG="[WaveformSimulator]truth_file_name=\"${FAX_FILENAME}\";"
 
 # Do not save raw waveforms
 if [[ ${SAVE_RAW} == 0 && ${PAXVERSION} == ${FAXVERSION} ]]; then
-    (time paxer --stop_after 1 --input ${PAX_INPUT_FILENAME}.root --config XENON1T SimulationMCInput SR${SCIENCERUN}_parameters --config_string "${FAX_PAX_CONFIG}" --output ${PAX_FILENAME};) 2>&1 | tee ${PAX_FILENAME}.log
+    (time paxer --input ${PAX_INPUT_FILENAME}.root --config XENON1T SimulationMCInput SR${SCIENCERUN}_parameters --config_string "${FAX_PAX_CONFIG}" --output ${PAX_FILENAME};) 2>&1 | tee ${PAX_FILENAME}.log
 
     if [ $? -ne 0 ];
     then
