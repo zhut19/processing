@@ -291,6 +291,7 @@ if [[ ${EXPERIMENT} == "XENONnT" ]]; then
     terminate 0
 fi
 
+CPATH=${OLD_CPATH}
 source ${CVMFSDIR}/software/mc_setup_G4p9.sh
 
 if [[ ${MCFLAVOR} == NEST ]]; then
@@ -319,6 +320,8 @@ else
     # XENON1T SR0 models
     ln -sf ${RELEASEDIR}/nSortSrc/* .
     source deactivate
+    CPATH=${OLD_CPATH}
+    rm -r ~/.cache/rootpy/*
     source activate pax_${FAXVERSION}
     python GenerateGeant4.py --InputFile ${G4_FILENAME}.root --OutputFilename ${G4NSORT_FILENAME}.root
     
