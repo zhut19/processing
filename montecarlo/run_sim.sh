@@ -291,6 +291,7 @@ if [[ ${EXPERIMENT} == "XENONnT" ]]; then
     terminate 0
 fi
 
+CPATH=${OLD_CPATH}
 source ${CVMFSDIR}/software/mc_setup_G4p9.sh
 
 if [[ ${MCFLAVOR} == NEST ]]; then
@@ -319,6 +320,8 @@ else
     # XENON1T SR0 models
     ln -sf ${RELEASEDIR}/nSortSrc/* .
     source deactivate
+    CPATH=${OLD_CPATH}
+    rm -r ~/.cache/rootpy/*
     source activate pax_${FAXVERSION}
     python GenerateGeant4.py --InputFile ${G4_FILENAME}.root --OutputFilename ${G4NSORT_FILENAME}.root
     
@@ -349,7 +352,7 @@ FAX_PAX_CONFIG="[WaveformSimulator]truth_file_name=\"${FAX_FILENAME}\";"
 
 # Do not save raw waveforms
 if [[ ${SAVE_RAW} == 0 && ${PAXVERSION} == ${FAXVERSION} ]]; then
-    (time paxer --input ${PAX_INPUT_FILENAME}.root --config XENON1T SimulationMCInput SR${SCIENCERUN}_parameters --config_string "${FAX_PAX_CONFIG}" --output ${PAX_FILENAME};) 2>&1 | tee ${PAX_FILENAME}.log
+    (time paxer --stop_after 1 --input ${PAX_INPUT_FILENAME}.root --config XENON1T SimulationMCInput SR${SCIENCERUN}_parameters --config_string "${FAX_PAX_CONFIG}" --output ${PAX_FILENAME};) 2>&1 | tee ${PAX_FILENAME}.log
 
     if [ $? -ne 0 ];
     then
